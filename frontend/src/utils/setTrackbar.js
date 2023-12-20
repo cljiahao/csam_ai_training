@@ -1,11 +1,12 @@
 import { API } from "../core/config";
 
-const setTrackbar = async () => {
-  const resp = await fetch(`${API}/CDA/trackbar`, {
+const setTrackbar = async (range) => {
+  const resp = await fetch(`${API}/CDA/set_trackbar`, {
     method: "POST",
     headers: {
-      Accept: "application/json",
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify(range),
   });
   const json = await resp.json();
   return json;
