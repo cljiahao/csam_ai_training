@@ -11,10 +11,12 @@ const ImageCont = () => {
 
   useEffect(() => {
     imageFilter(random, range, image_hold, canvas_hold);
-  }, [random, range]);
+  }, [random, range, image_hold, canvas_hold]);
 
   const arrow_size = `${Math.round(250 / random.length)}px`;
-  const scale = `scale-[${Math.round(120 / random.length) / 10}]`;
+  const img_size = `flex w-[${
+    random.length <= 4 ? 150 : random.length <= 6 ? 150 : 100
+  }px] 2xl:w-[${random.length <= 4 ? 250 : random.length <= 6 ? 250 : 200}px]`;
 
   return (
     <>
@@ -25,13 +27,13 @@ const ImageCont = () => {
             key={i}
           >
             <div className="flex h-full w-full items-center justify-center bg-green-300">
-              <img className={scale} alt={src} ref={image_hold[i]} />
+              <img className={img_size} alt={src} ref={image_hold[i]} />
             </div>
             <div className={`flex h-full items-center bg-blue-300`}>
               <FaArrowRightLong size={arrow_size} className="bg-gray-300" />
             </div>
             <div className="flex h-full w-full items-center justify-center bg-red-300">
-              <canvas className={scale} ref={canvas_hold[i]} />
+              <canvas className={img_size} ref={canvas_hold[i]} />
             </div>
           </div>
         );
