@@ -5,7 +5,7 @@ import Slider from "./components/Slider";
 const Trackbars = () => {
   const { range } = useContext(AppContext);
   return (
-    <div className="flex-col">
+    <div className="w-full">
       {Object.keys(range).map((type) => {
         return (
           <div className="flex-col rounded-xl bg-gray-400 p-3" key={type}>

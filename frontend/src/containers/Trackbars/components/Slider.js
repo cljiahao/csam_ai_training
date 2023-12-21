@@ -22,7 +22,7 @@ const Slider = ({ type, label }) => {
   };
 
   const inputChange = (e) => {
-    const limit = e.target.id === "Erode" ? 50 : 255;
+    const limit = e.target.id.split("_")[0] === "Erode" ? 50 : 255;
     const value =
       e.target.value === ""
         ? 0
@@ -59,7 +59,7 @@ const Slider = ({ type, label }) => {
           id={label}
           type="range"
           min="1"
-          max="255"
+          max={label.split("_")[0] === "Erode" ? "50" : "255"}
           value={range[type][label]}
           onChange={rangeChange}
         />

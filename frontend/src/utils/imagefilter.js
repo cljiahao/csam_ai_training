@@ -33,7 +33,7 @@ const imageFilter = (random, range, image_hold, canvas_hold) => {
           cv.threshold(
             gray,
             thres,
-            range.mask.Thres,
+            range.mask.Thresh,
             255,
             cv.THRESH_BINARY_INV,
           );
@@ -128,6 +128,23 @@ const imageFilter = (random, range, image_hold, canvas_hold) => {
           img.setTo(new cv.Scalar(0, 0, 0, 255), inverse);
 
           cv.imshow(canvas_hold[i].current, img);
+          img.delete();
+          channel.delete();
+          combine.delete();
+          gray.delete();
+          thres.delete();
+          e_ones.delete();
+          erode.delete();
+          contours.delete();
+          hierarchy.delete();
+          blank.delete();
+          d_ones.delete();
+          single.delete();
+          hsv.delete();
+          low.delete();
+          high.delete();
+          mask.delete();
+          inverse.delete();
         };
       });
     }

@@ -4,6 +4,7 @@ __pycache__
 env
 csam_ai_server.db
 backend/images
+backend/dataset
 
 # Frontend
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.

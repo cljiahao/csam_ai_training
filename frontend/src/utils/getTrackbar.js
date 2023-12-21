@@ -1,7 +1,7 @@
 import { API } from "../core/config";
 
 const getTrackbar = async () => {
-  const resp = await fetch(`${API}/CDA/trackbar`, {
+  const resp = await fetch(`${API}/CDA/get_trackbar`, {
     method: "GET",
     headers: {
       Accept: "application/json",

@@ -1,7 +1,7 @@
 import { API } from "../core/config";
 
-const setTrackbar = async (range) => {
-  const resp = await fetch(`${API}/CDA/set_trackbar`, {
+const process = async (range) => {
+  const resp = await fetch(`${API}/CDA/process_img`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -12,4 +12,4 @@ const setTrackbar = async (range) => {
   return json;
 };
 
-export default setTrackbar;
+export default process;
