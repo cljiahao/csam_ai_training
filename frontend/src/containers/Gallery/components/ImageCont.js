@@ -14,25 +14,27 @@ const ImageCont = () => {
   }, [random, range, image_hold, canvas_hold]);
 
   const arrow_size = `${Math.round(250 / random.length)}px`;
-  const img_size = `flex w-[${
-    random.length <= 4 ? 150 : random.length <= 6 ? 150 : 100
-  }px] 2xl:w-[${random.length <= 4 ? 250 : random.length <= 6 ? 250 : 200}px]`;
+  const img_size = `${
+    random.length <= 6
+      ? "flex w-[150px] 2xl:w-[250px]"
+      : "flex w-[100px] 2xl:w-[200px]"
+  }`;
 
   return (
     <>
       {random.map((src, i) => {
         return (
           <div
-            className="flex h-full w-full justify-between bg-pink-300"
+            className="flex h-full w-full justify-between rounded-3xl bg-slate-200"
             key={i}
           >
-            <div className="flex h-full w-full items-center justify-center bg-green-300">
+            <div className="flex h-full w-full items-center justify-center">
               <img className={img_size} alt={src} ref={image_hold[i]} />
             </div>
-            <div className={`flex h-full items-center bg-blue-300`}>
-              <FaArrowRightLong size={arrow_size} className="bg-gray-300" />
+            <div className={`flex h-full items-center`}>
+              <FaArrowRightLong size={arrow_size} className="" />
             </div>
-            <div className="flex h-full w-full items-center justify-center bg-red-300">
+            <div className="flex h-full w-full items-center justify-center">
               <canvas className={img_size} ref={canvas_hold[i]} />
             </div>
           </div>
