@@ -13,3 +13,7 @@ def time_print(start, func_name) -> None:
     print(f"{func_name} took: {round(time.time()-start,2)} secs")
 
     return time.time()
+
+
+def evaluation():
+    return
