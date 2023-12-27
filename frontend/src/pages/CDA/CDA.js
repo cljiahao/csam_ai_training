@@ -8,6 +8,8 @@ import ButtonCont from "../../containers/ButtonCont/ButtonCont";
 import getTrackbar from "../../utils/getTrackbar";
 import Trackbars from "../../containers/Trackbars/Trackbars";
 import Menu from "../../containers/Menu/Menu";
+import getCountRand from "../../utils/getCountRand";
+import InputCont from "../../containers/InputCont/InputCont";
 
 function CDA() {
   const [random, setRandom] = useState([]);
@@ -24,20 +26,42 @@ function CDA() {
     getTrack();
   }, []);
 
-  const openMenu = () => {
-    setSettings({ ...settings, menu: !settings.menu });
+  const openMenu = async () => {
+    if (settings.menu) {
+      setSettings({
+        ...settings,
+        menu: !settings.menu,
+      });
+    } else {
+      const json = await getCountRand();
+      setSettings({
+        ...settings,
+        menu: !settings.menu,
+        file_count: json.file_count,
+      });
+    }
   };
 
   return (
     <AppContext.Provider
-      value={{ random, setRandom, range, setRange, inText, setInText }}
+      value={{
+        random,
+        setRandom,
+        range,
+        setRange,
+        inText,
+        setInText,
+        settings,
+        setSettings,
+      }}
     >
       <div className="flex h-screen max-h-screen w-screen bg-amber-50">
         <section className="h-full w-[67%]">
           <Gallery />
         </section>
-        <aside className="relative flex h-full w-[33%] flex-col">
+        <aside className="relative flex h-full w-[33%] flex-col border-l-2 border-gray-300">
           <ButtonCont openMenu={openMenu} />
+          <InputCont />
           <Trackbars />
           <Transition
             show={settings.menu}

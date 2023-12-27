@@ -11,11 +11,11 @@ const NavBar = () => {
       link: "/",
       icon: <FaHome />,
     },
-    CDC: {
+    CDA: {
       link: "/CDA",
       icon: <FaLaptopCode />,
     },
-    CAI: {
+    CMT: {
       link: "/CMT",
       icon: <LiaChalkboardTeacherSolid />,
     },
