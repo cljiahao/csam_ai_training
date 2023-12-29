@@ -1,5 +1,5 @@
 import React from "react";
-const InfoCard = ({ src, title, count }) => {
+const CountCard = ({ src, title, count }) => {
   return (
     <div className="flex-col items-center rounded-lg bg-white py-2">
       <div className="flex items-center justify-center">
@@ -14,4 +14,4 @@ const InfoCard = ({ src, title, count }) => {
   );
 };
 
-export default InfoCard;
+export default CountCard;

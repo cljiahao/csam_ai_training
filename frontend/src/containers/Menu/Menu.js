@@ -2,6 +2,7 @@ import React from "react";
 import { IoMenu } from "react-icons/io5";
 
 import NavBar from "./components/NavBar";
+import CountCardCont from "./components/CountCardCont";
 
 const Menu = ({ openMenu }) => {
   return (
@@ -12,6 +13,9 @@ const Menu = ({ openMenu }) => {
         </div>
         <NavBar />
       </nav>
+      <div className="py-3">
+        <CountCardCont />
+      </div>
     </div>
   );
 };
