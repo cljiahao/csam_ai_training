@@ -4,18 +4,7 @@ from shutil import copyfile
 from concurrent.futures import ThreadPoolExecutor
 
 from apis.CDA.utils.augment import templating
-
-
-class Directory:
-    base_path = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-    )
-    image_path = os.path.join(base_path, "images")
-    dataset_path = os.path.join(base_path, "dataset")
-    old_path = os.path.join(dataset_path, "old")
-
-
-dire = Directory
+from apis.utils.directory import dire
 
 
 def get_dicts(new_version, image_fols):

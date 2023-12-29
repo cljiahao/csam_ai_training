@@ -2,8 +2,9 @@ import os
 import time
 
 from core.read_json import read_config
-from apis.CDA.utils.directory import dire, get_dicts
-from apis.CDA.utils.dataset import train_val_split, zip_check_dataset
+from apis.utils.directory import dire, zip_check_dataset
+from apis.CDA.utils.directory import get_dicts
+from apis.CDA.utils.dataset import train_val_split
 from apis.CDA.utils.augment import augmenting
 
 
@@ -33,7 +34,7 @@ def aug_process():
             f"Number of files in G path, {len(file_names)}, is less than {augment_set['target']}"
         )
 
-    new_version = zip_check_dataset()
+    new_version = zip_check_dataset(dire.dataset_path)
     time_print(start, "Zipping old datasets")
     dataset_fols, template_dict, count_dict = get_dicts(new_version, image_fols)
     time_print(start, "Copying Files and Templating all NGs")

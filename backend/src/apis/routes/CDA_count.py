@@ -3,7 +3,7 @@ import random
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from apis.CDA.utils.directory import dire
+from apis.utils.directory import dire
 from apis.CDA.main import get_files
 
 
