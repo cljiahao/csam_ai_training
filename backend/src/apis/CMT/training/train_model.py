@@ -9,6 +9,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 
 from apis.utils.directory import dire
 from apis.CMT.training.dataset import create_image_dataset
+from apis.CMT.training.Epoch_update import send_epoch_updates
 from core.config import Settings
 
 
@@ -18,7 +19,15 @@ class TrainingCallback(cb.Callback):
 
     async def on_epoch_end(self, epoch, logs=None):
         logs = logs or {}
-        await self.websocket.send_text(json.dumps({'epoch': epoch, 'logs': logs}))
+        # Include more metrics as needed for plotting
+        data = {
+            'epoch': epoch,
+            'accuracy': logs.get('accuracy'),
+            'loss': logs.get('loss'),
+            'val_accuracy': logs.get('val_accuracy'),
+            'val_loss': logs.get('val_loss')
+        }
+        await self.websocket.send_text(json.dumps(data))
 
 
 async def train_model(selected_dir, epochs, early_stopping=False, best_model=False, reduce_lr_on_plateau=False, websocket=None, checkpoint=False):
@@ -86,6 +95,11 @@ async def train_model(selected_dir, epochs, early_stopping=False, best_model=Fal
         TrainingCallback(websocket): websocket is not None
     }
 
+        
+    if websocket is not None:
+        callbacks.append(TrainingCallback(websocket))
+
+
     for callback, condition in callbacks_dict.items():
         if condition:
             callbacks.append(callback)
@@ -112,6 +126,9 @@ async def train_model(selected_dir, epochs, early_stopping=False, best_model=Fal
             'validation_loss': history.history['val_loss'][epoch]
         }
         epoch_metrics.append(epoch_data)
+
+    if websocket:
+        await send_epoch_updates(websocket, epoch_metrics)
 
 
     # Delete all checkpoints except the last one based on the time modified

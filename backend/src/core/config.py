@@ -28,8 +28,15 @@ class Settings:
 
     REALTIMEDB: str = os.getenv("REALTIMEDB")
     TABLEID: str = os.getenv("TABLEID")
-
+        #For training
     IMAGESIZE: list = [54, 54]
+    BATCHSIZE: int = 64
+    INPUTSHAPE: tuple = (54, 54, 3)
+    SEED: int = 12345
+    KER: tuple = (3, 3)
+    SKER: tuple = (1, 1)
+
+
 
 
 settings = Settings()
