@@ -1,0 +1,31 @@
+{
+    "Parameters": {
+        "image_size": [
+            54,
+            54
+        ],
+        "input_shape": [
+            54,
+            54,
+            3
+        ],
+        "batch_size": 64,
+        "seed": 1234,
+        "ker": [
+            3,
+            3
+        ],
+        "sker": [
+            1,
+            1
+        ]
+    },
+    "Frontend": {
+        "status": "complete",
+        "epoch": 10,
+        "accuracy": 0.744,
+        "loss": 0.643,
+        "val_accuracy": 0.77,
+        "val_loss": 0.586
+    }
+}
