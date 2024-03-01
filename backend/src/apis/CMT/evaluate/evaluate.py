@@ -5,45 +5,26 @@ from keras import preprocessing as pp
 from concurrent.futures import ThreadPoolExecutor
 
 from apis.utils.directory import dire
-from backend.src.apis.utils.recursive import recursion
+from apis.utils.recursive import recursion
 
 
-def evaluate(model, labels):
+def evaluate(path, key, results, error, model, labels):
 
-    results = {}
-    error = {"files": [], "exe": []}
-
-    if os.path.exists(dire.eval_path):
-        for eval_point in os.listdir(dire.eval_path):
-            path = os.path.join(dire.eval_path, eval_point)
-            type, key = eval_point.split("_", 1)
-            if type.lower() == "c":
-                for root, dirs, files in os.walk(path):
-                    path_list = root.split(eval_point)[-1].split(os.sep)[1:]
-                    path_list.insert(0, eval_point)
-                    if len(dirs):
-                        continue
-                    if len(files):
-                        if any(not file.endswith(".png") for file in files):
-                            error["exe"].append("_".join(path_list))
-                        else:
-                            recursion(results, path_list, predict(root, model, labels))
-                            print(results)
-                    else:
-                        error["files"].append("_".join(path_list))
-
-            # elif type.lower() == "p":
-            #     for lot_plate in os.listdir(path):
-            #         results[key][lot_plate] = {}
-            #         inner_path = os.path.join(path, lot_plate)
-            #         for root, dirs, files in os.walk(inner_path):
-            #             if len(dirs) == 0:
-            #                 last_fol = os.path.split(root)[-1]
-            #                 if last_fol == "original":
-            #                     continue
-            #                 results[key][lot_plate][last_fol] = len(files)
-
-    return results
+    for root, dirs, files in os.walk(path):
+        if len(dirs):
+            continue
+        path_list = root.split(key)[-1].split(os.sep)[1:]
+        path_list.insert(0, key)
+        if len(files):
+            if any(not file.endswith(".png") for file in files):
+                error["exe"].append("_".join(path_list))
+            else:
+                if len(path_list) == 1:
+                    results[path_list[0]] = predict(root, model, labels)
+                else:
+                    recursion(results, path_list, predict(root, model, labels))
+        else:
+            error["files"].append("_".join(path_list))
 
 
 def predict(root, model, labels):

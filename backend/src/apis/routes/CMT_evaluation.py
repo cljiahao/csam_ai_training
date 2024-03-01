@@ -5,7 +5,7 @@ from tensorflow import keras
 from keras import models as Models
 
 from apis.utils.directory import dire
-from apis.CMT.evaluate.evaluate import evaluate
+from apis.CMT.main import evaluation
 
 
 router = APIRouter()
@@ -34,6 +34,6 @@ def evaluation_folders(resp: response):
         for i in data:
             labels.append(i.split()[-1])
 
-    results = evaluate(model, labels)
+    results = evaluation(model, labels)
 
     return results
