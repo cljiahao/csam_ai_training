@@ -6,4 +6,5 @@ def recursion(folder_dict, path_list, function):
         else:
             folder_dict[head].update(recursion(folder_dict[head], tail, function))
     else:
-        return {head: function}
+        folder_dict[head] = function
+    return folder_dict
