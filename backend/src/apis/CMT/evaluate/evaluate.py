@@ -1,68 +1,84 @@
 import os
 import numpy as np
-import tensorflow.keras.models as Model
-
-from shutil import copyfile
+from tensorflow import keras
+from keras import preprocessing as pp
 from concurrent.futures import ThreadPoolExecutor
-from tensorflow.keras.preprocessing import image_dataset_from_directory
 
 from apis.utils.directory import dire
 
 
-def evaluate(model):
-    for fol in os.listdir(dire.eval_path):
-        fol_path = os.path.join(dire.eval_path, fol)
+def evaluate(model, labels):
 
-        with ThreadPoolExecutor(10) as exe:
-            _ = [
-                exe.submit(process_in_fol, model, fol, fol_path, in_fol)
-                for in_fol in os.listdir(fol_path)
-            ]
+    results = {}
+    error = {"files": [], "exe": []}
 
-    return
+    if os.path.exists(dire.eval_path):
+        for eval_point in os.listdir(dire.eval_path):
+            path = os.path.join(dire.eval_path, eval_point)
+            type, key = eval_point.split("_", 1)
+            if type.lower() == "c":
+                for root, dirs, files in os.walk(path):
+                    path_list = root.split(eval_point)[-1].split(os.sep)[1:]
+                    path_list.insert(0, eval_point)
+                    if len(dirs):
+                        continue
+                    if len(files):
+                        if any(not file.endswith(".png") for file in files):
+                            error["exe"].append("_".join(path_list))
+                        else:
+                            recursion(results, path_list, predict(root, model, labels))
+                            print(results)
+                    else:
+                        error["files"].append("_".join(path_list))
+
+            # elif type.lower() == "p":
+            #     for lot_plate in os.listdir(path):
+            #         results[key][lot_plate] = {}
+            #         inner_path = os.path.join(path, lot_plate)
+            #         for root, dirs, files in os.walk(inner_path):
+            #             if len(dirs) == 0:
+            #                 last_fol = os.path.split(root)[-1]
+            #                 if last_fol == "original":
+            #                     continue
+            #                 results[key][lot_plate][last_fol] = len(files)
+
+    return results
 
 
-def load_model(modelname):
-    model = Model.load_model(os.path.join(dire.models_path, modelname))
-    return model
+def recursion(folder_dict, path_list, function):
+    head, *tail = path_list
+    if 1 < len(path_list):
+        if head not in folder_dict:
+            folder_dict[head] = recursion({}, tail, function)
+        else:
+            folder_dict[head].update(recursion(folder_dict[head], tail, function))
+    else:
+        return {head: function}
 
 
-def process_in_fol(model, fol, fol_path, in_fol):
-    in_fol_path = os.path.join(fol_path, in_fol)
+def predict(root, model, labels):
 
-    if any(not file.endswith(".png") for file in os.listdir(in_fol_path)):
-        raise Exception("Files / folders other than .png extension found")
-
-    results_path = os.path.join(dire.results_path, fol, in_fol)
-    if not os.path.exists(results_path):
-        os.makedirs(results_path)
-
-    pred, pred_path = predict(model, in_fol_path)
-    copy_false(os.listdir(in_fol_path), results_path, pred, pred_path)
-
-
-def predict(model, in_fol_path):
-    pred_img = image_dataset_from_directory(
-        os.listdir(in_fol_path),
+    pred_img = pp.image_dataset_from_directory(
+        root,
         label_mode=None,
         shuffle=False,
         batch_size=32,
         image_size=(54, 54),
         seed=12345,
-        verbose=0,
     )
     pred_path = pred_img.file_paths
     pred = np.argmax(model.predict(pred_img), axis=1)
 
-    return pred, pred_path
+    arr = []
 
+    for i, file_path in enumerate(pred_path):
+        arr.append(
+            {
+                "image_path": file_path,
+                "name": os.path.split(file_path)[-1],
+                "label": os.path.split(root)[-1],
+                "pred": labels[pred[i]],
+            }
+        )
 
-def copy_false(fol_arr, results_path, pred, pred_path):
-    for i, p in enumerate(pred):
-        if fol_arr[p] not in pred_path.split("//"):
-            copyfile(
-                pred_path[i],
-                os.path.join(
-                    results_path,
-                ),
-            )
+    return arr
