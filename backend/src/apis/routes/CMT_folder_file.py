@@ -2,19 +2,11 @@ import os
 from fastapi import APIRouter
 
 from apis.utils.directory import dire
+from backend.src.apis.utils.recursive import recursion
 
 router = APIRouter()
 
-
-def recursion(folder_dict, path_list, files):
-    if 1 < len(path_list):
-        head, *tail = path_list
-        if head not in folder_dict:
-            folder_dict[head] = recursion({}, tail, files)
-        else:
-            folder_dict[head].update(recursion(folder_dict[head], tail, files))
-    else:
-        return {path_list[0]: len(files)}
+# TODO: Add Pydantic BaseModel for Post methods
 
 
 @router.post("/ds_file_count")
@@ -22,9 +14,11 @@ def ds_file_count(folder: dict):
     folder_path = os.path.join(dire.dataset_path, folder["name"])
     folder_dict = {}
     for root, dir, files in os.walk(folder_path):
-        if 0 < len(files):
+        if len(files):
             recursion(
-                folder_dict, root.split(folder["name"])[-1].split("\\")[1:], files
+                folder_dict,
+                root.split(folder["name"])[-1].split(os.sep)[1:],
+                len(files),
             )
     return folder_dict
 
@@ -35,6 +29,9 @@ def ds_folders():
     if "old" in folder_list:
         folder_list.remove("old")
     return folder_list
+
+
+# TODO Change for loop into recursion
 
 
 @router.get("/eval_folders")
