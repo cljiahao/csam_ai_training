@@ -7,106 +7,215 @@ const Outflow = () => {
   const { outflow, setOutflow } = useContext(AppContext);
 
   const image_info = {
-    A: [
-      {
-        image_path: "test",
-        name: "test",
-        label: "G",
-        pred: "NG",
+    Mass_Lot: {
+      A_1: {
+        B: [
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_11_20_2646_1906.png",
+            name: "1 NG_11_20_2646_1906.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_12_23_3142_1220.png",
+            name: "1 NG_12_23_3142_1220.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_12_25_3102_1219.png",
+            name: "1 NG_12_25_3102_1219.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_11_2402_349.png",
+            name: "1 NG_6_11_2402_349.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_17_2478_304.png",
+            name: "1 NG_6_17_2478_304.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_9_2481_352.png",
+            name: "1 NG_6_9_2481_352.png",
+            label: "B",
+            pred: "G",
+          },
+        ],
+        C: [
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_11_20_2646_1906.png",
+            name: "1 NG_11_20_2646_1906.png",
+            label: "C",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_12_23_3142_1220.png",
+            name: "1 NG_12_23_3142_1220.png",
+            label: "C",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_6_17_2478_304.png",
+            name: "1 NG_6_17_2478_304.png",
+            label: "C",
+            pred: "G",
+          },
+        ],
       },
-      {
-        image_path: "test1",
-        name: "test1",
-        label: "G",
-        pred: "NG",
+      B_1: {
+        B: [
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_11_20_2646_1906.png",
+            name: "1 NG_11_20_2646_1906.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_12_23_3142_1220.png",
+            name: "1 NG_12_23_3142_1220.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_12_25_3102_1219.png",
+            name: "1 NG_12_25_3102_1219.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_11_2402_349.png",
+            name: "1 NG_6_11_2402_349.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_17_2478_304.png",
+            name: "1 NG_6_17_2478_304.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_9_2481_352.png",
+            name: "1 NG_6_9_2481_352.png",
+            label: "B",
+            pred: "G",
+          },
+        ],
+        C: [
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_11_20_2646_1906.png",
+            name: "1 NG_11_20_2646_1906.png",
+            label: "C",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_12_23_3142_1220.png",
+            name: "1 NG_12_23_3142_1220.png",
+            label: "C",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_6_17_2478_304.png",
+            name: "1 NG_6_17_2478_304.png",
+            label: "C",
+            pred: "G",
+          },
+        ],
       },
-      {
-        image_path: "test3",
-        name: "test3",
-        label: "NG",
-        pred: "G",
+      C_1: {
+        B: [
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_11_20_2646_1906.png",
+            name: "1 NG_11_20_2646_1906.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_12_23_3142_1220.png",
+            name: "1 NG_12_23_3142_1220.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_12_25_3102_1219.png",
+            name: "1 NG_12_25_3102_1219.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_11_2402_349.png",
+            name: "1 NG_6_11_2402_349.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_17_2478_304.png",
+            name: "1 NG_6_17_2478_304.png",
+            label: "B",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\B\\1 NG_6_9_2481_352.png",
+            name: "1 NG_6_9_2481_352.png",
+            label: "B",
+            pred: "G",
+          },
+        ],
+        C: [
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_11_20_2646_1906.png",
+            name: "1 NG_11_20_2646_1906.png",
+            label: "C",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_12_23_3142_1220.png",
+            name: "1 NG_12_23_3142_1220.png",
+            label: "C",
+            pred: "G",
+          },
+          {
+            image_path:
+              "C:\\Users\\MES21106\\Desktop\\CSAM Code\\v2\\AI Training\\backend\\evaluation\\P_Mass_Lot\\A_1\\C\\1 NG_6_17_2478_304.png",
+            name: "1 NG_6_17_2478_304.png",
+            label: "C",
+            pred: "G",
+          },
+        ],
       },
-    ],
-    B: [
-      {
-        image_path: "test",
-        name: "test",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test1",
-        name: "test1",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test3",
-        name: "test3",
-        label: "NG",
-        pred: "G",
-      },
-    ],
-    C: [
-      {
-        image_path: "test",
-        name: "test",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test1",
-        name: "test1",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test3",
-        name: "test3",
-        label: "NG",
-        pred: "G",
-      },
-    ],
-    D: [
-      {
-        image_path: "test",
-        name: "test",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test1",
-        name: "test1",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test3",
-        name: "test3",
-        label: "NG",
-        pred: "G",
-      },
-    ],
-    E: [
-      {
-        image_path: "test",
-        name: "test",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test1",
-        name: "test1",
-        label: "G",
-        pred: "NG",
-      },
-      {
-        image_path: "test3",
-        name: "test3",
-        label: "NG",
-        pred: "G",
-      },
-    ],
+    },
   };
 
   return (
@@ -116,10 +225,8 @@ const Outflow = () => {
           <RxCross2 size="1.5rem" />
         </button>
       </div>
-      <div className="flex w-full flex-1 flex-col space-y-3 overflow-auto px-5 text-2xl">
-        {Object.keys(image_info).map((key) => (
-          <Gallery key={key} name={key} array={image_info[key]} />
-        ))}
+      <div className="flex w-full flex-1 flex-col space-y-3 overflow-y-scroll px-5 text-lg font-semibold">
+        <Gallery data={image_info} />
       </div>
     </div>
   );
