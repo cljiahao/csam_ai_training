@@ -1,3 +1,4 @@
+import os
 import asyncio
 from tensorflow import keras
 from keras import optimizers, losses
@@ -5,6 +6,8 @@ from keras import optimizers, losses
 from apis.utils.directory import dire, zip_check_dataset
 from apis.CMT.training.architecture import callback, create_new_model
 from apis.CMT.training.dataset import create_image_dataset
+from apis.CMT.evaluate.evaluate import evaluate
+from apis.CMT.evaluate.process import process
 
 
 async def training(sel_fold, epochs, sel_cb):
@@ -38,6 +41,17 @@ async def training(sel_fold, epochs, sel_cb):
     # TODO Call evaluation after training
 
 
-def evaluation():
+def evaluation(model, labels):
+    results = {}
+    error = {"files": [], "exe": []}
 
-    return
+    if os.path.exists(dire.eval_path):
+        for eval_point in os.listdir(dire.eval_path):
+            path = os.path.join(dire.eval_path, eval_point)
+            type, key = eval_point.split("_", 1)
+            if type.lower() == "c":
+                evaluate(path, key, results, error, model, labels)
+            elif type.lower() == "p":
+                process(path, key, results, error, model, labels)
+
+    return results

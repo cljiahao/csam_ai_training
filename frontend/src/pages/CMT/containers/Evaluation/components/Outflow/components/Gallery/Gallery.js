@@ -1,19 +1,17 @@
 import React from "react";
+import ImageCards from "../ImageCards/ImageCards";
+import ImageExpand from "../ImageExpand.js/ImageExpand";
 
-const Gallery = ({ name, array }) => {
+const Gallery = ({ data }) => {
   return (
-    <div className="flex flex-col space-y-2 border-b border-slate-400 pb-3">
-      <div className="sticky top-0 bg-slate-400 bg-opacity-30 text-3xl font-bold">
-        {name}
-      </div>
-      <div className="flex space-x-5 text-base">
-        {array.map((value) => (
-          <div className="flex-center flex-col">
-            <img src={value.image_path} alt={value.name} />
-            <span>{value.label}</span>
-          </div>
-        ))}
-      </div>
+    <div className="flex w-full flex-col space-y-2">
+      {Object.keys(data).map((key) =>
+        data[key].constructor !== Object ? (
+          <ImageCards key={key} name={key} data={data[key]} />
+        ) : (
+          <ImageExpand key={key} name={key} data={data[key]} />
+        ),
+      )}
     </div>
   );
 };
