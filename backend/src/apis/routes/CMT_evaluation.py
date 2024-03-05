@@ -13,6 +13,7 @@ router = APIRouter()
 
 class response(BaseModel):
     name_model: str
+    item: str
 
 
 @router.post("/evaluation_folders")
@@ -34,6 +35,6 @@ def evaluation_folders(resp: response):
         for i in data:
             labels.append(i.split()[-1])
 
-    results = evaluation(model, labels)
+    results = evaluation(resp.item, model, labels)
 
     return results

@@ -23,9 +23,9 @@
     "Frontend": {
         "status": "complete",
         "epoch": 10,
-        "accuracy": 0.744,
-        "loss": 0.643,
-        "val_accuracy": 0.77,
-        "val_loss": 0.586
+        "accuracy": 0.745,
+        "loss": 0.659,
+        "val_accuracy": 0.771,
+        "val_loss": 0.61
     }
 }

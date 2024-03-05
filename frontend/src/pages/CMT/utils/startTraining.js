@@ -1,6 +1,7 @@
 import { API } from "../../../core/config";
 
 const startTraining = async (parameters) => {
+  console.log(parameters);
   const resp = await fetch(`${API}/CMT/train_model`, {
     method: "POST",
     headers: {

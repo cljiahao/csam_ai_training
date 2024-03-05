@@ -15,7 +15,7 @@ const Verbose = () => {
   return (
     <div className="flex w-full justify-between bg-white p-3 shadow-md 2xl:py-5">
       <div className="flex flex-col justify-center">
-        {trigger["expand"] ? (
+        {trigger.expand ? (
           epochs.map((dict) => {
             let line = Object.keys(dict).map((key) => `${key}: ${dict[key]}`);
             return (
@@ -37,11 +37,11 @@ const Verbose = () => {
           onClick={() =>
             setTrigger((prevTrigger) => ({
               ...prevTrigger,
-              expand: !prevTrigger["expand"],
+              expand: !prevTrigger.expand,
             }))
           }
         >
-          {trigger["expand"] ? (
+          {trigger.expand ? (
             <MdExpandLess size="1.5rem" />
           ) : (
             <MdExpandMore size="1.5rem" />
