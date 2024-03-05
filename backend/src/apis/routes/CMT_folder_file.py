@@ -1,12 +1,20 @@
 import os
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 from apis.utils.directory import dire
 from apis.utils.recursive import recursion
 
 router = APIRouter()
 
-# TODO: Add Pydantic BaseModel for Post methods
+
+class item_type(BaseModel):
+    item: str
+
+
+class directory(BaseModel):
+    item: str
+    folder: str
 
 
 @router.get("/item_type")
@@ -15,22 +23,22 @@ def get_item_type():
 
 
 @router.post("/ds_file_count")
-def ds_file_count(name: dict):
-    folder_path = os.path.join(dire.dataset_path, name["item"], name["folder"])
+def ds_file_count(fol_dir: directory):
+    folder_path = os.path.join(dire.dataset_path, fol_dir.item, fol_dir.folder)
     folder_dict = {}
     for root, dir, files in os.walk(folder_path):
         if len(files):
             recursion(
                 folder_dict,
-                root.split(name["folder"])[-1].split(os.sep)[1:],
+                root.split(fol_dir.folder)[-1].split(os.sep)[1:],
                 len(files),
             )
     return folder_dict
 
 
 @router.post("/ds_folders")
-def ds_folders(item: dict):
-    path = os.path.join(dire.dataset_path, item["name"])
+def ds_folders(item_type: item_type):
+    path = os.path.join(dire.dataset_path, item_type.item)
     folder_list = os.listdir(path)
     if "old" in folder_list:
         folder_list.remove("old")
@@ -38,10 +46,10 @@ def ds_folders(item: dict):
 
 
 @router.post("/eval_folders")
-def eval_folders(item: dict):
+def eval_folders(item_type: item_type):
     eval_info = {}
     pred_info = {}
-    base_path = os.path.join(dire.eval_path, item["name"])
+    base_path = os.path.join(dire.eval_path, item_type.item)
     if os.path.exists(base_path):
         for eval_point in os.listdir(base_path):
             path = os.path.join(base_path, eval_point)

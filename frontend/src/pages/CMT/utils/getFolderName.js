@@ -17,7 +17,7 @@ export const getFolderName = async (item) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: item }),
+    body: JSON.stringify({ item: item }),
   });
   const json = await resp.json();
   return json;
@@ -29,7 +29,7 @@ export const getEvalFolder = async (item) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: item }),
+    body: JSON.stringify({ item: item }),
   });
   const json = await resp.json();
   return json;
