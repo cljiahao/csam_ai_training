@@ -24,11 +24,13 @@ const Evaluation = () => {
   };
 
   const button_info = {
-    Refresh: {
+    refresh: {
+      name: "Refresh",
       icon: <TbRefresh />,
       onClick: () => refresh(drop.item.selected),
     },
-    Outflow: {
+    outflow: {
+      name: "Outflow",
       icon: <MdWrongLocation />,
       onClick: () =>
         setTrigger((prevTrigger) => ({
