@@ -1,7 +1,7 @@
 import { API } from "../../../core/config";
 
-export const getFolderName = async () => {
-  const resp = await fetch(`${API}/CMT/ds_folders`, {
+export const getItemType = async () => {
+  const resp = await fetch(`${API}/CMT/item_type`, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -11,12 +11,25 @@ export const getFolderName = async () => {
   return json;
 };
 
-export const getEvalFolder = async () => {
-  const resp = await fetch(`${API}/CMT/eval_folders`, {
-    method: "GET",
+export const getFolderName = async (item) => {
+  const resp = await fetch(`${API}/CMT/ds_folders`, {
+    method: "POST",
     headers: {
-      Accept: "application/json",
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify({ name: item }),
+  });
+  const json = await resp.json();
+  return json;
+};
+
+export const getEvalFolder = async (item) => {
+  const resp = await fetch(`${API}/CMT/eval_folders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: item }),
   });
   const json = await resp.json();
   return json;

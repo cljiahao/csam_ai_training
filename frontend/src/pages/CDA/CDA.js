@@ -51,7 +51,7 @@ function CDA() {
   };
 
   const updateRange = async () => {
-    const alert = await setTrackbar(range["slider"]);
+    const alert = await setTrackbar(range.slider);
 
     Swal.fire({
       title: alert.title,
@@ -64,7 +64,7 @@ function CDA() {
 
   const process_img = async () => {
     setState("started");
-    const alert = await process(range["slider"], entry);
+    const alert = await process(range.slider, entry);
     setState("complete");
 
     Swal.fire({
@@ -97,11 +97,11 @@ function CDA() {
   };
 
   const openMenu = async () => {
-    if (!trigger["menu"]) {
+    if (!trigger.menu) {
       const json = await getCountRand();
       setFileCount(json.file_count);
     }
-    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig["menu"] }));
+    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
   };
 
   return (
@@ -129,7 +129,7 @@ function CDA() {
           <Trackbars />
           <Menu
             openMenu={openMenu}
-            menu={trigger["menu"]}
+            menu={trigger.menu}
             children={<CountCardCont />}
           />
         </aside>

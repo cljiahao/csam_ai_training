@@ -225,7 +225,7 @@ const Outflow = () => {
           onClick={() =>
             setTrigger((prevTrigger) => ({
               ...prevTrigger,
-              outflow: !prevTrigger["outflow"],
+              outflow: !prevTrigger.outflow,
             }))
           }
         >

@@ -9,16 +9,17 @@ import List from "./components/List/List";
 import { getEvalFolder } from "../../utils/getFolderName";
 
 const Evaluation = () => {
-  const { trigger, setTrigger } = useContext(AppContext);
+  const { drop, setTrigger } = useContext(AppContext);
   const [evalFol, setEvalFol] = useState({});
   const [predFol, setPredFol] = useState({});
 
   useEffect(() => {
-    refresh();
-  }, []);
+    refresh(drop.item.selected);
+  }, [drop.item.selected]);
 
-  const refresh = async () => {
-    const json = await getEvalFolder();
+  const refresh = async (item) => {
+    const json = await getEvalFolder(item);
+    console.log(json);
     setEvalFol(json.eval);
     setPredFol(json.pred);
   };
@@ -26,14 +27,14 @@ const Evaluation = () => {
   const button_info = {
     Refresh: {
       icon: <TbRefresh />,
-      onClick: refresh,
+      onClick: () => refresh(drop.item.selected),
     },
     Outflow: {
       icon: <MdWrongLocation />,
       onClick: () =>
         setTrigger((prevTrigger) => ({
           ...prevTrigger,
-          outflow: !prevTrigger["outflow"],
+          outflow: !prevTrigger.outflow,
         })),
     },
   };

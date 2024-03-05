@@ -10,7 +10,7 @@ const Gallery = () => {
   const image_hold = useMemo(() => random.map(() => createRef()), [random]);
 
   useEffect(() => {
-    imageFilter(random, range["slider"], image_hold, canvas_hold);
+    imageFilter(random, range.slider, image_hold, canvas_hold);
   }, [random, range, image_hold, canvas_hold]);
 
   const arrow_size = `${Math.round(250 / random.length)}px`;

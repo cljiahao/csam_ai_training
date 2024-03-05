@@ -1,8 +1,8 @@
 const API = process.env.REACT_APP_API;
 
 const initialDrop = {
-  folder: [],
-  item: [],
+  folder: { list: [], selected: "" },
+  item: { list: [], selected: "" },
 };
 
 const initialEntry = { target: 10000, split: 20 };
@@ -11,7 +11,7 @@ const initialFileCount = { ng: null, others: null, g: null };
 
 const initialGraph = { status: "complete", graph: [] };
 
-const initialParameters = { folder: "---", epochs: 10 };
+const initialParameters = { folder: "", epochs: 10, callbacks: {} };
 
 const initialRange = { input: {}, slider: {} };
 

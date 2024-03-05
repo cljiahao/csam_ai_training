@@ -16,7 +16,7 @@ import startTraining from "./utils/startTraining";
 import getEpoch from "./utils/getEpoch";
 import Training from "./containers/Training/Training";
 import Evaluation from "./containers/Evaluation/Evaluation";
-import { getFolderName } from "./utils/getFolderName";
+import { getItemType } from "./utils/getFolderName";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import { Transition } from "@headlessui/react";
 
@@ -28,12 +28,14 @@ function CMT() {
   const [table, setTable] = useState(initialTable);
 
   useEffect(() => {
-    const folderName = async () => {
-      const json = await getFolderName();
-      setDrop((prevDrop) => ({ ...prevDrop, folder: json }));
+    const get_item_type = async () => {
+      const json = await getItemType();
+      setDrop((prevDrop) => ({
+        ...prevDrop,
+        item: { ...prevDrop.item, list: json },
+      }));
     };
-    folderName();
-    return;
+    get_item_type();
   }, []);
 
   useEffect(() => {
@@ -53,14 +55,16 @@ function CMT() {
   const openMenu = () => {
     setTrigger((prevTrigger) => ({
       ...prevTrigger,
-      menu: !prevTrigger["menu"],
+      menu: !prevTrigger.menu,
     }));
   };
 
   const startTrain = async () => {
-    const json = await startTraining(parameters);
-    if (json) {
-      setGraph({ status: json.status, graph: initialGraph.graph });
+    if (parameters.folder === drop.folder.selected) {
+      const json = await startTraining(parameters);
+      if (json) {
+        setGraph({ status: json.status, graph: initialGraph.graph });
+      }
     }
   };
 
@@ -98,15 +102,15 @@ function CMT() {
         </section>
         <aside
           className={`relative flex w-[60%] flex-col overflow-auto border-l-2 border-slate-400 ${
-            trigger["expand"] ? "h-full" : "h-screen"
+            trigger.expand ? "h-full" : "h-screen"
           }`}
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation />
-          <Menu openMenu={openMenu} menu={trigger["menu"]} />
+          <Menu openMenu={openMenu} menu={trigger.menu} />
         </aside>
         <Transition
-          show={trigger["outflow"]}
+          show={trigger.outflow}
           enter="transition-opacity ease-in duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
