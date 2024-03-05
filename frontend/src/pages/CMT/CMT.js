@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AppContext } from "../../contexts/context";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { PiGauge } from "react-icons/pi";
+import { Transition } from "@headlessui/react";
 
 import {
   initialParameters,
@@ -9,23 +10,26 @@ import {
   initialGraph,
   initialTrigger,
   initialDrop,
+  initialOutflow,
 } from "../../core/config";
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
-import startTraining from "./utils/startTraining";
-import getEpoch from "./utils/getEpoch";
 import Training from "./containers/Training/Training";
+import Config from "./containers/Training/components/Config/Config";
 import Evaluation from "./containers/Evaluation/Evaluation";
-import { getItemType } from "./utils/getFolderName";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
-import { Transition } from "@headlessui/react";
+import startTraining from "./utils/startTraining";
+import startEvaluation from "./utils/startEvaluation";
+import { getItemType } from "./utils/getFolderName";
+import getEpoch from "./utils/getEpoch";
 
 function CMT() {
   const [drop, setDrop] = useState(initialDrop);
-  const [trigger, setTrigger] = useState(initialTrigger);
   const [graph, setGraph] = useState(initialGraph);
+  const [outflow, setOutflow] = useState(initialOutflow);
   const [parameters, setParameters] = useState(initialParameters);
   const [table, setTable] = useState(initialTable);
+  const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
     const get_item_type = async () => {
@@ -53,6 +57,7 @@ function CMT() {
   }, [graph]);
 
   const openMenu = () => {
+    console.log(outflow);
     setTrigger((prevTrigger) => ({
       ...prevTrigger,
       menu: !prevTrigger.menu,
@@ -68,16 +73,26 @@ function CMT() {
     }
   };
 
+  const startEval = async () => {
+    if (drop.item.selected) {
+      setOutflow({ status: "running", res: {} });
+      const json = await startEvaluation("test", drop.item.selected);
+      if (json) {
+        setOutflow({ status: "complete", res: json });
+      }
+    }
+  };
+
   const button_info = {
     Train: {
       icon: <LiaChalkboardTeacherSolid />,
       onClick: startTrain,
-      disabled: graph.status !== "complete",
+      disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
     Evaluate: {
       icon: <PiGauge />,
-      onClick: "",
-      disabled: graph.status !== "complete",
+      onClick: startEval,
+      disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };
 
@@ -88,6 +103,8 @@ function CMT() {
         setDrop,
         graph,
         setGraph,
+        outflow,
+        setOutflow,
         parameters,
         setParameters,
         table,
@@ -107,7 +124,7 @@ function CMT() {
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation />
-          <Menu openMenu={openMenu} menu={trigger.menu} />
+          <Menu openMenu={openMenu} menu={trigger.menu} children={<Config />} />
         </aside>
         <Transition
           show={trigger.outflow}
