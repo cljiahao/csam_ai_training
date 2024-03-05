@@ -19,7 +19,6 @@ const Evaluation = () => {
 
   const refresh = async (item) => {
     const json = await getEvalFolder(item);
-    console.log(json);
     setEvalFol(json.eval);
     setPredFol(json.pred);
   };

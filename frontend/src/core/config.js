@@ -11,6 +11,8 @@ const initialFileCount = { ng: null, others: null, g: null };
 
 const initialGraph = { status: "complete", graph: [] };
 
+const initialOutflow = { status: "complete", res: {} };
+
 const initialParameters = { folder: "", epochs: 10, callbacks: {} };
 
 const initialRange = { input: {}, slider: {} };
@@ -40,6 +42,7 @@ export {
   initialEntry,
   initialFileCount,
   initialGraph,
+  initialOutflow,
   initialParameters,
   initialRange,
   initialTable,
