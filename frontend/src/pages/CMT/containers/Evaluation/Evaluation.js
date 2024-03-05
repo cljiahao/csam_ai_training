@@ -6,7 +6,7 @@ import { AppContext } from "../../../../contexts/context";
 import ButtonsCont from "../../../../containers/common/ButtonsCont";
 import Header from "./components/Header/Header";
 import List from "./components/List/List";
-import { getEvalFolder } from "../../utils/getFolderName";
+import { getEvalFolder } from "../../utils/getNames";
 
 const Evaluation = () => {
   const { drop, setTrigger } = useContext(AppContext);
