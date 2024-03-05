@@ -15,7 +15,6 @@ import {
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
 import Training from "./containers/Training/Training";
-import Config from "./containers/Training/components/Config/Config";
 import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import startTraining from "./utils/startTraining";
@@ -124,7 +123,7 @@ function CMT() {
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation />
-          <Menu openMenu={openMenu} menu={trigger.menu} children={<Config />} />
+          <Menu openMenu={openMenu} menu={trigger.menu} />
         </aside>
         <Transition
           show={trigger.outflow}
