@@ -10,6 +10,7 @@ import {
   initialEntry,
   initialFileCount,
   initialRange,
+  initialTrigger,
 } from "../../core/config";
 import NavBar from "../../containers/common/NavBar";
 import Menu from "../../containers/Menu/Menu";
@@ -24,12 +25,12 @@ import process from "./utils/process";
 import Entry from "./containers/Entry/Entry";
 
 function CDA() {
-  const [menu, setMenu] = useState(false);
   const [random, setRandom] = useState([]);
   const [state, setState] = useState("");
   const [entry, setEntry] = useState(initialEntry);
   const [fileCount, setFileCount] = useState(initialFileCount);
   const [range, setRange] = useState(initialRange);
+  const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
     const getTrack = async () => {
@@ -96,11 +97,11 @@ function CDA() {
   };
 
   const openMenu = async () => {
-    if (!menu) {
+    if (!trigger["menu"]) {
       const json = await getCountRand();
       setFileCount(json.file_count);
     }
-    setMenu(!menu);
+    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig["menu"] }));
   };
 
   return (
@@ -114,6 +115,8 @@ function CDA() {
         setRandom,
         range,
         setRange,
+        trigger,
+        setTrigger,
       }}
     >
       <main className="flex h-screen w-screen bg-amber-100">
@@ -124,7 +127,11 @@ function CDA() {
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Entry />
           <Trackbars />
-          <Menu openMenu={openMenu} menu={menu} children={<CountCardCont />} />
+          <Menu
+            openMenu={openMenu}
+            menu={trigger["menu"]}
+            children={<CountCardCont />}
+          />
         </aside>
       </main>
     </AppContext.Provider>

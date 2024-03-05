@@ -4,7 +4,7 @@ import { AppContext } from "../../../../../../contexts/context";
 import Gallery from "./components/Gallery/Gallery";
 
 const Outflow = () => {
-  const { outflow, setOutflow } = useContext(AppContext);
+  const { trigger, setTrigger } = useContext(AppContext);
 
   const image_info = {
     Mass_Lot: {
@@ -221,7 +221,14 @@ const Outflow = () => {
   return (
     <div className="absolute left-1/2 top-1/2 flex h-[95%] w-[95%] -translate-x-1/2 -translate-y-1/2 transform flex-col overflow-auto rounded-3xl bg-white">
       <div className="flex-end w-full p-2">
-        <button onClick={() => setOutflow(!outflow)}>
+        <button
+          onClick={() =>
+            setTrigger((prevTrigger) => ({
+              ...prevTrigger,
+              outflow: !prevTrigger["outflow"],
+            }))
+          }
+        >
           <RxCross2 size="1.5rem" />
         </button>
       </div>

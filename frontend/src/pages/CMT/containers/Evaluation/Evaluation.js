@@ -9,7 +9,7 @@ import List from "./components/List/List";
 import { getEvalFolder } from "../../utils/getFolderName";
 
 const Evaluation = () => {
-  const { outflow, setOutflow } = useContext(AppContext);
+  const { trigger, setTrigger } = useContext(AppContext);
   const [evalFol, setEvalFol] = useState({});
   const [predFol, setPredFol] = useState({});
 
@@ -30,7 +30,11 @@ const Evaluation = () => {
     },
     Outflow: {
       icon: <MdWrongLocation />,
-      onClick: () => setOutflow(!outflow),
+      onClick: () =>
+        setTrigger((prevTrigger) => ({
+          ...prevTrigger,
+          outflow: !prevTrigger["outflow"],
+        })),
     },
   };
 

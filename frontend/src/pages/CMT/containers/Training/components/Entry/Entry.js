@@ -46,19 +46,26 @@ const Entry = () => {
   };
 
   const fileCount = async (e) => {
-    if (drop.includes(e.target.value)) {
-      const json = await getFileCount(e.target.value);
-      setTable(json);
-      setParameters({ ...parameters, folder: e.target.value });
-    }
+    console.log(e.target);
+    // if (drop.includes(e.target.value)) {
+    //   const json = await getFileCount(e.target.value);
+    //   setTable(json);
+    //   setParameters({ ...parameters, folder: e.target.value });
+    // }
   };
 
   return (
-    <div className="grid w-full grid-cols-2 gap-x-3 gap-y-3 pl-3">
-      <DropBox drop={drop} onChange={fileCount} />
-      {Object.keys(input_dict).map((key) => (
-        <Input key={key} name={key} input_info={input_dict[key]} />
-      ))}
+    <div className="flex w-full flex-col gap-x-3 gap-y-3 pl-3">
+      {Object.keys(drop)
+        .reverse()
+        .map((key) => (
+          <DropBox
+            key={key}
+            folder_name={key}
+            onChange={fileCount}
+            drop={drop[key]}
+          />
+        ))}
     </div>
   );
 };

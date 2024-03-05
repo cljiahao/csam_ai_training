@@ -7,6 +7,8 @@ import {
   initialParameters,
   initialTable,
   initialGraph,
+  initialTrigger,
+  initialDrop,
 } from "../../core/config";
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
@@ -19,10 +21,8 @@ import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import { Transition } from "@headlessui/react";
 
 function CMT() {
-  const [menu, setMenu] = useState(false);
-  const [expand, setExpand] = useState(false);
-  const [outflow, setOutflow] = useState(false);
-  const [drop, setDrop] = useState([]);
+  const [drop, setDrop] = useState(initialDrop);
+  const [trigger, setTrigger] = useState(initialTrigger);
   const [graph, setGraph] = useState(initialGraph);
   const [parameters, setParameters] = useState(initialParameters);
   const [table, setTable] = useState(initialTable);
@@ -30,7 +30,7 @@ function CMT() {
   useEffect(() => {
     const folderName = async () => {
       const json = await getFolderName();
-      setDrop(json);
+      setDrop((prevDrop) => ({ ...prevDrop, folder: json }));
     };
     folderName();
     return;
@@ -51,7 +51,10 @@ function CMT() {
   }, [graph]);
 
   const openMenu = () => {
-    setMenu(!menu);
+    setTrigger((prevTrigger) => ({
+      ...prevTrigger,
+      menu: !prevTrigger["menu"],
+    }));
   };
 
   const startTrain = async () => {
@@ -79,16 +82,14 @@ function CMT() {
       value={{
         drop,
         setDrop,
-        expand,
-        setExpand,
         graph,
         setGraph,
-        outflow,
-        setOutflow,
-        table,
-        setTable,
         parameters,
         setParameters,
+        table,
+        setTable,
+        trigger,
+        setTrigger,
       }}
     >
       <main className="no-scrollbar relative flex max-h-screen w-screen overflow-auto bg-amber-100 text-sm 2xl:text-lg">
@@ -97,15 +98,15 @@ function CMT() {
         </section>
         <aside
           className={`relative flex w-[60%] flex-col overflow-auto border-l-2 border-slate-400 ${
-            expand ? "h-full" : "h-screen"
+            trigger["expand"] ? "h-full" : "h-screen"
           }`}
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation />
-          <Menu openMenu={openMenu} menu={menu} />
+          <Menu openMenu={openMenu} menu={trigger["menu"]} />
         </aside>
         <Transition
-          show={outflow}
+          show={trigger["outflow"]}
           enter="transition-opacity ease-in duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"

@@ -3,7 +3,7 @@ import { MdExpandMore, MdExpandLess } from "react-icons/md";
 import { AppContext } from "../../../../../../contexts/context";
 
 const Verbose = () => {
-  const { graph, expand, setExpand } = useContext(AppContext);
+  const { graph, trigger, setTrigger } = useContext(AppContext);
 
   const epochs =
     graph.status === "complete"
@@ -15,7 +15,7 @@ const Verbose = () => {
   return (
     <div className="flex w-full justify-between bg-white p-3 shadow-md 2xl:py-5">
       <div className="flex flex-col justify-center">
-        {expand ? (
+        {trigger["expand"] ? (
           epochs.map((dict) => {
             let line = Object.keys(dict).map((key) => `${key}: ${dict[key]}`);
             return (
@@ -33,8 +33,15 @@ const Verbose = () => {
         )}
       </div>
       <div>
-        <button onClick={() => setExpand(!expand)}>
-          {expand ? (
+        <button
+          onClick={() =>
+            setTrigger((prevTrigger) => ({
+              ...prevTrigger,
+              expand: !prevTrigger["expand"],
+            }))
+          }
+        >
+          {trigger["expand"] ? (
             <MdExpandLess size="1.5rem" />
           ) : (
             <MdExpandMore size="1.5rem" />
