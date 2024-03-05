@@ -5,7 +5,7 @@ const initialDrop = {
   item: { list: [], selected: "" },
 };
 
-const initialEntry = { target: 10000, split: 20 };
+const initialEntry = { target: "10000", split: "20" };
 
 const initialFileCount = { ng: null, others: null, g: null };
 
@@ -13,7 +13,12 @@ const initialGraph = { status: "complete", graph: [] };
 
 const initialOutflow = { status: "complete", res: {} };
 
-const initialParameters = { folder: "", epochs: 10, callbacks: {} };
+const initialParameters = {
+  folder: "",
+  model: "",
+  epochs: "10",
+  callbacks: {},
+};
 
 const initialRange = { input: {}, slider: {} };
 

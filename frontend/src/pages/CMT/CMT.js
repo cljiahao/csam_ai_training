@@ -15,11 +15,12 @@ import {
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
 import Training from "./containers/Training/Training";
+import HyperParameters from "./containers/Training/components/HyperParameters/HyperParameters";
 import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import startTraining from "./utils/startTraining";
 import startEvaluation from "./utils/startEvaluation";
-import { getItemType } from "./utils/getFolderName";
+import { getItemType } from "./utils/getNames";
 import getEpoch from "./utils/getEpoch";
 
 function CMT() {
@@ -125,7 +126,11 @@ function CMT() {
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation />
-          <Menu openMenu={openMenu} menu={trigger.menu} />
+          <Menu
+            openMenu={openMenu}
+            menu={trigger.menu}
+            children={<HyperParameters />}
+          />
         </aside>
         <Transition
           show={trigger.outflow}

@@ -2,7 +2,7 @@ import React from "react";
 
 const DropBox = ({ folder_name, onChange, drop }) => {
   return (
-    <div className="flex-center h-12 w-full">
+    <div className="flex-center h-12 w-full 2xl:h-14">
       <label className="w-[30%] text-center" htmlFor="folder">
         {`Choose ${folder_name}:`}
       </label>

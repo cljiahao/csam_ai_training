@@ -34,3 +34,14 @@ export const getEvalFolder = async (item) => {
   const json = await resp.json();
   return json;
 };
+
+export const getRetrainModels = async () => {
+  const resp = await fetch(`${API}/CMT/retrain_models`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const json = await resp.json();
+  return json;
+};

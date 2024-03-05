@@ -16,5 +16,5 @@ api_router.include_router(CDA_process.router, prefix="/CDA", tags=["process"])
 api_router.include_router(CDA_count.router, prefix="/CDA", tags=["count"])
 
 api_router.include_router(CMT_train.router, prefix="/CMT", tags=["train"])
-api_router.include_router(CMT_folder_file.router, prefix="/CMT", tags=["count"])
+api_router.include_router(CMT_folder_file.router, prefix="/CMT", tags=["names"])
 api_router.include_router(CMT_evaluation.router, prefix="/CMT", tags=["evaluate"])

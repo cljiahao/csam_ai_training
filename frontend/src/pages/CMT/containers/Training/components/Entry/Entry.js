@@ -3,7 +3,7 @@ import { AppContext } from "../../../../../../contexts/context";
 
 import DropBox from "../../../../../../containers/common/DropBox";
 import getFileCount from "../../../../utils/getFileCount";
-import { getFolderName } from "../../../../utils/getFolderName";
+import { getFolderName } from "../../../../utils/getNames";
 
 const Entry = () => {
   const { drop, setDrop, parameters, setParameters, setTable } =
