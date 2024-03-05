@@ -83,12 +83,14 @@ function CMT() {
   };
 
   const button_info = {
-    Train: {
+    train: {
+      name: "Train",
       icon: <LiaChalkboardTeacherSolid />,
       onClick: startTrain,
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
-    Evaluate: {
+    evaluate: {
+      name: "Evaluate",
       icon: <PiGauge />,
       onClick: startEval,
       disabled: graph.status !== "complete" || outflow.status !== "complete",

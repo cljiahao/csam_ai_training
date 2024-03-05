@@ -77,19 +77,23 @@ function CDA() {
   };
 
   const button_info = {
-    Random: {
+    random: {
+      name: "Random",
       icon: <FaRandom />,
       onClick: getRandomFiles,
     },
-    Save: {
+    save: {
+      name: "Save",
       icon: <MdSave />,
       onClick: updateRange,
     },
-    Reset: {
+    reset: {
+      name: "Reset",
       icon: <GrPowerReset />,
       onClick: reset,
     },
-    Process: {
+    process: {
+      name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
       disabled: state === "started",
