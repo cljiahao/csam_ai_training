@@ -7,6 +7,7 @@ import { GrPowerReset } from "react-icons/gr";
 import { VscRunAll } from "react-icons/vsc";
 
 import {
+  initialDrop,
   initialEntry,
   initialFileCount,
   initialRange,
@@ -19,13 +20,13 @@ import CountCardCont from "./containers/CountCard/CountCardCont";
 import Gallery from "./containers/Gallery/Gallery";
 import Trackbars from "./containers/Trackbars/Trackbars";
 import { getTrackbar, setTrackbar } from "./utils/trackbar";
-import getCountRand from "./utils/getCountRand";
-import getRandom from "./utils/getRandom";
+import { getItemType, getRandomImg, getRandomCount } from "./utils/getNames";
 import process from "./utils/process";
 
 function CDA() {
   const [random, setRandom] = useState([]);
   const [state, setState] = useState("");
+  const [drop, setDrop] = useState(initialDrop);
   const [entry, setEntry] = useState(initialEntry);
   const [fileCount, setFileCount] = useState(initialFileCount);
   const [range, setRange] = useState(initialRange);
@@ -33,16 +34,28 @@ function CDA() {
 
   useEffect(() => {
     get_trackbar();
+    item_refresh();
   }, []);
 
   const get_trackbar = async () => {
     const json = await getTrackbar();
-    setRange({ input: json.trackbar, slider: json.trackbar });
+    setRange({ input: json, slider: json });
+  };
+
+  const item_refresh = async () => {
+    const json = await getItemType();
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      item: { list: json, selected: "" },
+      folder: { ...prevDrop.folder, selected: "" },
+    }));
   };
 
   const get_random_files = async () => {
-    const json = await getRandom(8);
-    setRandom(json.file_list);
+    if (drop.item.selected) {
+      const json = await getRandomImg(drop.item.selected, 8);
+      setRandom(json);
+    }
   };
 
   const update_range = async () => {
@@ -73,7 +86,7 @@ function CDA() {
 
   const openMenu = async () => {
     if (!trigger.menu) {
-      const json = await getCountRand();
+      const json = await getRandomCount();
       setFileCount(json.file_count);
     }
     setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
@@ -106,6 +119,8 @@ function CDA() {
   return (
     <AppContext.Provider
       value={{
+        drop,
+        setDrop,
         entry,
         setEntry,
         fileCount,
@@ -124,7 +139,7 @@ function CDA() {
         </section>
         <aside className="relative w-[60%] border-l-2 border-slate-400">
           <NavBar openMenu={openMenu} button_info={button_info} />
-          <Entry />
+          <Entry refresh={item_refresh} />
           <Trackbars />
           <Menu
             openMenu={openMenu}

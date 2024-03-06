@@ -9,7 +9,7 @@ router = APIRouter()
 @router.get("/get_trackbar")
 def get_trackbar():
     trackbar_set = read_config("./core/json/trackbar.json")
-    return {"trackbar": trackbar_set}
+    return trackbar_set
 
 
 @router.post("/set_trackbar")

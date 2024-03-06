@@ -2,9 +2,19 @@ import React, { useContext } from "react";
 import { AppContext } from "../../../../contexts/context";
 
 import Input from "../../../../containers/common/Input";
+import DropBox from "../../../../containers/common/DropBox";
+import Button from "../../../../containers/common/Button";
+import { TbRefresh } from "react-icons/tb";
 
-const Entry = () => {
-  const { entry, setEntry } = useContext(AppContext);
+const Entry = ({ refresh }) => {
+  const { drop, setDrop, entry, setEntry } = useContext(AppContext);
+
+  const dropSelect = (e) => {
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      [e.target.name]: { ...prevDrop[e.target.name], selected: e.target.value },
+    }));
+  };
 
   const input_dict = {
     target: {
@@ -21,11 +31,25 @@ const Entry = () => {
     },
   };
 
+  const button_info = {
+    name: "Refresh",
+    icon: <TbRefresh />,
+    onClick: () => refresh(),
+  };
+
   return (
-    <div className="grid w-full grid-cols-2 items-center gap-x-3 gap-y-3 p-1 2xl:h-20 2xl:text-xl">
-      {Object.keys(input_dict).map((key) => (
-        <Input key={key} name={key} input_info={input_dict[key]} />
-      ))}
+    <div className="flex">
+      <div className="flex-center h-14">
+        <DropBox
+          folder_name={"item"}
+          drop={drop.item.list}
+          onChange={dropSelect}
+          selected={drop.item.selected}
+        />
+        <div className="flex-center h-14">
+          <Button button_info={button_info} length={4} />
+        </div>
+      </div>
     </div>
   );
 };
