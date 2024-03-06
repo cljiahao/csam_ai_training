@@ -70,7 +70,7 @@ function CMT() {
     const json = await getRetrainModels();
     setDrop((prevDrop) => ({
       ...prevDrop,
-      model: { ...prevDrop.model, list: json },
+      model: { list: json, selected: "" },
     }));
   };
 
