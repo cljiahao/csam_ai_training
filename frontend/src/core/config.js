@@ -8,7 +8,7 @@ const initialDrop = {
 
 const initialEntry = { target: "10000", split: "20" };
 
-const initialFileCount = { ng: null, others: null, g: null };
+const initialRandom = { gallery: [], count: {} };
 
 const initialGraph = { status: "complete", graph: [] };
 
@@ -46,10 +46,10 @@ export {
   API,
   initialDrop,
   initialEntry,
-  initialFileCount,
   initialGraph,
   initialOutflow,
   initialParameters,
+  initialRandom,
   initialRange,
   initialTable,
   initialTrigger,

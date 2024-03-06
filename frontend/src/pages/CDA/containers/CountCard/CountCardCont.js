@@ -4,16 +4,16 @@ import { API } from "../../../../core/config";
 import CountCard from "./components/CountCard";
 
 const CountCardCont = () => {
-  const { fileCount } = useContext(AppContext);
+  const { random } = useContext(AppContext);
   return (
     <div className="grid grid-flow-row grid-cols-3 gap-10 px-7 pt-2 2xl:pt-4">
-      {Object.keys(fileCount).map((fol) => {
-        return fileCount[fol] != null ? (
+      {Object.keys(random.count).map((fol) => {
+        return random.count[fol] != null ? (
           <CountCard
             key={fol}
-            src={`${API}/CDA/get_image/${fileCount[fol].file_path}`}
+            src={`${API}/CDA/get_image/${random.count[fol].file_path}`}
             title={fol}
-            count={fileCount[fol].count}
+            count={random.count[fol].count}
           />
         ) : null;
       })}

@@ -23,8 +23,8 @@ export const getRandomImg = async (item, no_of_img) => {
   return json;
 };
 
-export const getRandomCount = async ({ item }) => {
-  const resp = await fetch(`${API}/CDA/rand_count`, {
+export const getRandomCount = async (item) => {
+  const resp = await fetch(`${API}/CDA/random_count`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
