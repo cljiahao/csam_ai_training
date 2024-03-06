@@ -20,7 +20,7 @@ import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import startTraining from "./utils/startTraining";
 import startEvaluation from "./utils/startEvaluation";
-import { getItemType } from "./utils/getNames";
+import { getItemType, getRetrainModels } from "./utils/getNames";
 import getEpoch from "./utils/getEpoch";
 
 function CMT() {
@@ -40,6 +40,7 @@ function CMT() {
       }));
     };
     get_item_type();
+    refresh();
   }, []);
 
   useEffect(() => {
@@ -57,10 +58,17 @@ function CMT() {
   }, [graph]);
 
   const openMenu = () => {
-    console.log(outflow);
     setTrigger((prevTrigger) => ({
       ...prevTrigger,
       menu: !prevTrigger.menu,
+    }));
+  };
+
+  const refresh = async () => {
+    const json = await getRetrainModels();
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      model: { ...prevDrop.model, list: json },
     }));
   };
 
@@ -129,7 +137,7 @@ function CMT() {
           <Menu
             openMenu={openMenu}
             menu={trigger.menu}
-            children={<HyperParameters />}
+            children={<HyperParameters refresh={refresh} />}
           />
         </aside>
         <Transition
