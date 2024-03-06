@@ -5,7 +5,33 @@ from apis.utils.directory import dire, zip_check_dataset
 from apis.utils.misc import time_print
 from apis.CDA.utils.directory import get_dicts
 from apis.CDA.utils.dataset import train_val_split
+
 from apis.CDA.utils.augment import augmenting
+
+
+# TODO: convert the directory reading into recursive
+
+
+def get_files(item, good):
+
+    files = {}
+
+    base_path = os.path.join(dire.image_path, item)
+    for fol in os.listdir(base_path):
+        if good and fol in ["G", "g", "good", "Good"]:
+            continue
+        folder_path = os.path.join(base_path, fol)
+        for file in os.listdir(folder_path):
+            if file.split(".")[-1] not in ["jpg", "jpeg", "png", "tiff"]:
+                files[f"{item}/{fol}/{file}"] = os.listdir(
+                    os.path.join(base_path, fol, file)
+                )
+            else:
+                if fol not in files.keys():
+                    files[f"{item}/{fol}"] = []
+                files[f"{item}/{fol}"].append(file)
+
+    return files
 
 
 def aug_process(range, entry):
@@ -30,21 +56,3 @@ def aug_process(range, entry):
     time_print(start, "Augmenting all NGs")
     train_val_split(dataset_fols, image_fols, entry)
     time_print(start, "Train Val Split")
-
-
-def get_files(good):
-    files = {}
-    for fol in os.listdir(dire.image_path):
-        if good and fol in ["G", "g", "good", "Good"]:
-            continue
-        for file in os.listdir(os.path.join(dire.image_path, fol)):
-            if file.split(".")[-1] not in ["jpg", "jpeg", "png", "tiff"]:
-                files[f"{fol}/{file}"] = os.listdir(
-                    os.path.join(dire.image_path, fol, file)
-                )
-            else:
-                if fol not in files.keys():
-                    files[fol] = []
-                files[fol].append(file)
-
-    return files
