@@ -9,7 +9,7 @@ import { VscRunAll } from "react-icons/vsc";
 import {
   initialDrop,
   initialEntry,
-  initialFileCount,
+  initialRandom,
   initialRange,
   initialTrigger,
 } from "../../core/config";
@@ -24,11 +24,10 @@ import { getItemType, getRandomImg, getRandomCount } from "./utils/getNames";
 import process from "./utils/process";
 
 function CDA() {
-  const [random, setRandom] = useState([]);
   const [state, setState] = useState("");
   const [drop, setDrop] = useState(initialDrop);
   const [entry, setEntry] = useState(initialEntry);
-  const [fileCount, setFileCount] = useState(initialFileCount);
+  const [random, setRandom] = useState(initialRandom);
   const [range, setRange] = useState(initialRange);
   const [trigger, setTrigger] = useState(initialTrigger);
 
@@ -54,7 +53,7 @@ function CDA() {
   const get_random_files = async () => {
     if (drop.item.selected) {
       const json = await getRandomImg(drop.item.selected, 8);
-      setRandom(json);
+      setRandom((prevRandom) => ({ ...prevRandom, gallery: json }));
     }
   };
 
@@ -85,9 +84,9 @@ function CDA() {
   };
 
   const openMenu = async () => {
-    if (!trigger.menu) {
-      const json = await getRandomCount();
-      setFileCount(json.file_count);
+    if (!trigger.menu && drop.item.selected) {
+      const json = await getRandomCount(drop.item.selected);
+      setRandom((prevRandom) => ({ ...prevRandom, count: json }));
     }
     setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
   };
@@ -123,8 +122,6 @@ function CDA() {
         setDrop,
         entry,
         setEntry,
-        fileCount,
-        setFileCount,
         random,
         setRandom,
         range,
