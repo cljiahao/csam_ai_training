@@ -10,6 +10,7 @@ router = APIRouter()
 
 
 class trainModel(BaseModel):
+    item: str
     folder: str
     epochs: int
     callbacks: dict
@@ -17,8 +18,9 @@ class trainModel(BaseModel):
 
 @router.post("/train_model")
 async def train_model(selected: trainModel):
+    print(selected)
     asyncio.run_coroutine_threadsafe(
-        training(selected.folder, selected.epochs, selected.callbacks),
+        training(selected.item, selected.folder, selected.epochs, selected.callbacks),
         loop=asyncio.get_running_loop(),
     )
     return {"status": "started"}

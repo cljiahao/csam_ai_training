@@ -1,12 +1,25 @@
 const API = process.env.REACT_APP_API;
 
-const initialEntry = { target: 10000, split: 20 };
+const initialDrop = {
+  folder: { list: [], selected: "" },
+  item: { list: [], selected: "" },
+  model: { list: [], selected: "" },
+};
+
+const initialEntry = { target: "10000", split: "20" };
 
 const initialFileCount = { ng: null, others: null, g: null };
 
 const initialGraph = { status: "complete", graph: [] };
 
-const initialParameters = { folder: "---", epochs: 10 };
+const initialOutflow = { status: "complete", res: {} };
+
+const initialParameters = {
+  folder: "",
+  model: "",
+  epochs: "10",
+  callbacks: {},
+};
 
 const initialRange = { input: {}, slider: {} };
 
@@ -23,12 +36,21 @@ const initialTable = {
   },
 };
 
+const initialTrigger = {
+  menu: false,
+  outflow: false,
+  verbose: false,
+};
+
 export {
   API,
+  initialDrop,
   initialEntry,
   initialFileCount,
   initialGraph,
+  initialOutflow,
   initialParameters,
   initialRange,
   initialTable,
+  initialTrigger,
 };

@@ -2,38 +2,45 @@ import React, { useState, useEffect } from "react";
 import { AppContext } from "../../contexts/context";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { PiGauge } from "react-icons/pi";
+import { Transition } from "@headlessui/react";
 
 import {
   initialParameters,
   initialTable,
   initialGraph,
+  initialTrigger,
+  initialDrop,
+  initialOutflow,
 } from "../../core/config";
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
-import startTraining from "./utils/startTraining";
-import getEpoch from "./utils/getEpoch";
 import Training from "./containers/Training/Training";
+import HyperParameters from "./containers/Training/components/HyperParameters/HyperParameters";
 import Evaluation from "./containers/Evaluation/Evaluation";
-import { getFolderName } from "./utils/getFolderName";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
-import { Transition } from "@headlessui/react";
+import startTraining from "./utils/startTraining";
+import startEvaluation from "./utils/startEvaluation";
+import { getItemType, getRetrainModels } from "./utils/getNames";
+import getEpoch from "./utils/getEpoch";
 
 function CMT() {
-  const [menu, setMenu] = useState(false);
-  const [expand, setExpand] = useState(false);
-  const [outflow, setOutflow] = useState(false);
-  const [drop, setDrop] = useState([]);
+  const [drop, setDrop] = useState(initialDrop);
   const [graph, setGraph] = useState(initialGraph);
+  const [outflow, setOutflow] = useState(initialOutflow);
   const [parameters, setParameters] = useState(initialParameters);
   const [table, setTable] = useState(initialTable);
+  const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
-    const folderName = async () => {
-      const json = await getFolderName();
-      setDrop(json);
+    const get_item_type = async () => {
+      const json = await getItemType();
+      setDrop((prevDrop) => ({
+        ...prevDrop,
+        item: { ...prevDrop.item, list: json },
+      }));
     };
-    folderName();
-    return;
+    get_item_type();
+    refresh();
   }, []);
 
   useEffect(() => {
@@ -51,26 +58,51 @@ function CMT() {
   }, [graph]);
 
   const openMenu = () => {
-    setMenu(!menu);
+    setTrigger((prevTrigger) => ({
+      ...prevTrigger,
+      menu: !prevTrigger.menu,
+    }));
+  };
+
+  const refresh = async () => {
+    const json = await getRetrainModels();
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      model: { ...prevDrop.model, list: json },
+    }));
   };
 
   const startTrain = async () => {
-    const json = await startTraining(parameters);
-    if (json) {
-      setGraph({ status: json.status, graph: initialGraph.graph });
+    if (parameters.folder === drop.folder.selected) {
+      const json = await startTraining(parameters);
+      if (json) {
+        setGraph({ status: json.status, graph: initialGraph.graph });
+      }
+    }
+  };
+
+  const startEval = async () => {
+    if (drop.item.selected) {
+      setOutflow({ status: "running", res: {} });
+      const json = await startEvaluation("test", drop.item.selected);
+      if (json) {
+        setOutflow({ status: "complete", res: json });
+      }
     }
   };
 
   const button_info = {
-    Train: {
+    train: {
+      name: "Train",
       icon: <LiaChalkboardTeacherSolid />,
       onClick: startTrain,
-      disabled: graph.status !== "complete",
+      disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
-    Evaluate: {
+    evaluate: {
+      name: "Evaluate",
       icon: <PiGauge />,
-      onClick: "",
-      disabled: graph.status !== "complete",
+      onClick: startEval,
+      disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };
 
@@ -79,16 +111,16 @@ function CMT() {
       value={{
         drop,
         setDrop,
-        expand,
-        setExpand,
         graph,
         setGraph,
         outflow,
         setOutflow,
-        table,
-        setTable,
         parameters,
         setParameters,
+        table,
+        setTable,
+        trigger,
+        setTrigger,
       }}
     >
       <main className="no-scrollbar relative flex max-h-screen w-screen overflow-auto bg-amber-100 text-sm 2xl:text-lg">
@@ -97,15 +129,19 @@ function CMT() {
         </section>
         <aside
           className={`relative flex w-[60%] flex-col overflow-auto border-l-2 border-slate-400 ${
-            expand ? "h-full" : "h-screen"
+            trigger.expand ? "h-full" : "h-screen"
           }`}
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation />
-          <Menu openMenu={openMenu} menu={menu} />
+          <Menu
+            openMenu={openMenu}
+            menu={trigger.menu}
+            children={<HyperParameters refresh={refresh} />}
+          />
         </aside>
         <Transition
-          show={outflow}
+          show={trigger.outflow}
           enter="transition-opacity ease-in duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"

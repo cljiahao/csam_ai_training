@@ -10,6 +10,7 @@ import {
   initialEntry,
   initialFileCount,
   initialRange,
+  initialTrigger,
 } from "../../core/config";
 import NavBar from "../../containers/common/NavBar";
 import Menu from "../../containers/Menu/Menu";
@@ -24,12 +25,12 @@ import process from "./utils/process";
 import Entry from "./containers/Entry/Entry";
 
 function CDA() {
-  const [menu, setMenu] = useState(false);
   const [random, setRandom] = useState([]);
   const [state, setState] = useState("");
   const [entry, setEntry] = useState(initialEntry);
   const [fileCount, setFileCount] = useState(initialFileCount);
   const [range, setRange] = useState(initialRange);
+  const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
     const getTrack = async () => {
@@ -50,7 +51,7 @@ function CDA() {
   };
 
   const updateRange = async () => {
-    const alert = await setTrackbar(range["slider"]);
+    const alert = await setTrackbar(range.slider);
 
     Swal.fire({
       title: alert.title,
@@ -63,7 +64,7 @@ function CDA() {
 
   const process_img = async () => {
     setState("started");
-    const alert = await process(range["slider"], entry);
+    const alert = await process(range.slider, entry);
     setState("complete");
 
     Swal.fire({
@@ -76,19 +77,23 @@ function CDA() {
   };
 
   const button_info = {
-    Random: {
+    random: {
+      name: "Random",
       icon: <FaRandom />,
       onClick: getRandomFiles,
     },
-    Save: {
+    save: {
+      name: "Save",
       icon: <MdSave />,
       onClick: updateRange,
     },
-    Reset: {
+    reset: {
+      name: "Reset",
       icon: <GrPowerReset />,
       onClick: reset,
     },
-    Process: {
+    process: {
+      name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
       disabled: state === "started",
@@ -96,11 +101,11 @@ function CDA() {
   };
 
   const openMenu = async () => {
-    if (!menu) {
+    if (!trigger.menu) {
       const json = await getCountRand();
       setFileCount(json.file_count);
     }
-    setMenu(!menu);
+    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
   };
 
   return (
@@ -114,6 +119,8 @@ function CDA() {
         setRandom,
         range,
         setRange,
+        trigger,
+        setTrigger,
       }}
     >
       <main className="flex h-screen w-screen bg-amber-100">
@@ -124,7 +131,11 @@ function CDA() {
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Entry />
           <Trackbars />
-          <Menu openMenu={openMenu} menu={menu} children={<CountCardCont />} />
+          <Menu
+            openMenu={openMenu}
+            menu={trigger.menu}
+            children={<CountCardCont />}
+          />
         </aside>
       </main>
     </AppContext.Provider>

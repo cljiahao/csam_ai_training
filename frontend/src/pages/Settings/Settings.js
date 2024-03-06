@@ -13,11 +13,13 @@ const Settings = () => {
   };
 
   const button_info = {
-    Train: {
+    train: {
+      name: "Train",
       icon: <LiaChalkboardTeacherSolid />,
       onClick: () => (window.location.href = "/"),
     },
-    Evaluate: {
+    evaluate: {
+      name: "Evaluate",
       icon: <PiGauge />,
       onClick: () => (window.location.href = "/"),
     },

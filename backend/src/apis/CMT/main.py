@@ -10,9 +10,10 @@ from apis.CMT.evaluate.evaluate import evaluate
 from apis.CMT.evaluate.process import process
 
 
-async def training(sel_fold, epochs, sel_cb):
+async def training(sel_item, sel_fold, epochs, sel_cb):
+    # TODO: Check if files / folders exists
     train_ds, train_info, validation_ds, validation_info = create_image_dataset(
-        sel_fold
+        sel_item, sel_fold
     )
 
     model = create_new_model(train_info["class_counts"])
@@ -41,13 +42,14 @@ async def training(sel_fold, epochs, sel_cb):
     # TODO Call evaluation after training
 
 
-def evaluation(model, labels):
+def evaluation(item, model, labels):
     results = {}
     error = {"files": [], "exe": []}
 
-    if os.path.exists(dire.eval_path):
-        for eval_point in os.listdir(dire.eval_path):
-            path = os.path.join(dire.eval_path, eval_point)
+    base_path = os.path.join(dire.eval_path, item)
+    if os.path.exists(base_path):
+        for eval_point in os.listdir(base_path):
+            path = os.path.join(base_path, eval_point)
             type, key = eval_point.split("_", 1)
             if type.lower() == "c":
                 evaluate(path, key, results, error, model, labels)

@@ -6,31 +6,37 @@ import { AppContext } from "../../../../contexts/context";
 import ButtonsCont from "../../../../containers/common/ButtonsCont";
 import Header from "./components/Header/Header";
 import List from "./components/List/List";
-import { getEvalFolder } from "../../utils/getFolderName";
+import { getEvalFolder } from "../../utils/getNames";
 
 const Evaluation = () => {
-  const { outflow, setOutflow } = useContext(AppContext);
+  const { drop, setTrigger } = useContext(AppContext);
   const [evalFol, setEvalFol] = useState({});
   const [predFol, setPredFol] = useState({});
 
   useEffect(() => {
-    refresh();
-  }, []);
+    refresh(drop.item.selected);
+  }, [drop.item.selected]);
 
-  const refresh = async () => {
-    const json = await getEvalFolder();
+  const refresh = async (item) => {
+    const json = await getEvalFolder(item);
     setEvalFol(json.eval);
     setPredFol(json.pred);
   };
 
   const button_info = {
-    Refresh: {
+    refresh: {
+      name: "Refresh",
       icon: <TbRefresh />,
-      onClick: refresh,
+      onClick: () => refresh(drop.item.selected),
     },
-    Outflow: {
+    outflow: {
+      name: "Outflow",
       icon: <MdWrongLocation />,
-      onClick: () => setOutflow(!outflow),
+      onClick: () =>
+        setTrigger((prevTrigger) => ({
+          ...prevTrigger,
+          outflow: !prevTrigger.outflow,
+        })),
     },
   };
 

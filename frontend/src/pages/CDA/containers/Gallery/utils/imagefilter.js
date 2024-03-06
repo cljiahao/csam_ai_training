@@ -5,7 +5,6 @@ const imageFilter = async (random, range, image_hold, canvas_hold) => {
   try {
     if (cv.getBuildInformation) {
       for (const [i, src] of random.entries()) {
-        console.log(src);
         const file_blob = await getImages(src);
         image_hold[i].current.src = URL.createObjectURL(file_blob);
         image_hold[i].current.onload = () => {

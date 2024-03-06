@@ -2,11 +2,15 @@ import React from "react";
 
 const Input = ({ name, input_info }) => {
   return (
-    <div className="flex-center h-12 w-full">
-      <label className="w-full text-center">{input_info.name + ":"}</label>
+    <div className="flex-center h-12 w-full 2xl:h-14">
+      <label className="flex-center h-full w-full text-center">
+        {input_info.name + ":"}
+      </label>
       <div
-        className={`flex-center h-full w-full px-3 ${
-          input_info.type === "checkbox" ? "py-4 2xl:py-3" : "py-2"
+        className={`flex-center h-full px-3 ${
+          input_info.type === "checkbox"
+            ? "w-[30%] py-4 2xl:py-3"
+            : "w-full py-2"
         }`}
       >
         <input

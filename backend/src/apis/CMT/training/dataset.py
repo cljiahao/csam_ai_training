@@ -6,11 +6,11 @@ from apis.utils.directory import dire
 from core.config import settings
 
 
-def create_image_dataset(sel_folder):
+def create_image_dataset(sel_item, sel_folder):
     """
     Main Function to Creates image datasets for training and validation.
     """
-    sel_folder = os.path.join(dire.dataset_path, sel_folder)
+    sel_folder = os.path.join(dire.dataset_path, sel_item, sel_folder)
 
     train_dir = os.path.join(sel_folder, "training")
     validation_dir = os.path.join(sel_folder, "validation")

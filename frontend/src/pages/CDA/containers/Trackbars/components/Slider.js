@@ -8,16 +8,16 @@ const Slider = ({ type, label }) => {
     const value = parseInt(e.target.value);
     setRange({
       input: {
-        ...range["input"],
+        ...range.input,
         [type]: {
-          ...range["input"][type],
+          ...range.input[type],
           [label]: value,
         },
       },
       slider: {
-        ...range["slider"],
+        ...range.slider,
         [type]: {
-          ...range["slider"][type],
+          ...range.slider[type],
           [label]: value,
         },
       },
@@ -34,9 +34,9 @@ const Slider = ({ type, label }) => {
           : parseInt(e.target.value);
     setRange({
       input: {
-        ...range["input"],
+        ...range.input,
         [type]: {
-          ...range["input"][type],
+          ...range.input[type],
           [label]: value,
         },
       },
@@ -52,7 +52,7 @@ const Slider = ({ type, label }) => {
         className="h-6 w-12 border-2 border-gray-500 text-center 2xl:h-8 2xl:w-16"
         id={label}
         type="text"
-        value={range["input"][type][label]}
+        value={range.input[type][label]}
         onChange={inputChange}
         onKeyDown={(e) => {
           if (e.key === "Enter") rangeChange(e);
@@ -65,7 +65,7 @@ const Slider = ({ type, label }) => {
           type="range"
           min="1"
           max={label.split("_")[0] === "Erode" ? "50" : "255"}
-          value={range["slider"][type][label]}
+          value={range.slider[type][label]}
           onChange={rangeChange}
         />
       </div>
