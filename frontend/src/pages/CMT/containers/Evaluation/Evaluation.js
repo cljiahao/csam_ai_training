@@ -14,10 +14,10 @@ const Evaluation = () => {
   const [predFol, setPredFol] = useState({});
 
   useEffect(() => {
-    refresh(drop.item.selected);
+    eval_refresh(drop.item.selected);
   }, [drop.item.selected]);
 
-  const refresh = async (item) => {
+  const eval_refresh = async (item) => {
     const json = await getEvalFolder(item);
     setEvalFol(json.eval);
     setPredFol(json.pred);
@@ -27,7 +27,7 @@ const Evaluation = () => {
     refresh: {
       name: "Refresh",
       icon: <TbRefresh />,
-      onClick: () => refresh(drop.item.selected),
+      onClick: () => eval_refresh(drop.item.selected),
     },
     outflow: {
       name: "Outflow",
@@ -44,7 +44,7 @@ const Evaluation = () => {
     <div className="flex flex-1 flex-col overflow-auto px-3">
       <ButtonsCont
         button_info={button_info}
-        styles={"w-full flex-between h-14 2xl:h-18 gap-[50%]"}
+        styles={"w-full flex-between h-14 2xl:h-24 gap-[50%]"}
       />
       <div className="flex h-full w-full overflow-auto rounded-2xl bg-white py-5 pl-5 shadow-lg">
         <div className="max-h-full w-full space-y-2 overflow-y-scroll font-medium 2xl:space-y-3">
