@@ -32,15 +32,8 @@ function CMT() {
   const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
-    const get_item_type = async () => {
-      const json = await getItemType();
-      setDrop((prevDrop) => ({
-        ...prevDrop,
-        item: { ...prevDrop.item, list: json },
-      }));
-    };
-    get_item_type();
-    refresh();
+    item_refresh();
+    models_refresh();
   }, []);
 
   useEffect(() => {
@@ -64,7 +57,16 @@ function CMT() {
     }));
   };
 
-  const refresh = async () => {
+  const item_refresh = async () => {
+    const json = await getItemType();
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      item: { list: json, selected: "" },
+      folder: { ...prevDrop.folder, selected: "" },
+    }));
+  };
+
+  const models_refresh = async () => {
     const json = await getRetrainModels();
     setDrop((prevDrop) => ({
       ...prevDrop,
@@ -125,7 +127,7 @@ function CMT() {
     >
       <main className="no-scrollbar relative flex max-h-screen w-screen overflow-auto bg-amber-100 text-sm 2xl:text-lg">
         <section className="w-full">
-          <Training />
+          <Training refresh={item_refresh} />
         </section>
         <aside
           className={`relative flex w-[60%] flex-col overflow-auto border-l-2 border-slate-400 ${
@@ -137,7 +139,7 @@ function CMT() {
           <Menu
             openMenu={openMenu}
             menu={trigger.menu}
-            children={<HyperParameters refresh={refresh} />}
+            children={<HyperParameters refresh={models_refresh} />}
           />
         </aside>
         <Transition

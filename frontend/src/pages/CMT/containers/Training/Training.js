@@ -4,12 +4,12 @@ import Table from "./components/Table/Table";
 import Verbose from "./components/Verbose/Verbose";
 import Graph from "./components/Graph/Graph";
 
-const Training = () => {
+const Training = ({ refresh }) => {
   return (
     <div className="w-full">
-      <div className="flex w-full gap-x-2 border-b-2 border-slate-300 2xl:h-40">
+      <div className="flex h-28 w-full gap-x-2 border-b-2 border-slate-300 2xl:h-40">
         <div className="flex-center w-full">
-          <Entry />
+          <Entry refresh={refresh} />
         </div>
         <div className="flex-center w-full border-l-2 border-slate-300 px-2">
           <Table />
