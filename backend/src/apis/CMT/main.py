@@ -1,7 +1,7 @@
 import os
 import asyncio
 from tensorflow import keras
-from keras import optimizers, losses
+from keras import optimizers, losses, models
 
 from apis.utils.directory import dire, zip_check_dataset
 from apis.CMT.training.architecture import callback, create_new_model
@@ -10,13 +10,17 @@ from apis.CMT.evaluate.evaluate import evaluate
 from apis.CMT.evaluate.process import process
 
 
-async def training(sel_item, sel_fold, epochs, sel_cb):
+async def training(sel):
     # TODO: Check if files / folders exists
     train_ds, train_info, validation_ds, validation_info = create_image_dataset(
-        sel_item, sel_fold
+        sel.item, sel.folder
     )
 
-    model = create_new_model(train_info["class_counts"])
+    if sel.model != "":
+        model_path = os.path.join(dire.models_path, "base", f"{sel.model}.h5")
+        model = models.load_model(model_path)
+    else:
+        model = create_new_model(train_info["class_counts"])
     model.compile(
         optimizer=optimizers.Adam(learning_rate=0.001),
         loss=losses.SparseCategoricalCrossentropy(),
@@ -25,9 +29,9 @@ async def training(sel_item, sel_fold, epochs, sel_cb):
     # Does not return anything
     # model.summary()
 
-    cb_arr = callback(sel_cb, epochs)
+    cb_arr = callback(sel.callbacks, sel.epochs)
 
-    for i in range(epochs):
+    for i in range(sel.epochs):
         model.fit(
             train_ds,
             validation_data=validation_ds,
