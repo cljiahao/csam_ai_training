@@ -14,15 +14,14 @@ import {
 } from "../../core/config";
 import NavBar from "../../containers/common/NavBar";
 import Menu from "../../containers/Menu/Menu";
+import Entry from "./containers/Entry/Entry";
 import CountCardCont from "./containers/CountCard/CountCardCont";
 import Gallery from "./containers/Gallery/Gallery";
 import Trackbars from "./containers/Trackbars/Trackbars";
-import getTrackbar from "./utils/getTrackbar";
+import { getTrackbar, setTrackbar } from "./utils/trackbar";
 import getCountRand from "./utils/getCountRand";
 import getRandom from "./utils/getRandom";
-import setTrackbar from "./utils/setTrackbar";
 import process from "./utils/process";
-import Entry from "./containers/Entry/Entry";
 
 function CDA() {
   const [random, setRandom] = useState([]);
@@ -33,24 +32,20 @@ function CDA() {
   const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
-    const getTrack = async () => {
-      const json = await getTrackbar();
-      setRange({ input: json.trackbar, slider: json.trackbar });
-    };
-    getTrack();
+    get_trackbar();
   }, []);
 
-  const reset = async () => {
+  const get_trackbar = async () => {
     const json = await getTrackbar();
     setRange({ input: json.trackbar, slider: json.trackbar });
   };
 
-  const getRandomFiles = async () => {
+  const get_random_files = async () => {
     const json = await getRandom(8);
     setRandom(json.file_list);
   };
 
-  const updateRange = async () => {
+  const update_range = async () => {
     const alert = await setTrackbar(range.slider);
 
     Swal.fire({
@@ -76,21 +71,29 @@ function CDA() {
     return;
   };
 
+  const openMenu = async () => {
+    if (!trigger.menu) {
+      const json = await getCountRand();
+      setFileCount(json.file_count);
+    }
+    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
+  };
+
   const button_info = {
     random: {
       name: "Random",
       icon: <FaRandom />,
-      onClick: getRandomFiles,
+      onClick: get_random_files,
     },
     save: {
       name: "Save",
       icon: <MdSave />,
-      onClick: updateRange,
+      onClick: update_range,
     },
     reset: {
       name: "Reset",
       icon: <GrPowerReset />,
-      onClick: reset,
+      onClick: get_trackbar,
     },
     process: {
       name: "Process",
@@ -98,14 +101,6 @@ function CDA() {
       onClick: process_img,
       disabled: state === "started",
     },
-  };
-
-  const openMenu = async () => {
-    if (!trigger.menu) {
-      const json = await getCountRand();
-      setFileCount(json.file_count);
-    }
-    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
   };
 
   return (
