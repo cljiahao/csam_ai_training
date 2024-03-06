@@ -1,26 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { TbRefresh } from "react-icons/tb";
 import { AppContext } from "../../../../../../contexts/context";
 
 import Input from "../../../../../../containers/common/Input";
 import DropBox from "../../../../../../containers/common/DropBox";
 import Button from "../../../../../../containers/common/Button";
-import { getRetrainModels } from "../../../../utils/getNames";
 
-const HyperParameters = () => {
-  const { parameters, setParameters } = useContext(AppContext);
-  const [model, setModel] = useState([]);
-
-  useEffect(() => {
-    refresh();
-  }, []);
-
-  const refresh = async () => {
-    const json = await getRetrainModels();
-    setModel(json);
-  };
+const HyperParameters = ({ refresh }) => {
+  const { drop, setDrop, parameters, setParameters } = useContext(AppContext);
 
   const set_parameters = (e) => {
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      [e.target.name]: { ...prevDrop[e.target.name], selected: e.target.value },
+    }));
     if (Object.keys(parameters).includes(e.target.name)) {
       setParameters({ ...parameters, [e.target.name]: e.target.value });
     } else {
@@ -66,8 +59,13 @@ const HyperParameters = () => {
   return (
     <div className="m-3 space-y-1 rounded-xl bg-amber-100 py-3 2xl:space-y-2 2xl:py-5">
       <div className="flex-center px-3">
-        <DropBox folder_name={"model"} drop={model} onChange={set_parameters} />
-        <div>
+        <DropBox
+          folder_name={"model"}
+          drop={drop.model.list}
+          onChange={set_parameters}
+          selected={parameters.model}
+        />
+        <div className="flex-center h-14">
           <Button button_info={button_info} length={4} />
         </div>
       </div>

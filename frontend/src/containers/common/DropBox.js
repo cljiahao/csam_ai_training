@@ -1,6 +1,6 @@
 import React from "react";
 
-const DropBox = ({ folder_name, onChange, drop }) => {
+const DropBox = ({ folder_name, onChange, drop, selected }) => {
   return (
     <div className="flex-center h-12 w-full 2xl:h-14">
       <label className="w-[30%] text-center" htmlFor="folder">
@@ -11,8 +11,9 @@ const DropBox = ({ folder_name, onChange, drop }) => {
           className="h-full w-full rounded-lg text-center"
           name={folder_name}
           onChange={onChange}
+          value={selected}
         >
-          <option value="-1">---</option>
+          <option value="">---</option>
           {drop.map((value) => (
             <option key={value} value={value}>
               {value}

@@ -3,6 +3,7 @@ const API = process.env.REACT_APP_API;
 const initialDrop = {
   folder: { list: [], selected: "" },
   item: { list: [], selected: "" },
+  model: { list: [], selected: "" },
 };
 
 const initialEntry = { target: "10000", split: "20" };
