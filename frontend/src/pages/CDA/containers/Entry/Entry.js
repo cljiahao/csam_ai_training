@@ -16,18 +16,32 @@ const Entry = ({ refresh }) => {
     }));
   };
 
+  const checkEntry = (e) => {
+    if (
+      !isNaN(e.target.value) &&
+      !isNaN(parseInt(e.target.value)) &&
+      0 < parseInt(e.target.value)
+    ) {
+      if (e.target.name === "split" && parseInt(e.target.value) > 100) {
+        return;
+      }
+      setEntry({ ...entry, [e.target.name]: e.target.value });
+    }
+    return;
+  };
+
   const input_dict = {
     target: {
       name: "Target",
       type: "text",
       default: entry.target,
-      onChange: (e) => setEntry({ ...entry, target: e.target.value }),
+      onChange: checkEntry,
     },
     split: {
       name: "Data Split (%)",
       type: "number",
       default: entry.split,
-      onChange: (e) => setEntry({ ...entry, split: e.target.value }),
+      onChange: checkEntry,
     },
   };
 
@@ -38,7 +52,7 @@ const Entry = ({ refresh }) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex flex-col">
       <div className="flex-center h-14">
         <DropBox
           folder_name={"item"}
@@ -46,9 +60,14 @@ const Entry = ({ refresh }) => {
           onChange={dropSelect}
           selected={drop.item.selected}
         />
-        <div className="flex-center h-14">
+        <div className="flex-center h-full">
           <Button button_info={button_info} length={4} />
         </div>
+      </div>
+      <div className="flex-center">
+        {Object.keys(input_dict).map((key) => (
+          <Input key={key} name={key} input_info={input_dict[key]} />
+        ))}
       </div>
     </div>
   );
