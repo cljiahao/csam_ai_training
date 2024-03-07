@@ -7,50 +7,57 @@ import { GrPowerReset } from "react-icons/gr";
 import { VscRunAll } from "react-icons/vsc";
 
 import {
+  initialDrop,
   initialEntry,
-  initialFileCount,
+  initialRandom,
   initialRange,
   initialTrigger,
 } from "../../core/config";
 import NavBar from "../../containers/common/NavBar";
 import Menu from "../../containers/Menu/Menu";
+import Entry from "./containers/Entry/Entry";
 import CountCardCont from "./containers/CountCard/CountCardCont";
 import Gallery from "./containers/Gallery/Gallery";
 import Trackbars from "./containers/Trackbars/Trackbars";
-import getTrackbar from "./utils/getTrackbar";
-import getCountRand from "./utils/getCountRand";
-import getRandom from "./utils/getRandom";
-import setTrackbar from "./utils/setTrackbar";
+import { getTrackbar, setTrackbar } from "./utils/trackbar";
+import { getItemType, getRandomImg, getRandomCount } from "./utils/getNames";
 import process from "./utils/process";
-import Entry from "./containers/Entry/Entry";
 
 function CDA() {
-  const [random, setRandom] = useState([]);
   const [state, setState] = useState("");
+  const [drop, setDrop] = useState(initialDrop);
   const [entry, setEntry] = useState(initialEntry);
-  const [fileCount, setFileCount] = useState(initialFileCount);
+  const [random, setRandom] = useState(initialRandom);
   const [range, setRange] = useState(initialRange);
   const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
-    const getTrack = async () => {
-      const json = await getTrackbar();
-      setRange({ input: json.trackbar, slider: json.trackbar });
-    };
-    getTrack();
+    get_trackbar();
+    item_refresh();
   }, []);
 
-  const reset = async () => {
+  const get_trackbar = async () => {
     const json = await getTrackbar();
-    setRange({ input: json.trackbar, slider: json.trackbar });
+    setRange({ input: json, slider: json });
   };
 
-  const getRandomFiles = async () => {
-    const json = await getRandom(8);
-    setRandom(json.file_list);
+  const item_refresh = async () => {
+    const json = await getItemType();
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      item: { list: json, selected: "" },
+      folder: { ...prevDrop.folder, selected: "" },
+    }));
   };
 
-  const updateRange = async () => {
+  const get_random_files = async () => {
+    if (drop.item.selected) {
+      const json = await getRandomImg(drop.item.selected, 8);
+      setRandom((prevRandom) => ({ ...prevRandom, gallery: json }));
+    }
+  };
+
+  const update_range = async () => {
     const alert = await setTrackbar(range.slider);
 
     Swal.fire({
@@ -76,21 +83,29 @@ function CDA() {
     return;
   };
 
+  const openMenu = async () => {
+    if (!trigger.menu && drop.item.selected) {
+      const json = await getRandomCount(drop.item.selected);
+      setRandom((prevRandom) => ({ ...prevRandom, count: json }));
+    }
+    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
+  };
+
   const button_info = {
     random: {
       name: "Random",
       icon: <FaRandom />,
-      onClick: getRandomFiles,
+      onClick: get_random_files,
     },
     save: {
       name: "Save",
       icon: <MdSave />,
-      onClick: updateRange,
+      onClick: update_range,
     },
     reset: {
       name: "Reset",
       icon: <GrPowerReset />,
-      onClick: reset,
+      onClick: get_trackbar,
     },
     process: {
       name: "Process",
@@ -100,21 +115,13 @@ function CDA() {
     },
   };
 
-  const openMenu = async () => {
-    if (!trigger.menu) {
-      const json = await getCountRand();
-      setFileCount(json.file_count);
-    }
-    setTrigger((prevTrig) => ({ ...prevTrig, menu: !prevTrig.menu }));
-  };
-
   return (
     <AppContext.Provider
       value={{
+        drop,
+        setDrop,
         entry,
         setEntry,
-        fileCount,
-        setFileCount,
         random,
         setRandom,
         range,
@@ -129,7 +136,7 @@ function CDA() {
         </section>
         <aside className="relative w-[60%] border-l-2 border-slate-400">
           <NavBar openMenu={openMenu} button_info={button_info} />
-          <Entry />
+          <Entry refresh={item_refresh} />
           <Trackbars />
           <Menu
             openMenu={openMenu}

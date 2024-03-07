@@ -44,8 +44,8 @@ const Slider = ({ type, label }) => {
   };
 
   return (
-    <div className="flex h-full w-full gap-3 py-2 2xl:py-3">
-      <label className="w-28 2xl:w-36" htmlFor={label}>
+    <div className="flex-center h-full w-full gap-3 py-1 2xl:py-3">
+      <label className="w-24 2xl:w-36" htmlFor={label}>
         {`${label}:`}
       </label>
       <input

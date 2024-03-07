@@ -63,7 +63,7 @@ const HyperParameters = ({ refresh }) => {
           folder_name={"model"}
           drop={drop.model.list}
           onChange={set_parameters}
-          selected={parameters.model}
+          selected={drop.model.selected}
         />
         <div className="flex-center h-14">
           <Button button_info={button_info} length={4} />

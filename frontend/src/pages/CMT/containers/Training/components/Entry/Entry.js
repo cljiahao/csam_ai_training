@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
+import { TbRefresh } from "react-icons/tb";
 import { AppContext } from "../../../../../../contexts/context";
 
+import Button from "../../../../../../containers/common/Button";
 import DropBox from "../../../../../../containers/common/DropBox";
 import getFileCount from "../../../../utils/getFileCount";
 import { getFolderName } from "../../../../utils/getNames";
 
-const Entry = () => {
+const Entry = ({ refresh }) => {
   const { drop, setDrop, parameters, setParameters, setTable } =
     useContext(AppContext);
 
@@ -30,18 +32,33 @@ const Entry = () => {
     }
   };
 
+  const button_info = {
+    name: "Refresh",
+    icon: <TbRefresh />,
+    onClick: () => refresh(),
+  };
+
   return (
-    <div className="flex w-full flex-col gap-x-3 gap-y-3 pl-3">
-      {Object.keys(drop)
-        .reverse()
-        .map((key) => (
-          <DropBox
-            key={key}
-            folder_name={key}
-            onChange={fileCount}
-            drop={drop[key].list}
-          />
-        ))}
+    <div className="flex-center h-full w-full flex-col pl-3">
+      <div className="flex-center h-full w-full">
+        <DropBox
+          folder_name={"item"}
+          onChange={fileCount}
+          drop={drop.item.list}
+          selected={drop.item.selected}
+        />
+      </div>
+      <div className="flex-center h-full w-full">
+        <DropBox
+          folder_name={"folder"}
+          onChange={fileCount}
+          drop={drop.folder.list}
+          selected={drop.folder.selected}
+        />
+        <div className="flex-center h-14">
+          <Button button_info={button_info} length={4} />
+        </div>
+      </div>
     </div>
   );
 };
