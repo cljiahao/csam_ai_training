@@ -17,7 +17,8 @@ async def training(sel):
     )
 
     if sel.model != "":
-        model_path = os.path.join(dire.models_path, "base", f"{sel.model}.h5")
+        folder, name = sel.model.split("/")
+        model_path = os.path.join(dire.models_path, folder, f"{name}.h5")
         model = models.load_model(model_path)
     else:
         model = create_new_model(train_info["class_counts"])
