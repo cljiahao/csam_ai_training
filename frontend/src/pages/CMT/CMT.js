@@ -20,7 +20,7 @@ import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import startTraining from "./utils/startTraining";
 import startEvaluation from "./utils/startEvaluation";
-import { getItemType, getRetrainModels } from "./utils/getNames";
+import { getAllModels, getItemType } from "./utils/getNames";
 import getEpoch from "./utils/getEpoch";
 
 function CMT() {
@@ -67,7 +67,7 @@ function CMT() {
   };
 
   const models_refresh = async () => {
-    const json = await getRetrainModels();
+    const json = await getAllModels();
     setDrop((prevDrop) => ({
       ...prevDrop,
       model: { list: json, selected: "" },

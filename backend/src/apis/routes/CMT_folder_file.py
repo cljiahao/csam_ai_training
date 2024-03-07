@@ -25,18 +25,6 @@ def get_all_models():
     return model_list
 
 
-@router.get("/retrain_models")
-def get_retrain_models():
-    model_base_path = os.path.join(dire.models_path, "base")
-    if os.path.exists(model_base_path):
-        model_list = [
-            x.split(".")[0]
-            for x in os.listdir(model_base_path)
-            if x.split(".")[-1] == "h5"
-        ]
-        return model_list
-
-
 class directory(BaseModel):
     item: str
     folder: str

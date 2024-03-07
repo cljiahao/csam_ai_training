@@ -35,8 +35,8 @@ export const getEvalFolder = async (item) => {
   return json;
 };
 
-export const getRetrainModels = async () => {
-  const resp = await fetch(`${API}/CMT/retrain_models`, {
+export const getAllModels = async () => {
+  const resp = await fetch(`${API}/CMT/all_models`, {
     method: "GET",
     headers: {
       Accept: "application/json",
