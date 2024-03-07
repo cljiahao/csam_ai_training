@@ -13,6 +13,18 @@ def get_item_type():
     return os.listdir(dire.dataset_path)
 
 
+@router.get("/all_models")
+def get_all_models():
+    model_list = {}
+    for folder in os.listdir(dire.models_path):
+        fold_path = os.path.join(dire.models_path, folder)
+        model_list[folder] = [
+            x.split(".")[0] for x in os.listdir(fold_path) if x.split(".")[-1] == "h5"
+        ]
+
+    return model_list
+
+
 @router.get("/retrain_models")
 def get_retrain_models():
     model_base_path = os.path.join(dire.models_path, "base")
