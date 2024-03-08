@@ -49,7 +49,6 @@ async def training(sel):
 
 def evaluation(item, model, labels):
     results = {}
-    error = {"files": [], "exe": []}
 
     base_path = os.path.join(dire.eval_path, item)
     if os.path.exists(base_path):
@@ -57,8 +56,8 @@ def evaluation(item, model, labels):
             path = os.path.join(base_path, eval_point)
             type, key = eval_point.split("_", 1)
             if type.lower() == "c":
-                evaluate(path, key, results, error, model, labels)
+                evaluate(path, key, results, model, labels)
             elif type.lower() == "p":
-                process(path, key, results, error, model, labels)
+                process(path, item, key, results, model, labels)
 
     return results

@@ -19,15 +19,20 @@ class response(BaseModel):
 @router.post("/evaluate_folders")
 def evaluate_folders(resp: response):
 
-    if f"{resp.model}.h5" in os.listdir(dire.models_path):
-        model = Models.load_model(os.path.join(dire.models_path, f"{resp.model}.h5"))
+    folder, name = resp.model.split("/")
 
-    labels = []
-    with open(os.path.join(dire.models_path, f"{resp.model}.txt")) as f:
-        data = f.readlines()
-        for i in data:
-            labels.append(i.split()[-1])
+    base_path = os.path.join(dire.models_path, folder)
 
-    results = evaluation(resp.item, model, labels)
+    if f"{name}.h5" in os.listdir(base_path):
+        model = Models.load_model(os.path.join(base_path, f"{name}.h5"))
 
-    return results
+    if f"{name}.txt" in os.listdir(base_path):
+        labels = []
+        with open(os.path.join(base_path, f"{name}.txt")) as f:
+            data = f.readlines()
+            for i in data:
+                labels.append(i.split()[-1])
+
+        results = evaluation(resp.item, model, labels)
+
+        return results
