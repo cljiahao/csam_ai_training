@@ -19,7 +19,6 @@ class trainModel(BaseModel):
 
 @router.post("/train_model")
 async def train_model(selected: trainModel):
-    print(selected)
     asyncio.run_coroutine_threadsafe(
         training(selected),
         loop=asyncio.get_running_loop(),

@@ -14,11 +14,35 @@ const DropBox = ({ folder_name, onChange, drop, selected }) => {
           value={selected}
         >
           <option value="">---</option>
-          {drop.map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
+
+          {drop.constructor === Object ? (
+            <>
+              {Object.keys(drop).map((key) => (
+                <optgroup
+                  label={key[0].toUpperCase() + key.slice(1)}
+                  className="text-left"
+                >
+                  {drop[key].map((value) => (
+                    <option
+                      key={value}
+                      value={key + "/" + value}
+                      className="text-center"
+                    >
+                      {value}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </>
+          ) : (
+            <>
+              {drop.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </>
+          )}
         </select>
       </div>
     </div>
