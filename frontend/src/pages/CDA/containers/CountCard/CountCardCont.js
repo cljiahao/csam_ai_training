@@ -11,7 +11,7 @@ const CountCardCont = () => {
         return random.count[fol] != null ? (
           <CountCard
             key={fol}
-            src={`${API}/CDA/get_image/${random.count[fol].file_path}`}
+            src={`${API}/get_image/${random.count[fol].file_path}`}
             title={fol}
             count={random.count[fol].count}
           />
