@@ -11,6 +11,7 @@ import {
   initialTrigger,
   initialDrop,
   initialOutflow,
+  initialEvaluation,
 } from "../../core/config";
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
@@ -20,11 +21,12 @@ import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import startTraining from "./utils/startTraining";
 import startEvaluation from "./utils/startEvaluation";
-import { getAllModels, getItemType } from "./utils/getNames";
+import { getAllModels, getEvalFolder, getItemType } from "./utils/getNames";
 import getEpoch from "./utils/getEpoch";
 
 function CMT() {
   const [drop, setDrop] = useState(initialDrop);
+  const [evaluate, setEvaluate] = useState(initialEvaluation);
   const [graph, setGraph] = useState(initialGraph);
   const [outflow, setOutflow] = useState(initialOutflow);
   const [parameters, setParameters] = useState(initialParameters);
@@ -35,6 +37,10 @@ function CMT() {
     item_refresh();
     models_refresh();
   }, []);
+
+  useEffect(() => {
+    eval_refresh(drop.item.selected);
+  }, [drop.item.selected]);
 
   useEffect(() => {
     const fetch_epoch_data = async () => {
@@ -74,6 +80,11 @@ function CMT() {
     }));
   };
 
+  const eval_refresh = async (item) => {
+    const json = await getEvalFolder(item);
+    setEvaluate({ actual: json.actual, predict: json.predict });
+  };
+
   const startTrain = async () => {
     if (parameters.folder === drop.folder.selected) {
       const json = await startTraining(parameters);
@@ -84,11 +95,15 @@ function CMT() {
   };
 
   const startEval = async () => {
-    if (drop.item.selected) {
+    if (drop.item.selected && drop.model.selected) {
       setOutflow({ status: "running", res: {} });
-      const json = await startEvaluation("test", drop.item.selected);
+      const json = await startEvaluation(
+        drop.model.selected,
+        drop.item.selected,
+      );
       if (json) {
         setOutflow({ status: "complete", res: json });
+        setEvaluate((prevEval) => ({ ...prevEval, predict: json }));
       }
     }
   };
@@ -113,6 +128,8 @@ function CMT() {
       value={{
         drop,
         setDrop,
+        evaluate,
+        setEvaluate,
         graph,
         setGraph,
         outflow,
@@ -135,7 +152,7 @@ function CMT() {
           }`}
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
-          <Evaluation />
+          <Evaluation refresh={eval_refresh} />
           <Menu
             openMenu={openMenu}
             menu={trigger.menu}
