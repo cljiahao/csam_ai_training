@@ -73,11 +73,19 @@ def eval_folders(item_type: item_type):
                     path_list = root.split(key)[-1].split(os.sep)[1:]
                     path_list.insert(0, key)
                     if len(path_list) == 1:
-                        eval_info[path_list[0]] = len(files)
-                        pred_info[path_list[0]] = 0
+                        eval_info[path_list[0]] = {
+                            "res": {"counter": len(files), "outflow": []}
+                        }
+                        pred_info[path_list[0]] = {"res": {"counter": 0, "outflow": []}}
                     else:
-                        recursion(eval_info, path_list, len(files))
-                        recursion(pred_info, path_list, 0)
+                        recursion(
+                            eval_info,
+                            path_list,
+                            {"res": {"counter": len(files), "outflow": []}},
+                        )
+                        recursion(
+                            pred_info, path_list, {"res": {"counter": 0, "outflow": []}}
+                        )
 
             elif type.lower() == "p":
                 for root, dirs, files in os.walk(path):
@@ -88,7 +96,11 @@ def eval_folders(item_type: item_type):
                         continue
                     path_list = root.split(key)[-1].split(os.sep)[1:]
                     path_list.insert(0, key)
-                    recursion(eval_info, path_list, 0)
-                    recursion(pred_info, path_list, 0)
+                    recursion(
+                        eval_info, path_list, {"res": {"counter": 0, "outflow": []}}
+                    )
+                    recursion(
+                        pred_info, path_list, {"res": {"counter": 0, "outflow": []}}
+                    )
 
-    return {"eval": eval_info, "pred": pred_info}
+    return {"actual": eval_info, "predict": pred_info}

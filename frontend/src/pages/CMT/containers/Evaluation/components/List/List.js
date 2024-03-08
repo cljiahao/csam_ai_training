@@ -3,18 +3,23 @@ import React from "react";
 import Card from "./components/Card/Card";
 import ExpandCard from "./components/ExpandCard/ExpandCard";
 
-const List = ({ data, preds }) => {
+const List = ({ actual, predict }) => {
   return (
     <>
-      {Object.keys(data).map((key) =>
-        data[key].constructor !== Object ? (
-          <Card key={key} name={key} value={data[key]} pred={preds[key]} />
+      {Object.keys(actual).map((key) =>
+        Object.keys(actual[key]).includes("res") ? (
+          <Card
+            key={key}
+            name={key}
+            value={actual[key].res.counter}
+            pred={predict[key].res.counter}
+          />
         ) : (
           <ExpandCard
             key={key}
             name={key}
-            values={data[key]}
-            preds={preds[key]}
+            values={actual[key]}
+            preds={predict[key]}
           />
         ),
       )}

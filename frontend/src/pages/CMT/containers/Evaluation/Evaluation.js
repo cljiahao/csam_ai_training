@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { TbRefresh } from "react-icons/tb";
 import { MdWrongLocation } from "react-icons/md";
 import { AppContext } from "../../../../contexts/context";
@@ -6,28 +6,15 @@ import { AppContext } from "../../../../contexts/context";
 import ButtonsCont from "../../../../containers/common/ButtonsCont";
 import Header from "./components/Header/Header";
 import List from "./components/List/List";
-import { getEvalFolder } from "../../utils/getNames";
 
-const Evaluation = () => {
-  const { drop, setTrigger } = useContext(AppContext);
-  const [evalFol, setEvalFol] = useState({});
-  const [predFol, setPredFol] = useState({});
-
-  useEffect(() => {
-    eval_refresh(drop.item.selected);
-  }, [drop.item.selected]);
-
-  const eval_refresh = async (item) => {
-    const json = await getEvalFolder(item);
-    setEvalFol(json.eval);
-    setPredFol(json.pred);
-  };
+const Evaluation = ({ refresh }) => {
+  const { drop, evaluate, setTrigger } = useContext(AppContext);
 
   const button_info = {
     refresh: {
       name: "Refresh",
       icon: <TbRefresh />,
-      onClick: () => eval_refresh(drop.item.selected),
+      onClick: () => refresh(drop.item.selected),
     },
     outflow: {
       name: "Outflow",
@@ -49,7 +36,7 @@ const Evaluation = () => {
       <div className="flex h-full w-full overflow-auto rounded-2xl bg-white py-5 pl-5 shadow-lg">
         <div className="max-h-full w-full space-y-2 overflow-y-scroll font-medium 2xl:space-y-3">
           <Header />
-          <List data={evalFol} preds={predFol} />
+          <List actual={evaluate.actual} predict={evaluate.predict} />
         </div>
       </div>
     </div>

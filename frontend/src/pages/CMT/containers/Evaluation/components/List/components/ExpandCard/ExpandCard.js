@@ -5,7 +5,6 @@ import List from "../../List";
 
 const ExpandCard = ({ name, values, preds }) => {
   const [exCard, setExCard] = useState(false);
-
   return (
     <div className="w-full rounded-lg border border-slate-400 py-1 pl-3 2xl:py-2">
       <div className="flex-between w-full">
@@ -26,7 +25,7 @@ const ExpandCard = ({ name, values, preds }) => {
           exCard && "pt-2"
         }`}
       >
-        {exCard ? <List data={values} preds={preds} /> : ""}
+        {exCard ? <List actual={values} predict={preds} /> : ""}
       </div>
     </div>
   );

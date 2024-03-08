@@ -8,6 +8,8 @@ const initialDrop = {
 
 const initialEntry = { target: "10000", split: "20" };
 
+const initialEvaluation = { actual: {}, predict: {} };
+
 const initialRandom = { gallery: [], count: {} };
 
 const initialGraph = { status: "complete", graph: [] };
@@ -46,6 +48,7 @@ export {
   API,
   initialDrop,
   initialEntry,
+  initialEvaluation,
   initialGraph,
   initialOutflow,
   initialParameters,

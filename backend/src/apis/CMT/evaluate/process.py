@@ -7,7 +7,7 @@ from apis.CMT.evaluate.chip_process import chips
 from apis.CMT.evaluate.image_process import create_border_img
 
 
-def process(path, key, results, error, model, labels):
+def process(path, item, key, results, model, labels):
     for root, dirs, files in os.walk(path):
         if len(dirs):
             pred_dict = []
@@ -16,40 +16,45 @@ def process(path, key, results, error, model, labels):
                 file_paths = os.listdir(ori_path)
                 if len(file_paths):
                     file_path = os.path.join(ori_path, file_paths[0])
-                    pred_dict = img_process(file_path, model, labels)
-        if len(files) and len(pred_dict):
-            if os.path.split(root)[-1] != "original":
-                path_list = root.split(key)[-1].split(os.sep)[1:]
-                path_list.insert(0, key)
+                    pred_dict = img_process(file_path, item, model, labels)
+            continue
+        path_list = root.split(key)[-1].split(os.sep)[1:]
+        path_list.insert(0, key)
+        if len(files):
+            if len(pred_dict) and os.path.split(root)[-1] != "original":
                 recursion(results, path_list, compare(root, pred_dict))
+        else:
+            recursion(results, path_list, {"res": {"counter": 0, "outflow": []}})
 
 
 def compare(root, pred_dict):
 
     file_paths = [os.path.join(root, file_path) for file_path in os.listdir(root)]
 
-    arr = []
+    res = {"res": {"counter": 0, "outflow": []}}
 
     for file_path in file_paths:
         file_name = os.path.split(file_path)[-1]
         pred_type = pred_dict[file_name] if file_name in pred_dict.keys() else "G"
-        arr.append(
-            {
-                "image_path": file_path,
-                "name": file_name,
-                "label": os.path.split(root)[-1],
-                "pred": pred_type,
-            }
-        )
-    return arr
+        if pred_type != os.path.split(root)[-1]:
+            res["res"]["outflow"].append(
+                {
+                    "image_path": file_path,
+                    "name": file_name,
+                    "label": os.path.split(root)[-1],
+                    "pred": pred_type,
+                }
+            )
+        else:
+            res["res"]["counter"] += 1
+
+    return res
 
 
-def img_process(path, model, labels):
+def img_process(path, item, model, labels):
     border_img, gray, img_shape = create_border_img(path)
-    batch_data = mask(gray, img_shape, "GCM32ER71E106KA59_+B55-E01GJ")
-    no_of_chips, temp_dict, ng_dict = chips(
-        border_img, gray, batch_data, "CAI", "GCM32ER71E106KA59_+B55-E01GJ"
-    )
+    batch_data = mask(gray, img_shape, item)
+    no_of_chips, temp_dict, ng_dict = chips(border_img, gray, batch_data, "CAI", item)
     pred_dict = predict(temp_dict, model, labels)
     ng_dict = ng_dict.fromkeys(ng_dict, "Others")
     pred_dict.update(ng_dict)
