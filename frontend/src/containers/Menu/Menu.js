@@ -10,18 +10,22 @@ import NavBar from "../common/NavBar";
 const Menu = ({ openMenu, menu, children }) => {
   const nav_info = {
     Main: {
+      name: "Main",
       icon: <FaHome />,
       onClick: () => (window.location.href = "/"),
     },
     CDA: {
+      name: "CDA",
       icon: <FaLaptopCode />,
       onClick: () => (window.location.href = "/CDA"),
     },
     CMT: {
+      name: "CMT",
       icon: <LiaChalkboardTeacherSolid />,
       onClick: () => (window.location.href = "/CMT"),
     },
     Settings: {
+      name: "Settings",
       icon: <IoMdSettings />,
       onClick: () => (window.location.href = "/Settings"),
     },
