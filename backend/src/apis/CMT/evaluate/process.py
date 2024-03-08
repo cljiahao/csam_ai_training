@@ -24,8 +24,6 @@ def process(path, item, key, results, model, labels):
             if len(pred_dict) and os.path.split(root)[-1] != "original":
                 recursion(results, path_list, compare(root, pred_dict))
         else:
-            print(len(files))
-            print(path_list)
             recursion(results, path_list, {"res": {"counter": 0, "outflow": []}})
 
 
