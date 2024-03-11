@@ -19,7 +19,7 @@ def get_all_models():
     for folder in os.listdir(dire.models_path):
         fold_path = os.path.join(dire.models_path, folder)
         model_list[folder] = [
-            x.split(".")[0] for x in os.listdir(fold_path) if x.split(".")[-1] == "h5"
+            x.split(".")[0] for x in os.listdir(fold_path) if x.split(".")[-1] != "txt"
         ]
 
     return model_list
