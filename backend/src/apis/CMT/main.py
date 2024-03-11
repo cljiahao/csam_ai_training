@@ -5,16 +5,11 @@ from keras import optimizers, losses, models
 
 from apis.utils.directory import dire, zip_check_dataset
 from apis.CMT.training.architecture import callback, create_new_model
-from apis.CMT.training.dataset import create_image_dataset
 from apis.CMT.evaluate.evaluate import evaluate
 from apis.CMT.evaluate.process import process
 
 
-async def training(sel):
-    # TODO: Check if files / folders exists
-    train_ds, train_info, validation_ds, validation_info = create_image_dataset(
-        sel.item, sel.folder
-    )
+async def training(sel, file_name, train_ds, train_info, validation_ds):
 
     if sel.model != "":
         folder, name = sel.model.split("/")
@@ -22,6 +17,7 @@ async def training(sel):
         model = models.load_model(model_path)
     else:
         model = create_new_model(train_info["class_counts"])
+
     model.compile(
         optimizer=optimizers.Adam(learning_rate=0.001),
         loss=losses.SparseCategoricalCrossentropy(),
@@ -42,9 +38,12 @@ async def training(sel):
         )
         await asyncio.sleep(1)
 
-    # TODO Save Model, Figure out what naming convention
-    # TODO Save Label txt file for evaluation
-    # TODO Call evaluation after training
+    model_path = os.path.join(
+        dire.models_path,
+        "temp",
+        f"{file_name}.keras",
+    )
+    model.save(model_path)
 
 
 def evaluation(item, model, labels):
