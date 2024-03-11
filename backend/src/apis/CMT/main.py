@@ -13,7 +13,7 @@ async def training(sel, file_name, train_ds, train_info, validation_ds):
 
     if sel.model != "":
         folder, name = sel.model.split("/")
-        model_path = os.path.join(dire.models_path, folder, f"{name}.h5")
+        model_path = os.path.join(dire.models_path, folder, f"{name}.keras")
         model = models.load_model(model_path)
     else:
         model = create_new_model(train_info["class_counts"])
@@ -36,14 +36,15 @@ async def training(sel, file_name, train_ds, train_info, validation_ds):
             verbose=1,
             callbacks=cb_arr,
         )
-        await asyncio.sleep(1)
+        if sel.epochs == i + 1:
+            model_path = os.path.join(
+                dire.models_path,
+                "temp",
+                f"{file_name}.keras",
+            )
+            model.save(model_path)
 
-    model_path = os.path.join(
-        dire.models_path,
-        "temp",
-        f"{file_name}.keras",
-    )
-    model.save(model_path)
+        await asyncio.sleep(1)
 
 
 def evaluation(item, model, labels):
