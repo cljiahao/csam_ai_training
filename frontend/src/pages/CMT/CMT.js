@@ -100,13 +100,10 @@ function CMT() {
     }
   };
 
-  const startEval = async () => {
-    if (drop.item.selected && drop.model.selected) {
+  const startEval = async (model) => {
+    if (drop.item.selected && model) {
       setOutflow({ status: "running", res: {} });
-      const json = await startEvaluation(
-        drop.model.selected,
-        drop.item.selected,
-      );
+      const json = await startEvaluation(model, drop.item.selected);
       if (json) {
         setOutflow({ status: "complete", res: json });
         setEvaluate((prevEval) => ({ ...prevEval, predict: json }));
@@ -124,7 +121,7 @@ function CMT() {
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
-      onClick: startEval(drop.model.selected),
+      onClick: () => startEval(drop.model.selected),
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };
