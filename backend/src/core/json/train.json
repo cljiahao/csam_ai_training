@@ -22,10 +22,12 @@
     },
     "Frontend": {
         "status": "complete",
+        "time": "3s",
+        "epoch_status": "10/10",
         "epoch": 10,
-        "accuracy": 0.745,
-        "loss": 0.659,
-        "val_accuracy": 0.771,
-        "val_loss": 0.61
+        "accuracy": 0.771,
+        "loss": 0.585,
+        "val_accuracy": 0.74,
+        "val_loss": 0.612
     }
 }
