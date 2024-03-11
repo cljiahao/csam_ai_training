@@ -39,7 +39,7 @@ async def train_model(selected: trainModel):
         training(selected, file_name, train_ds, train_info, validation_ds),
         loop=asyncio.get_running_loop(),
     )
-    return {"status": "started"}
+    return f"temp/{file_name}"
 
 
 @router.get("/current_epoch")
