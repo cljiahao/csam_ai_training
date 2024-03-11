@@ -44,12 +44,17 @@ function CMT() {
 
   useEffect(() => {
     const fetch_epoch_data = async () => {
-      if (graph.status && graph.status !== "complete") {
+      if (graph.status !== "complete") {
         const json = await getEpoch();
         const { status, ...graphVal } = json;
-        setGraph({ status: status, graph: [...graph.graph, graphVal] });
+        setGraph({
+          ...graph,
+          status: status,
+          graph: [...graph.graph, graphVal],
+        });
       }
     };
+
     const timeout = setTimeout(fetch_epoch_data, 1000);
     return () => {
       clearTimeout(timeout);
@@ -87,9 +92,10 @@ function CMT() {
 
   const startTrain = async () => {
     if (parameters.folder === drop.folder.selected) {
+      setGraph({ status: "started", model: "", graph: initialGraph.graph });
       const json = await startTraining(parameters);
       if (json) {
-        setGraph({ status: json.status, graph: initialGraph.graph });
+        setGraph({ ...graph, model: json });
       }
     }
   };
@@ -118,7 +124,7 @@ function CMT() {
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
-      onClick: startEval,
+      onClick: startEval(drop.model.selected),
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };

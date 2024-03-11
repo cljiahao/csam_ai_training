@@ -12,7 +12,7 @@ const initialEvaluation = { actual: {}, predict: {} };
 
 const initialRandom = { gallery: [], count: {} };
 
-const initialGraph = { status: "complete", graph: [] };
+const initialGraph = { status: "complete", model: "", graph: [] };
 
 const initialOutflow = { status: "complete", res: {} };
 
