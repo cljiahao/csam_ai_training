@@ -6,18 +6,22 @@ const Verbose = () => {
   const { graph, trigger, setTrigger } = useContext(AppContext);
 
   const epochs =
-    graph.status === "complete"
+  graph.status === "complete"
+    ? graph.graph.length === 0
       ? [{ "Please start a new Training": "Press the button to start" }]
-      : graph.graph.length === 0
-        ? [{ Awaiting: " ..." }]
-        : graph.graph;
+      : [graph.graph[graph.graph.length - 1]]
+    : graph.graph.length === 0
+      ? [{ Awaiting: " ..." }]
+      : graph.graph;
 
   return (
     <div className="flex w-full justify-between bg-white p-3 shadow-md 2xl:py-5">
       <div className="flex flex-col justify-center">
         {trigger.expand ? (
           epochs.map((dict) => {
-            let line = Object.keys(dict).map((key) => `${key}: ${dict[key]}`);
+            let line = Object.keys(dict)
+            .filter((key) => key !== "epoch")
+            .map((key) => `${key}: ${dict[key]}`);
             return (
               <span key={line} className="pt-1">
                 {line.join(", ")}
@@ -27,6 +31,7 @@ const Verbose = () => {
         ) : (
           <span className="pt-1">
             {Object.keys(epochs[epochs.length - 1])
+              .filter((key) => key !== "epoch")
               .map((key) => `${key}: ${epochs[epochs.length - 1][key]}`)
               .join(", ")}
           </span>
