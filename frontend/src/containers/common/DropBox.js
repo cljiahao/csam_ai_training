@@ -19,6 +19,7 @@ const DropBox = ({ folder_name, onChange, drop, selected }) => {
             <>
               {Object.keys(drop).map((key) => (
                 <optgroup
+                  key={key}
                   label={key[0].toUpperCase() + key.slice(1)}
                   className="text-left"
                 >
