@@ -6,8 +6,8 @@ const Gallery = ({ data }) => {
   return (
     <div className="flex w-full flex-col space-y-2">
       {Object.keys(data).map((key) =>
-        key === "res" ? (
-          <ImageCards key={key} name={key} data={data[key]["outflow"]} />
+        Object.keys(data[key]).includes("res") ? (
+          <ImageCards key={key} name={key} data={data[key].res.outflow} />
         ) : (
           <ImageExpand key={key} name={key} data={data[key]} />
         ),

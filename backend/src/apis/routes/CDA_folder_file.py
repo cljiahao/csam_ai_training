@@ -2,19 +2,12 @@ import os
 import random
 from pydantic import BaseModel
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
 
 from apis.utils.directory import dire
 from apis.CDA.main import get_files
 
 
 router = APIRouter()
-
-
-@router.get("/get_image/{src:path}")
-def get_image(src: str):
-    file_path = os.path.join(dire.image_path, src)
-    return FileResponse(file_path)
 
 
 @router.get("/item_type")
