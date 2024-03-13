@@ -7,17 +7,20 @@ from apis.CDA.utils.augment import templating
 from apis.utils.directory import dire
 
 
-def get_dicts(new_version, image_fols, range):
+def get_dicts(item, new_version, image_fols, range):
     count_dict = {}
     template_dict = {}
     dataset_fols = {}
 
+    base_path = os.path.join(dire.image_path, item)
+
     for fol in image_fols:
-        dataset_fols = create_dataset_fol(dataset_fols, new_version, fol)
+        dataset_fols = create_dataset_fol(item, dataset_fols, new_version, fol)
 
         start = time.time()
         if fol.lower() in ["others", "g", "good"]:
             check_path(
+                base_path,
                 template_dict,
                 count_dict,
                 dataset_fols[f"training_{fol}"],
@@ -25,8 +28,9 @@ def get_dicts(new_version, image_fols, range):
                 fol,
             )
         else:
-            for in_fol in os.listdir(os.path.join(dire.image_path, fol)):
+            for in_fol in os.listdir(os.path.join(base_path, fol)):
                 check_path(
+                    base_path,
                     template_dict,
                     count_dict,
                     dataset_fols[f"training_{fol}"],
@@ -41,21 +45,19 @@ def get_dicts(new_version, image_fols, range):
     return dataset_fols, template_dict, count_dict
 
 
-def create_dataset_fol(dataset_fols, new_version, fol):
+def create_dataset_fol(item, dataset_fols, new_version, fol):
     for i in ["training", "validation"]:
         dataset_fols[f"{i}_{fol}"] = os.path.join(
-            dire.dataset_path, new_version, i, fol
+            dire.dataset_path, item, new_version, i, fol
         )
         if not os.path.exists(dataset_fols[f"{i}_{fol}"]):
             os.makedirs(dataset_fols[f"{i}_{fol}"])
     return dataset_fols
 
 
-def check_path(template_dict, count_dict, ds_path, range, fol, in_fol=False):
+def check_path(base_path, template_dict, count_dict, ds_path, range, fol, in_fol=False):
     path = (
-        os.path.join(dire.image_path, fol, in_fol)
-        if in_fol
-        else os.path.join(dire.image_path, fol)
+        os.path.join(base_path, fol, in_fol) if in_fol else os.path.join(base_path, fol)
     )
 
     key = f"{fol}_{in_fol}" if in_fol else fol
