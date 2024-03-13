@@ -71,7 +71,7 @@ function CDA() {
 
   const process_img = async () => {
     setState("started");
-    const alert = await process(range.slider, entry);
+    const alert = await process(range.slider, drop.item.selected, entry);
     setState("complete");
 
     Swal.fire({
