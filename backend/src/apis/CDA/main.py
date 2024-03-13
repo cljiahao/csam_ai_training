@@ -34,25 +34,32 @@ def get_files(item, good):
     return files
 
 
-def aug_process(range, entry):
+def aug_process(input):
     start = time.time()
+    base_path = os.path.join(dire.image_path, input.item)
+    folders_list = os.listdir(base_path)
 
-    for i in ["G", "g", "good", "Good"]:
-        if i in os.listdir(dire.image_path):
-            g_path = os.path.join(dire.image_path, i)
+    if not any(x in folders_list for x in ["G", "g", "good", "Good"]):
+        raise Exception(f"[G, g, good, Good] folder path missing to augment")
 
-    file_names = os.listdir(g_path)
-    image_fols = os.listdir(dire.image_path)
-    if len(file_names) < int(entry["target"]):
-        raise Exception(
-            f"Number of files in G path, {len(file_names)}, is less than {entry['target']}"
-        )
+    for i in folders_list:
+        if i in ["G", "g", "good", "Good"]:
+            g_path = os.path.join(base_path, i)
 
-    new_version = zip_check_dataset(dire.dataset_path)
+            file_names = os.listdir(g_path)
+            image_fols = folders_list
+            if len(file_names) < int(input.entry["target"]):
+                raise Exception(
+                    f"Number of files in G path, {len(file_names)}, is less than {input.entry['target']}"
+                )
+
+    new_version = zip_check_dataset(os.path.join(dire.dataset_path, input.item))
     time_print(start, "Zipping old datasets")
-    dataset_fols, template_dict, count_dict = get_dicts(new_version, image_fols, range)
+    dataset_fols, template_dict, count_dict = get_dicts(
+        input.item, new_version, image_fols, input.range
+    )
     time_print(start, "Copying Files and Templating all NGs")
-    augmenting(g_path, file_names, template_dict, count_dict, dataset_fols, entry)
+    augmenting(g_path, file_names, template_dict, count_dict, dataset_fols, input.entry)
     time_print(start, "Augmenting all NGs")
-    train_val_split(dataset_fols, image_fols, entry)
+    train_val_split(dataset_fols, image_fols, input.entry)
     time_print(start, "Train Val Split")
