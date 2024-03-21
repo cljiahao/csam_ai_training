@@ -26,13 +26,11 @@ const Entry = ({ refresh }) => {
         setEntry({ ...entry, [name]: value.trim() }); // Not empty
         setIsTargetValid(false); 
       }
-    } else if (!isNaN(value) && !isNaN(parseInt(value)) && 0 < parseInt(value)) {
-      if (name === "split" && parseInt(value) > 100) {
-        return; 
+    } else if (name === "split") {
+      if (!isNaN(value) && !isNaN(parseInt(value)) && parseInt(value) <= 100 && parseInt(value) > 0) {
+        setEntry({...entry, [name]: value});
       }
-      setEntry({ ...entry, [name]: value }); 
     }
-
   };
 
   const input_dict = {
