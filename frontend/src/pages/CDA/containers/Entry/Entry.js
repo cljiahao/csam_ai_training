@@ -7,7 +7,7 @@ import Button from "../../../../containers/common/Button";
 import { TbRefresh } from "react-icons/tb";
 
 const Entry = ({ refresh }) => {
-  const { drop, setDrop, entry, setEntry } = useContext(AppContext);
+  const { drop, setDrop, entry, setEntry, setIsTargetValid } = useContext(AppContext);
 
   const dropSelect = (e) => {
     setDrop((prevDrop) => ({
@@ -17,17 +17,22 @@ const Entry = ({ refresh }) => {
   };
 
   const checkEntry = (e) => {
-    if (
-      !isNaN(e.target.value) &&
-      !isNaN(parseInt(e.target.value)) &&
-      0 < parseInt(e.target.value)
-    ) {
-      if (e.target.name === "split" && parseInt(e.target.value) > 100) {
-        return;
+    const {name, value} = e.target; 
+    if (name === "target") {
+      if (value.trim() === "") {
+        setEntry({ ...entry, [name]: value }); //empty
+        setIsTargetValid(true); 
+      } else {
+        setEntry({ ...entry, [name]: value.trim() }); // Not empty
+        setIsTargetValid(false); 
       }
-      setEntry({ ...entry, [e.target.name]: e.target.value });
+    } else if (!isNaN(value) && !isNaN(parseInt(value)) && 0 < parseInt(value)) {
+      if (name === "split" && parseInt(value) > 100) {
+        return; 
+      }
+      setEntry({ ...entry, [name]: value }); 
     }
-    return;
+
   };
 
   const input_dict = {
