@@ -17,17 +17,26 @@ const Entry = ({ refresh }) => {
   };
 
   const checkEntry = (e) => {
-    if (
-      !isNaN(e.target.value) &&
-      !isNaN(parseInt(e.target.value)) &&
-      0 < parseInt(e.target.value)
-    ) {
-      if (e.target.name === "split" && parseInt(e.target.value) > 100) {
-        return;
+    const { name, type, value } = e.target;
+    console.log(type, value);
+
+    if (type === "text") {
+      if (value.trim() === "") {
+        setEntry({ ...entry, [name]: value }); //empty
+      } else {
+        setEntry({ ...entry, [name]: value.trim() }); // Not empty
       }
-      setEntry({ ...entry, [e.target.name]: e.target.value });
+      console.log(type, value);
+    } else if (type === "number") {
+      if (
+        !isNaN(value) &&
+        !isNaN(parseInt(value)) &&
+        parseInt(value) <= 100 &&
+        parseInt(value) > 0
+      ) {
+        setEntry({ ...entry, [name]: value });
+      }
     }
-    return;
   };
 
   const input_dict = {

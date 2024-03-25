@@ -111,7 +111,7 @@ function CDA() {
       name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
-      disabled: state === "started",
+      disabled: state === "started" || Object.values(entry).includes(""),
     },
   };
 
