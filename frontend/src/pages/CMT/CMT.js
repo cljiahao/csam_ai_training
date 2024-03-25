@@ -44,7 +44,7 @@ function CMT() {
 
   useEffect(() => {
     const fetch_epoch_data = async () => {
-      if (graph.status !== "complete") {
+      if (graph.status !== "complete" && graph.status !== "evaluate") {
         const json = await getEpoch();
         const { status, ...graphVal } = json;
         setGraph({
@@ -55,11 +55,23 @@ function CMT() {
       }
     };
 
+    if (graph.status === "evaluate") {
+      setOutflow((prevOutflow) => ({ ...prevOutflow, status: "started" }));
+      setGraph((prevGraph) => ({ ...prevGraph, status: "complete" }));
+    }
+
     const timeout = setTimeout(fetch_epoch_data, 1000);
     return () => {
       clearTimeout(timeout);
     };
   }, [graph]);
+
+  useEffect(() => {
+    console.log(outflow);
+    if (outflow.status === "started") {
+      startEval(outflow.model, drop.item.selected);
+    }
+  }, [outflow, drop]);
 
   const openMenu = () => {
     setTrigger((prevTrigger) => ({
@@ -95,15 +107,15 @@ function CMT() {
       setGraph({ status: "started", model: "", graph: initialGraph.graph });
       const json = await startTraining(parameters);
       if (json) {
-        setGraph({ ...graph, model: json });
+        setOutflow((prevOutflow) => ({ ...prevOutflow, model: json }));
       }
     }
   };
 
-  const startEval = async (model) => {
-    if (drop.item.selected && model) {
+  const startEval = async (model, item) => {
+    if (model && item) {
       setOutflow({ status: "running", res: {} });
-      const json = await startEvaluation(model, drop.item.selected);
+      const json = await startEvaluation(model, item);
       if (json) {
         setOutflow({ status: "complete", res: json });
         setEvaluate((prevEval) => ({ ...prevEval, predict: json }));
@@ -121,7 +133,7 @@ function CMT() {
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
-      onClick: () => startEval(drop.model.selected),
+      onClick: () => startEval(drop.model.selected, drop.item.selected),
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };
