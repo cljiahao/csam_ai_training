@@ -44,17 +44,34 @@ function CMT() {
 
   useEffect(() => {
     const fetch_epoch_data = async () => {
-      if (graph.status && graph.status !== "complete") {
+      if (graph.status !== "complete" && graph.status !== "evaluate") {
         const json = await getEpoch();
         const { status, ...graphVal } = json;
-        setGraph({ status: status, graph: [...graph.graph, graphVal] });
+        setGraph({
+          ...graph,
+          status: status,
+          graph: [...graph.graph, graphVal],
+        });
       }
     };
+
+    if (graph.status === "evaluate") {
+      setOutflow((prevOutflow) => ({ ...prevOutflow, status: "started" }));
+      setGraph((prevGraph) => ({ ...prevGraph, status: "complete" }));
+    }
+
     const timeout = setTimeout(fetch_epoch_data, 1000);
     return () => {
       clearTimeout(timeout);
     };
   }, [graph]);
+
+  useEffect(() => {
+    console.log(outflow);
+    if (outflow.status === "started") {
+      startEval(outflow.model, drop.item.selected);
+    }
+  }, [outflow, drop]);
 
   const openMenu = () => {
     setTrigger((prevTrigger) => ({
@@ -87,20 +104,18 @@ function CMT() {
 
   const startTrain = async () => {
     if (parameters.folder === drop.folder.selected) {
+      setGraph({ status: "started", model: "", graph: initialGraph.graph });
       const json = await startTraining(parameters);
       if (json) {
-        setGraph({ status: json.status, graph: initialGraph.graph });
+        setOutflow((prevOutflow) => ({ ...prevOutflow, model: json }));
       }
     }
   };
 
-  const startEval = async () => {
-    if (drop.item.selected && drop.model.selected) {
+  const startEval = async (model, item) => {
+    if (model && item) {
       setOutflow({ status: "running", res: {} });
-      const json = await startEvaluation(
-        drop.model.selected,
-        drop.item.selected,
-      );
+      const json = await startEvaluation(model, item);
       if (json) {
         setOutflow({ status: "complete", res: json });
         setEvaluate((prevEval) => ({ ...prevEval, predict: json }));
@@ -118,7 +133,7 @@ function CMT() {
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
-      onClick: startEval,
+      onClick: () => startEval(drop.model.selected, drop.item.selected),
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };
