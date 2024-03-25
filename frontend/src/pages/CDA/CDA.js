@@ -30,7 +30,6 @@ function CDA() {
   const [random, setRandom] = useState(initialRandom);
   const [range, setRange] = useState(initialRange);
   const [trigger, setTrigger] = useState(initialTrigger);
-  const [isTargetValid, setIsTargetValid] = useState(true);
 
   useEffect(() => {
     get_trackbar();
@@ -112,7 +111,7 @@ function CDA() {
       name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
-      disabled: state === "started" || isTargetValid,
+      disabled: state === "started" || Object.values(entry).includes(""),
     },
   };
 
@@ -129,8 +128,6 @@ function CDA() {
         setRange,
         trigger,
         setTrigger,
-        isTargetValid,
-        setIsTargetValid
       }}
     >
       <main className="flex h-screen w-screen bg-amber-100">
