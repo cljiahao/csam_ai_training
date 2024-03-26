@@ -54,12 +54,12 @@ def aug_process(input):
                 )
 
     new_version = zip_check_dataset(os.path.join(dire.dataset_path, input.item))
-    time_print(start, "Zipping old datasets")
+    lap = time_print(start, "Zipping old datasets")
     dataset_fols, template_dict, count_dict = get_dicts(
         input.item, new_version, image_fols, input.range
     )
-    time_print(start, "Copying Files and Templating all NGs")
+    lap = time_print(lap, "Copying Files and Templating all NGs")
     augmenting(g_path, file_names, template_dict, count_dict, dataset_fols, input.entry)
-    time_print(start, "Augmenting all NGs")
+    lap = time_print(lap, "Augmenting all NGs")
     train_val_split(dataset_fols, image_fols, input.entry)
-    time_print(start, "Train Val Split")
+    lap = time_print(lap, "Train Val Split")
