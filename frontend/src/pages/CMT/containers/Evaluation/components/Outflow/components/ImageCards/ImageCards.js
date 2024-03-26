@@ -14,7 +14,7 @@ const ImageCards = ({ name, data }) => {
             />
             <p className="flex-center mx-auto w-full py-1">
               {"Pred:  "}
-              <span className="flex-center w-[20%] font-semibold">
+              <span className="flex-center m-1 font-semibold">
                 {value.pred}
               </span>
             </p>
