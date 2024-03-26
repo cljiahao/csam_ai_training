@@ -29,6 +29,9 @@ class Settings:
     REALTIMEDB: str = os.getenv("REALTIMEDB")
     TABLEID: str = os.getenv("TABLEID")
 
+    # For Augment
+    G_TYPES: list = ["G", "Good", "g", "good"]
+
     # For training
     IMAGE_SIZE: list = [54, 54]
     INPUT_SHAPE: tuple = (54, 54, 3)
