@@ -6,7 +6,7 @@ const Header = () => {
       <div className="mr-auto text-right">Folder Name</div>
       <div className="w-20 2xl:w-24">%</div>
       <div className="w-20 2xl:w-28">Predicted</div>
-      <div className="w-20 2xl:w-28">Values</div>
+      <div className="w-20 2xl:w-28">Actual</div>
     </div>
   );
 };
