@@ -1,7 +1,40 @@
+import os
 import cv2
 import numpy as np
 
 from core.read_json import read_config
+
+
+def superimpose(base_path, folder_path, file_name, template, new_f_name):
+
+    img = cv2.imread(os.path.join(base_path, file_name))
+    _, chip_mask = removed_bg(img)
+    gray = cv2.cvtColor(template.copy(), cv2.COLOR_BGR2GRAY)
+    _, template_mask = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
+    mask = cv2.bitwise_and(chip_mask, chip_mask, mask=template_mask)
+    img[mask > 0] = 0
+    img += cv2.bitwise_and(template, template, mask=mask)
+
+    cv2.imwrite(os.path.join(folder_path, new_f_name), img)
+
+
+def retrieve_roi(file_path, res, Col_LL, Col_UL):
+    img = cv2.imread(file_path)
+    defect, _ = removed_bg(img)
+    hsv = cv2.cvtColor(defect, cv2.COLOR_BGR2HSV_FULL)
+
+    mask_def = cv2.inRange(hsv, Col_LL, Col_UL)
+    temp_def = cv2.bitwise_and(defect, defect, mask=mask_def)
+
+    res.append(temp_def)
+
+
+def removed_bg(img):
+    mask = bg_masking(img.copy())
+    contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    defect, chip_mask = get_largest(img.copy(), contours)
+
+    return defect, chip_mask
 
 
 def bg_masking(img):

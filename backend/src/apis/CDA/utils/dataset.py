@@ -4,12 +4,14 @@ import random
 from shutil import move, copyfile
 
 
-def train_val_split(dataset_fols, image_fols, augment_set):
-    split_perc = float(augment_set["split"]) / 100
+def train_val_split(ds_path, item_fol_list, split):
+    split_perc = float(split["split"]) / 100
 
-    for fol in image_fols:
-        train_path = dataset_fols[f"training_{fol}"]
-        val_path = dataset_fols[f"validation_{fol}"]
+    for fol in item_fol_list:
+        train_path = os.path.join(ds_path, "training", fol)
+        val_path = os.path.join(ds_path, "validation", fol)
+        if not os.path.exists(val_path):
+            os.makedirs(val_path)
 
         train_files = os.listdir(train_path)
         split_qty = math.ceil(len(train_files) * split_perc)
