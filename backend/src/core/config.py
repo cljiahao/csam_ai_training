@@ -31,6 +31,7 @@ class Settings:
 
     # For Augment
     G_TYPES: list = ["G", "Good", "g", "good"]
+    BASE_TYPES: list = ["Base", "base"]
 
     # For training
     IMAGE_SIZE: list = [54, 54]
