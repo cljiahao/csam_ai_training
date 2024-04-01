@@ -48,6 +48,7 @@ function CDA() {
       item: { list: json, selected: "" },
       folder: { ...prevDrop.folder, selected: "" },
     }));
+    setEntry(initialEntry);
   };
 
   const get_random_files = async () => {
@@ -111,7 +112,7 @@ function CDA() {
       name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
-      disabled: state === "started" || Object.values(entry).includes(""),
+      disabled: state === "started" || Number(entry.random) < 100,
     },
   };
 
