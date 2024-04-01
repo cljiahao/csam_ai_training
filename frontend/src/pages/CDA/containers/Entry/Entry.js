@@ -72,7 +72,7 @@ const Entry = ({ refresh }) => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="mx-1 flex flex-col 2xl:my-2 2xl:gap-2">
       <div className="flex-center h-14">
         <DropBox
           folder_name={"item"}

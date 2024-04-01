@@ -2,14 +2,14 @@ import os
 import math
 import random
 import numpy as np
-from shutil import copytree
+from shutil import copyfile
 from concurrent.futures import ThreadPoolExecutor
 
 from apis.CDA.utils.masking import retrieve_roi, superimpose
 from core.config import settings
 
 
-def augmenting(images_path, ds_path, template_dict):
+def augmenting(images_path, ds_path, template_dict, bypass):
 
     for base_type in settings.BASE_TYPES:
         if base_type in template_dict:
@@ -23,7 +23,19 @@ def augmenting(images_path, ds_path, template_dict):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        if key not in settings.G_TYPES:
+        if bypass or key in settings.G_TYPES:
+            for root, dirs, files in os.walk(os.path.join(images_path, key)):
+                if len(files):
+                    with ThreadPoolExecutor(10) as exe:
+                        _ = [
+                            exe.submit(
+                                copyfile,
+                                os.path.join(root, f_name),
+                                os.path.join(folder_path, f_name),
+                            )
+                            for f_name in files
+                        ]
+        else:
             no_of_samples = math.ceil(
                 int(base_count) / (len(template_dict) * value["count"])
             )
@@ -41,12 +53,6 @@ def augmenting(images_path, ds_path, template_dict):
                         )
                         for file_name in sample
                     ]
-        else:
-            copytree(
-                os.path.join(images_path, key),
-                os.path.join(folder_path),
-                dirs_exist_ok=True,
-            )
 
 
 def templating(root, file_names, range):

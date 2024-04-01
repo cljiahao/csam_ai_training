@@ -2,7 +2,7 @@ import React from "react";
 
 const Input = ({ name, input_info }) => {
   return (
-    <div className="flex-center h-12 w-full 2xl:h-14">
+    <div className="flex-center h-12 w-full 2xl:h-16">
       <label className="flex-center h-full w-full text-center">
         {input_info.name + ":"}
       </label>

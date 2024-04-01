@@ -6,7 +6,7 @@ const Trackbars = () => {
   const { range } = useContext(AppContext);
 
   return (
-    <div className="w-full space-y-1 text-sm 2xl:text-xl">
+    <div className="w-full space-y-1 text-sm 2xl:space-y-2 2xl:text-xl">
       {Object.keys(range.slider).map((type) => {
         return (
           <div

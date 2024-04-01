@@ -27,14 +27,16 @@ def aug_process(input):
     images_path = check_exist(input.item)
     lap = time_print(start, "Check if folder exists")
 
-    new_version = zip_check_dataset(os.path.join(dire.dataset_path, input.item))
+    new_version = zip_check_dataset(
+        os.path.join(dire.dataset_path, input.item), input.bypass
+    )
     lap = time_print(lap, "Get latest version and zipping old datasets")
 
     template_dict = get_template(images_path, input.range)
     lap = time_print(lap, "Reading images folder")
 
     ds_path = os.path.join(dire.dataset_path, input.item, new_version)
-    augmenting(images_path, ds_path, template_dict)
+    augmenting(images_path, ds_path, template_dict, input.bypass)
     lap = time_print(lap, "Augmenting all NGs")
 
     train_val_split(ds_path, template_dict.keys(), input.entry)
