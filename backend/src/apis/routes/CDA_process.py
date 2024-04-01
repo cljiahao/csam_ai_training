@@ -12,6 +12,7 @@ class Response(BaseModel):
     range: dict
     item: str
     entry: dict
+    bypass: bool
 
 
 @router.post("/process_img")
@@ -20,8 +21,13 @@ def process_img(input: Response):
     try:
         write_config("./core/json/trackbar.json", input.range)
         aug_process(input)
+        title = (
+            "Bypass Completed,\n Dataset Created"
+            if input.bypass
+            else "Image Augmented,\n Dataset Created"
+        )
         alert = {
-            "title": "Image Augmented",
+            "title": title,
             "text": "Confirm to Continue",
             "icon": "success",
             "confirmButtonText": "Confirm",
