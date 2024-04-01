@@ -34,3 +34,15 @@ export const getRandomCount = async (item) => {
   const json = await resp.json();
   return json;
 };
+
+export const getRandomness = async (item) => {
+  const resp = await fetch(`${API}/CDA/randomness`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ item: item }),
+  });
+  const json = await resp.json();
+  return json;
+};

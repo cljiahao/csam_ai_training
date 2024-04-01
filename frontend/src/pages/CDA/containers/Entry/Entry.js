@@ -5,20 +5,24 @@ import Input from "../../../../containers/common/Input";
 import DropBox from "../../../../containers/common/DropBox";
 import Button from "../../../../containers/common/Button";
 import { TbRefresh } from "react-icons/tb";
+import { getRandomness } from "../../utils/getNames";
 
 const Entry = ({ refresh }) => {
   const { drop, setDrop, entry, setEntry } = useContext(AppContext);
 
-  const dropSelect = (e) => {
+  const dropSelect = async (e) => {
     setDrop((prevDrop) => ({
       ...prevDrop,
       [e.target.name]: { ...prevDrop[e.target.name], selected: e.target.value },
     }));
+    if (e.target.value) {
+      const json = await getRandomness(e.target.value);
+      setEntry({ ...entry, random: json });
+    }
   };
 
   const checkEntry = (e) => {
     const { name, type, value } = e.target;
-    console.log(type, value);
 
     if (type === "text") {
       if (value.trim() === "") {
@@ -26,7 +30,6 @@ const Entry = ({ refresh }) => {
       } else {
         setEntry({ ...entry, [name]: value.trim() }); // Not empty
       }
-      console.log(type, value);
     } else if (type === "number") {
       if (
         !isNaN(value) &&
@@ -40,11 +43,11 @@ const Entry = ({ refresh }) => {
   };
 
   const input_dict = {
-    target: {
-      name: "Target",
+    random: {
+      name: "Random (%)",
       type: "text",
-      default: entry.target,
-      onChange: checkEntry,
+      default: entry.random,
+      disabled: true,
     },
     split: {
       name: "Data Split (%)",
