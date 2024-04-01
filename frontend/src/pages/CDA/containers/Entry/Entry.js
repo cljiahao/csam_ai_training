@@ -18,6 +18,8 @@ const Entry = ({ refresh }) => {
     if (e.target.value) {
       const json = await getRandomness(e.target.value);
       setEntry({ ...entry, random: json });
+    } else {
+      setEntry({ ...entry, random: "0" });
     }
   };
 
@@ -48,6 +50,12 @@ const Entry = ({ refresh }) => {
       type: "text",
       default: entry.random,
       disabled: true,
+      bg_color:
+        Number(entry.random) === 0
+          ? ""
+          : Number(entry.random) < 100
+            ? "bg-red-300"
+            : "bg-green-300",
     },
     split: {
       name: "Data Split (%)",
