@@ -6,28 +6,19 @@ from apis.utils.misc import time_print
 from apis.CDA.utils.directory import check_exist, get_template
 from apis.CDA.utils.augment import augmenting
 from apis.CDA.utils.dataset import train_val_split
+from apis.utils.recursive import recursion
 
 
-def get_files(item, good):
+def get_files(item):
 
-    files = {}
+    files_dict = {}
 
-    base_path = os.path.join(dire.image_path, item)
-    for fol in os.listdir(base_path):
-        if good and fol in ["G", "g", "good", "Good"]:
-            continue
-        folder_path = os.path.join(base_path, fol)
-        for file in os.listdir(folder_path):
-            if file.split(".")[-1] not in ["jpg", "jpeg", "png", "tiff"]:
-                files[f"{item}/{fol}/{file}"] = os.listdir(
-                    os.path.join(base_path, fol, file)
-                )
-            else:
-                if fol not in files.keys():
-                    files[f"{item}/{fol}"] = []
-                files[f"{item}/{fol}"].append(file)
+    images_path = os.path.join(dire.image_path, item)
+    for root, dirs, files in os.walk(images_path):
+        if len(files):
+            recursion(files_dict, root.split(images_path)[-1][1:].split(os.sep), files)
 
-    return files
+    return files_dict
 
 
 def aug_process(input):
