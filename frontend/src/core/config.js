@@ -6,7 +6,7 @@ const initialDrop = {
   model: { list: [], selected: "" },
 };
 
-const initialEntry = { target: "10000", split: "20" };
+const initialEntry = { random: "0", split: "20" };
 
 const initialEvaluation = { actual: {}, predict: {} };
 
