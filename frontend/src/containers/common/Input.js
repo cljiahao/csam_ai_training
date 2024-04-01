@@ -14,7 +14,7 @@ const Input = ({ name, input_info }) => {
         }`}
       >
         <input
-          className="h-full w-full rounded-lg text-center"
+          className={`h-full w-full rounded-lg text-center ${input_info.bg_color}`}
           type={input_info.type}
           name={name}
           value={input_info.default}
