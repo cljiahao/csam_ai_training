@@ -19,6 +19,7 @@ const Input = ({ name, input_info }) => {
           name={name}
           value={input_info.default}
           onChange={input_info.onChange}
+          disabled={input_info.disabled}
         />
       </div>
     </div>
