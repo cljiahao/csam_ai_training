@@ -71,17 +71,31 @@ function CDA() {
   };
 
   const process_img = async () => {
-    setState("started");
-    const alert = await process(range.slider, drop.item.selected, entry);
-    setState("complete");
-
     Swal.fire({
-      title: alert.title,
-      text: alert.text,
-      icon: alert.icon,
-      confirmButtonText: alert.confirmButtonText,
+      title: "Do you want to bypass augment?",
+      text: "Click Yes to bypass and No to proceed with augment",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      setState("started");
+      const alert = await process(
+        range.slider,
+        drop.item.selected,
+        entry,
+        result.isConfirmed,
+      );
+      setState("complete");
+
+      Swal.fire({
+        title: alert.title,
+        text: alert.text,
+        icon: alert.icon,
+        confirmButtonText: alert.confirmButtonText,
+      });
+      return;
     });
-    return;
   };
 
   const openMenu = async () => {
