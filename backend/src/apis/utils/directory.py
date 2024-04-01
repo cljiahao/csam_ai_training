@@ -19,7 +19,7 @@ class Directory:
 dire = Directory
 
 
-def zip_check_dataset(main_path):
+def zip_check_dataset(main_path, bypass):
     """Zipping function"""
     old_path = os.path.join(main_path, "old")
     if not os.path.exists(old_path):
@@ -37,6 +37,7 @@ def zip_check_dataset(main_path):
         rmtree(os.path.join(main_path, to_be_zipped))
 
     date = dt.now().strftime("%d%m%y")
+    bp = "" if bypass else "_Aug"
 
     if len(fol_arr) == 0:
         if len(os.listdir(old_path)) > 0:
@@ -46,14 +47,16 @@ def zip_check_dataset(main_path):
                 reverse=True,
             )[0]
             lov_name = last_old_version.split("_")[0]
-            new_version = f"V{int(lov_name[1:]) + 1}_{date}"
+            new_v = f"V{int(lov_name[1:]) + 1}"
         else:
-            new_version = f"V1_{date}"
+            new_v = f"V1"
     else:
         lastest_version = sorted(
             fol_arr, key=lambda x: int(x.split("_")[0][1:]), reverse=True
         )[0]
         last_name = lastest_version.split("_")[0]
-        new_version = f"V{int(last_name[1:]) + 1}_{date}"
+        new_v = f"V{int(last_name[1:]) + 1}"
+
+    new_version = f"{new_v}{bp}_{date}"
 
     return new_version
