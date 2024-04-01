@@ -5,6 +5,7 @@ from fastapi import APIRouter
 
 from apis.utils.directory import dire
 from apis.CDA.main import get_files
+from core.config import settings
 
 
 router = APIRouter()
@@ -23,13 +24,20 @@ class getRandomImg(BaseModel):
 
 @router.post("/random_img")
 def random_img(rand: getRandomImg):
-    files = get_files(rand.item, True)
+    files_dict = get_files(rand.item)
+
+    for i in list(files_dict):
+        if i in settings.BASE_TYPES + settings.G_TYPES:
+            del files_dict[i]
 
     file_list = []
-    for i in range(rand.no_of_img):
-        key, arr = random.sample(sorted(files.items()), 1)[0]
-        file_name = random.sample(arr, 1)[0]
-        file_list.append(f"{key}/{file_name}")
+    for j in range(rand.no_of_img):
+        key, values = random.sample(sorted(files_dict.items()), 1)[0]
+        if isinstance(values, dict):
+            k, values = random.sample(sorted(values.items()), 1)[0]
+            key = f"{key}/{k}"
+        file_name = random.sample(values, 1)[0]
+        file_list.append(f"{rand.item}/{key}/{file_name}")
 
     return file_list
 
@@ -40,7 +48,7 @@ class getRandomCount(BaseModel):
 
 @router.post("/random_count")
 def random_count(rand: getRandomCount):
-    files = get_files(rand.item, False)
+    files = get_files(rand.item)
 
     file_count = {}
 
