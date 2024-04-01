@@ -48,19 +48,23 @@ class getRandomCount(BaseModel):
 
 @router.post("/random_count")
 def random_count(rand: getRandomCount):
-    files = get_files(rand.item)
+    files_dict = get_files(rand.item)
 
     file_count = {}
 
     path = os.path.join(dire.image_path, rand.item)
     for fol in os.listdir(path):
-        file_count[fol] = {}
-        fol_dict = {k: v for k, v in files.items() if fol in k}
-        key, arr = random.sample(sorted(fol_dict.items()), 1)[0]
-        file_name = random.sample(arr, 1)[0]
-        file_count[fol]["file_path"] = f"{key}/{file_name}"
-        file_count[fol]["count"] = sum(
-            [len(files[a]) for a in files.keys() if fol in a]
-        )
+        key = fol
+        values = files_dict[fol]
+        count = len(values)
+        if isinstance(values, dict):
+            count = len(sum((x for x in values.values()), []))
+            k, values = random.sample(sorted(values.items()), 1)[0]
+            key = f"{key}/{k}"
+        file_name = random.sample(values, 1)[0]
+        file_count[fol] = {
+            "file_path": f"{rand.item}/{key}/{file_name}",
+            "count": count,
+        }
 
     return file_count
