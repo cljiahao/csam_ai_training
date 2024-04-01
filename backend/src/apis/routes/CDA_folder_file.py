@@ -42,12 +42,12 @@ def random_img(rand: getRandomImg):
     return file_list
 
 
-class getRandomCount(BaseModel):
+class getRandom(BaseModel):
     item: str
 
 
 @router.post("/random_count")
-def random_count(rand: getRandomCount):
+def random_count(rand: getRandom):
     files_dict = get_files(rand.item)
 
     file_count = {}
@@ -68,3 +68,23 @@ def random_count(rand: getRandomCount):
         }
 
     return file_count
+
+
+@router.post("/randomness")
+def randomness(rand: getRandom):
+    files_dict = get_files(rand.item)
+
+    for i in list(files_dict):
+        if i in settings.BASE_TYPES + settings.G_TYPES:
+            if i in settings.BASE_TYPES:
+                base_count = len(files_dict[i])
+            del files_dict[i]
+
+    for values in files_dict.values():
+        count = len(values)
+        if isinstance(values, dict):
+            count = len(sum((x for x in values.values()), []))
+
+    randomness = round(base_count * count / (10000 * 10), 2) if base_count else 0
+
+    return randomness
