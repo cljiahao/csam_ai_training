@@ -16,7 +16,6 @@ import {
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
 import Training from "./containers/Training/Training";
-import HyperParameters from "./containers/Training/components/HyperParameters/HyperParameters";
 import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import startTraining from "./utils/startTraining";
@@ -168,11 +167,7 @@ function CMT() {
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation refresh={eval_refresh} />
-          <Menu
-            openMenu={openMenu}
-            menu={trigger.menu}
-            children={<HyperParameters refresh={models_refresh} />}
-          />
+          <Menu openMenu={openMenu} menu={trigger.menu} />
         </aside>
         <Transition
           show={trigger.outflow}
