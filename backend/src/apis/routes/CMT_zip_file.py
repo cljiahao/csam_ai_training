@@ -17,14 +17,14 @@ class Directory:
     old_path = os.path.join(dataset_path, "old")
 
 class ModelName(BaseModel):
-    model_name: str
+    modelname: str
 
 dire = Directory.models_path
 temp_folder = 'temp'
 
 @router.post("/zip_model/")
 async def zip_model(model: ModelName):
-    model_base_path = os.path.join(dire, temp_folder, model.model_name)
+    model_base_path = os.path.join(dire, temp_folder, model.modelname)
 
     txt_file_path = f"{model_base_path}.txt"
     keras_file_path = f"{model_base_path}.keras"
