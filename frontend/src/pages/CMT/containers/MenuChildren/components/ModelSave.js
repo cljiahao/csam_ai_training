@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { TbRefresh, TbCloudDownload } from "react-icons/tb";
 import { AppContext } from "../../../../../contexts/context";
+import zipModel from "../../../utils/zipModel";
 
 import DropBox from "../../../../../containers/common/DropBox";
 import Button from "../../../../../containers/common/Button";
@@ -17,33 +18,24 @@ const ModelSave = ({ refresh }) => {
     setParameters({ ...parameters, [e.target.name]: e.target.value });
   };
 
-  const handleDownload = async () => {
-    const modelFolder = drop.model.selected; // Assuming this is the model name
-
-    try {
-      const response = await fetch("/zip_model/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ model_name: modelFolder }), // Ensure this matches backend expectation
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to download the model");
-      }
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", `${modelFolder}.zip`); // Name the download file
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading the file:", error);
+  const saveModel = async () => {
+    console.log("Model selected for saving:", drop.model.selected);
+    if (!drop.model.selected) {
+      console.log("No model selected for zipping");
+      alert("Please select a model to zip and download.");
+      return;
     }
+
+    const modelName = drop.model.selected.replace(/^temp\//, "");
+
+    const blob = await zipModel(modelName);
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${modelName}.zip`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const button_info = [
@@ -55,7 +47,7 @@ const ModelSave = ({ refresh }) => {
     {
       name: "Save",
       icon: <TbCloudDownload />,
-      onClick: handleDownload,
+      onClick: saveModel,
     },
   ];
 
