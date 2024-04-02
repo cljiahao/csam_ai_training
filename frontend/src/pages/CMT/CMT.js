@@ -22,6 +22,7 @@ import startTraining from "./utils/startTraining";
 import startEvaluation from "./utils/startEvaluation";
 import { getAllModels, getEvalFolder, getItemType } from "./utils/getNames";
 import getEpoch from "./utils/getEpoch";
+import MenuChildren from "./containers/MenuChildren/MenuChildren";
 
 function CMT() {
   const [drop, setDrop] = useState(initialDrop);
@@ -167,7 +168,9 @@ function CMT() {
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation refresh={eval_refresh} />
-          <Menu openMenu={openMenu} menu={trigger.menu} />
+          <Menu openMenu={openMenu} menu={trigger.menu}>
+            <MenuChildren refresh={models_refresh} />
+          </Menu>
         </aside>
         <Transition
           show={trigger.outflow}
