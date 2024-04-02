@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { TbRefresh, TbCloudDownload } from "react-icons/tb";
 import { AppContext } from "../../../../../contexts/context";
 import zipModel from "../../../utils/zipModel";
+import Swal from "sweetalert2";
 
 import DropBox from "../../../../../containers/common/DropBox";
 import Button from "../../../../../containers/common/Button";
@@ -22,7 +23,12 @@ const ModelSave = ({ refresh }) => {
     console.log("Model selected for saving:", drop.model.selected);
     if (!drop.model.selected) {
       console.log("No model selected for zipping");
-      alert("Please select a model to zip and download.");
+      Swal.fire({
+        title: "No Model Selected",
+        text: "Please select a model before saving.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
       return;
     }
 
