@@ -19,9 +19,10 @@ import Training from "./containers/Training/Training";
 import HyperParameters from "./containers/Training/components/HyperParameters/HyperParameters";
 import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
-import { startTraining, getEpoch } from "./utils/startTraining";
-import startEvaluation from "./utils/startEvaluation";
-import { getAllModels, getEvalFolder, getItemType } from "./utils/getNames";
+import { startTraining, getEpoch } from "./utils/api_train";
+import startEvaluation from "./utils/api_eval";
+import { getItemType } from "../../utils/api_misc";
+import { getAllModels, getEvalFolder } from "./utils/api_misc";
 
 function CMT() {
   const [drop, setDrop] = useState(initialDrop);

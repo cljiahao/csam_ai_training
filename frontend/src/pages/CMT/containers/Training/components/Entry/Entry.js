@@ -4,8 +4,7 @@ import { AppContext } from "../../../../../../contexts/context";
 
 import Button from "../../../../../../containers/common/Button";
 import DropBox from "../../../../../../containers/common/DropBox";
-import getFileCount from "../../../../utils/getFileCount";
-import { getFolderName } from "../../../../utils/getNames";
+import { getFolderName, getFileCount } from "../../../../utils/api_misc";
 
 const Entry = ({ refresh }) => {
   const { drop, setDrop, parameters, setParameters, setTable } =
