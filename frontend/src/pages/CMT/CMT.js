@@ -12,6 +12,7 @@ import {
   initialDrop,
   initialOutflow,
   initialEvaluation,
+  initialModel,
 } from "../../core/config";
 import Menu from "../../containers/Menu/Menu";
 import NavBar from "../../containers/common/NavBar";
@@ -32,6 +33,7 @@ function CMT() {
   const [parameters, setParameters] = useState(initialParameters);
   const [table, setTable] = useState(initialTable);
   const [trigger, setTrigger] = useState(initialTrigger);
+  const [modelSelection, setModelSelection] = useState(initialModel);
 
   useEffect(() => {
     item_refresh();
@@ -95,6 +97,10 @@ function CMT() {
       ...prevDrop,
       model: { list: json, selected: "" },
     }));
+    setModelSelection((prevModelSelection) => ({
+      ...prevModelSelection,
+      model: { list: json, selected: "" },
+    }));
   };
 
   const eval_refresh = async (item) => {
@@ -133,7 +139,8 @@ function CMT() {
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
-      onClick: () => startEval(drop.model.selected, drop.item.selected),
+      onClick: () =>
+        startEval(modelSelection.model.selected, drop.item.selected),
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
   };
@@ -155,6 +162,8 @@ function CMT() {
         setTable,
         trigger,
         setTrigger,
+        modelSelection,
+        setModelSelection,
       }}
     >
       <main className="no-scrollbar relative flex max-h-screen w-screen overflow-auto bg-amber-100 text-sm 2xl:text-lg">
