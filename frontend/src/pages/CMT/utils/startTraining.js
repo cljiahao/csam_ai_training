@@ -1,6 +1,6 @@
 import { API } from "../../../core/config";
 
-const startTraining = async (parameters) => {
+export const startTraining = async (parameters) => {
   const resp = await fetch(`${API}/CMT/train_model`, {
     method: "POST",
     headers: {
@@ -12,4 +12,13 @@ const startTraining = async (parameters) => {
   return json;
 };
 
-export default startTraining;
+export const getEpoch = async () => {
+  const resp = await fetch(`${API}/CMT/current_epoch`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const json = await resp.json();
+  return json;
+};
