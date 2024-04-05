@@ -19,9 +19,10 @@ import Entry from "./containers/Entry/Entry";
 import CountCardCont from "./containers/CountCard/CountCardCont";
 import Gallery from "./containers/Gallery/Gallery";
 import Trackbars from "./containers/Trackbars/Trackbars";
-import { getTrackbar, setTrackbar } from "./utils/trackbar";
-import { getItemType, getRandomImg, getRandomCount } from "./utils/getNames";
-import process from "./utils/process";
+import { getTrackbar, setTrackbar } from "./utils/api_trackbar";
+import { getItemType } from "../../utils/api_misc";
+import { getRandomImg, getRandomCount } from "./utils/api_misc";
+import process from "./utils/api_process";
 
 function CDA() {
   const [state, setState] = useState("");

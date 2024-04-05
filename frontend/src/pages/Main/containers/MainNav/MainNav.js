@@ -1,10 +1,21 @@
 import React from "react";
-import MainCardCont from "./components/MainCardCont";
+import MainCard from "./MainCard";
 
-const MainNav = () => {
+const MainNav = ({ card_info }) => {
   return (
-    <div className="mx-10 flex h-[90%] w-full justify-between">
-      <MainCardCont />
+    <div className="flex h-full w-full gap-10 ">
+      {Object.values(card_info).map((values, i) => {
+        return (
+          <MainCard
+            key={values}
+            src={values.src}
+            title={values.title}
+            short={values.short}
+            description={values.description}
+            link={values.link}
+          />
+        );
+      })}
     </div>
   );
 };

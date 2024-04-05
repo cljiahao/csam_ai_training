@@ -5,7 +5,7 @@ import Input from "../../../../containers/common/Input";
 import DropBox from "../../../../containers/common/DropBox";
 import Button from "../../../../containers/common/Button";
 import { TbRefresh } from "react-icons/tb";
-import { getRandomness } from "../../utils/getNames";
+import { getRandomness } from "../../utils/api_misc";
 
 const Entry = ({ refresh }) => {
   const { drop, setDrop, entry, setEntry } = useContext(AppContext);

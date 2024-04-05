@@ -1,5 +1,5 @@
 import cv from "@techstark/opencv-js";
-import getImages from "../../../utils/getImage";
+import getImages from "../../../utils/api_images";
 
 const imageFilter = async (random, range, image_hold, canvas_hold) => {
   try {
