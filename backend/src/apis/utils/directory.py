@@ -14,7 +14,7 @@ class Directory:
     datasend_path = os.path.join(base_path, "datasend")
     models_path = os.path.join(base_path, "models")
     old_path = os.path.join(dataset_path, "old")
-    temp_path = os.path.join(base_path, "temp")
+    temp_path = os.path.join(models_path, "temp")
 
 
 dire = Directory
