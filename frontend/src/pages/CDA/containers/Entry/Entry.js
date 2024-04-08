@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { AppContext } from "../../../../contexts/context";
 
-import Input from "../../../../containers/common/Input";
-import DropBox from "../../../../containers/common/DropBox";
-import Button from "../../../../containers/common/Button";
+import Input from "../../../../common/components/Input";
+import DropBox from "../../../../common/components/DropBox";
+import Button from "../../../../common/components/Button";
 import { TbRefresh } from "react-icons/tb";
 import { getRandomness } from "../../utils/api_misc";
 

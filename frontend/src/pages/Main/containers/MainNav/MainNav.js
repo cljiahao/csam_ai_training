@@ -1,5 +1,5 @@
 import React from "react";
-import MainCard from "./MainCard";
+import MainCard from "./components/MainCard";
 
 const MainNav = ({ card_info }) => {
   return (

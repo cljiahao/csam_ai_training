@@ -13,8 +13,8 @@ import {
   initialOutflow,
   initialEvaluation,
 } from "../../core/config";
-import Menu from "../../containers/Menu/Menu";
-import NavBar from "../../containers/common/NavBar";
+import Menu from "../../common/containers/Menu/Menu";
+import NavBar from "../../common/components/NavBar";
 import Training from "./containers/Training/Training";
 import HyperParameters from "./containers/Training/components/HyperParameters/HyperParameters";
 import Evaluation from "./containers/Evaluation/Evaluation";

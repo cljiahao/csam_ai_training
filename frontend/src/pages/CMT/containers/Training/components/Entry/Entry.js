@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { TbRefresh } from "react-icons/tb";
 import { AppContext } from "../../../../../../contexts/context";
 
-import Button from "../../../../../../containers/common/Button";
-import DropBox from "../../../../../../containers/common/DropBox";
+import Button from "../../../../../../common/components/Button";
+import DropBox from "../../../../../../common/components/DropBox";
 import { getFolderName, getFileCount } from "../../../../utils/api_misc";
 
 const Entry = ({ refresh }) => {
