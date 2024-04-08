@@ -44,7 +44,7 @@ const Entry = ({ refresh }) => {
     }
   };
 
-  const input_dict = {
+  const input_info = {
     random: {
       name: "Random (%)",
       type: "text",
@@ -85,8 +85,8 @@ const Entry = ({ refresh }) => {
         </div>
       </div>
       <div className="flex-center">
-        {Object.keys(input_dict).map((key) => (
-          <Input key={key} name={key} input_info={input_dict[key]} />
+        {Object.keys(input_info).map((key) => (
+          <Input key={key} name={key} input_info={input_info[key]} />
         ))}
       </div>
     </div>
