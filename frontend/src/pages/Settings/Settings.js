@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { PiGauge } from "react-icons/pi";
 
-import NavBar from "../../containers/common/NavBar";
-import Menu from "../../containers/Menu/Menu";
+import NavBar from "../../common/components/NavBar";
+import Menu from "../../common/containers/Menu/Menu";
 
 const Settings = () => {
   const [menu, setMenu] = useState(false);

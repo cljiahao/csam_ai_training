@@ -5,7 +5,7 @@ import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { IoMdSettings } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
 
-import NavBar from "../common/NavBar";
+import NavBar from "../../components/NavBar";
 
 const Menu = ({ openMenu, menu, children }) => {
   const nav_info = {

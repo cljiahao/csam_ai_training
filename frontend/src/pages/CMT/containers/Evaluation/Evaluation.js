@@ -3,7 +3,7 @@ import { TbRefresh } from "react-icons/tb";
 import { MdWrongLocation } from "react-icons/md";
 import { AppContext } from "../../../../contexts/context";
 
-import ButtonsCont from "../../../../containers/common/ButtonsCont";
+import ButtonsCont from "../../../../common/components/ButtonsCont";
 import Header from "./components/Header/Header";
 import List from "./components/List/List";
 

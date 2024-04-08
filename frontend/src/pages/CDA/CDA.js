@@ -13,8 +13,8 @@ import {
   initialRange,
   initialTrigger,
 } from "../../core/config";
-import NavBar from "../../containers/common/NavBar";
-import Menu from "../../containers/Menu/Menu";
+import NavBar from "../../common/components/NavBar";
+import Menu from "../../common/containers/Menu/Menu";
 import Entry from "./containers/Entry/Entry";
 import CountCardCont from "./containers/CountCard/CountCardCont";
 import Gallery from "./containers/Gallery/Gallery";
