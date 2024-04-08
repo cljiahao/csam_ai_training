@@ -35,7 +35,7 @@ const HyperParameters = ({ refresh }) => {
     onClick: () => refresh(),
   };
 
-  const input_dict = {
+  const input_info = {
     epochs: {
       name: "Epochs",
       type: "text",
@@ -70,8 +70,8 @@ const HyperParameters = ({ refresh }) => {
         </div>
       </div>
       <div className="grid w-full grid-cols-2">
-        {Object.keys(input_dict).map((key) => (
-          <Input key={key} name={key} input_info={input_dict[key]} />
+        {Object.keys(input_info).map((key) => (
+          <Input key={key} name={key} input_info={input_info[key]} />
         ))}
       </div>
     </div>
