@@ -1,6 +1,9 @@
 import React, { useContext } from "react";
 import { TbRefresh, TbCloudDownload } from "react-icons/tb";
 import { AppContext } from "../../../../../contexts/context";
+import { zipModel } from "../../../../../utils/api_misc";
+import Swal from "sweetalert2";
+import { saveAs } from "file-saver";
 
 import DropBox from "../../../../../common/components/DropBox";
 import Button from "../../../../../common/components/Button";
@@ -19,32 +22,19 @@ const ModelSave = ({ refresh }) => {
 
     setParameters({ ...parameters, [e.target.name]: e.target.value });
   };
-  const handleDownload = async () => {
-    const modelFolder = drop.zip.selected; // Assuming this is the model name
-
+  const saveModel = async () => {
+    const modelName = drop.zip.selected.replace(/^temp\//, "");
     try {
-      const response = await fetch("/zip_model/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ modelname: modelFolder }), // Ensure this matches backend expectation
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to download the model");
-      }
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.setAttribute("download", `${modelFolder}.zip`); // Name the download file
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+      const blob = await zipModel(modelName);
+      saveAs(blob, `${modelName}.zip`);
     } catch (error) {
-      console.error("Error downloading the file:", error);
+      console.error("Error while saving the model:", error);
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while saving the model. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -57,7 +47,7 @@ const ModelSave = ({ refresh }) => {
     {
       name: "Save",
       icon: <TbCloudDownload />,
-      onClick: handleDownload,
+      onClick: saveModel,
     },
   ];
 
@@ -67,7 +57,7 @@ const ModelSave = ({ refresh }) => {
         <p className="text text-center">Model Zip</p>
         <div className="flex-center px-3">
           <DropBox
-            folder_name={"model"}
+            folder_name={"zip"}
             drop={drop.zip.list}
             onChange={set_parameters}
             selected={drop.zip.selected}
