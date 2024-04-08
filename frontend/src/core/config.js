@@ -4,6 +4,7 @@ const initialDrop = {
   folder: { list: [], selected: "" },
   item: { list: [], selected: "" },
   model: { list: [], selected: "" },
+  zip: { list: [], selected: "" },
 };
 
 const initialEntry = { random: "0", split: "20" };

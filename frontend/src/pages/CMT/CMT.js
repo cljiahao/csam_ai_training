@@ -16,13 +16,13 @@ import {
 import Menu from "../../common/containers/Menu/Menu";
 import NavBar from "../../common/components/NavBar";
 import Training from "./containers/Training/Training";
-import HyperParameters from "./containers/Training/components/HyperParameters/HyperParameters";
 import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";
 import { startTraining, getEpoch } from "./utils/api_train";
 import startEvaluation from "./utils/api_eval";
 import { getItemType } from "../../utils/api_misc";
 import { getAllModels, getEvalFolder } from "./utils/api_misc";
+import MenuChildren from "./containers/MenuChildren/MenuChildren";
 
 function CMT() {
   const [drop, setDrop] = useState(initialDrop);
@@ -36,6 +36,7 @@ function CMT() {
   useEffect(() => {
     item_refresh();
     models_refresh();
+    zip_refresh();
   }, []);
 
   useEffect(() => {
@@ -94,6 +95,14 @@ function CMT() {
     setDrop((prevDrop) => ({
       ...prevDrop,
       model: { list: json, selected: "" },
+    }));
+  };
+
+  const zip_refresh = async () => {
+    const json = await getAllModels();
+    setDrop((prevDrop) => ({
+      ...prevDrop,
+      zip: { list: json, selected: "" },
     }));
   };
 
@@ -168,11 +177,12 @@ function CMT() {
         >
           <NavBar openMenu={openMenu} button_info={button_info} />
           <Evaluation refresh={eval_refresh} />
-          <Menu
-            openMenu={openMenu}
-            menu={trigger.menu}
-            children={<HyperParameters refresh={models_refresh} />}
-          />
+          <Menu openMenu={openMenu} menu={trigger.menu}>
+            <MenuChildren
+              model_refresh={models_refresh}
+              model_zip={zip_refresh}
+            />
+          </Menu>
         </aside>
         <Transition
           show={trigger.outflow}
