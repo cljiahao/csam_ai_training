@@ -23,7 +23,7 @@ async def zip_model(model: ModelName):
     zip_file_path = f"{model_base_path}.zip"
 
     with zipfile.ZipFile(zip_file_path, 'w') as zipf:
-        zipf.write(txt_file_path, arcname=os.path.basename(txt_file_path))
-        zipf.write(keras_file_path, arcname=os.path.basename(keras_file_path))
+        zipf.write(txt_file_path, arcname=os.path.basename(txt_file_path)[16:])
+        zipf.write(keras_file_path, arcname=os.path.basename(keras_file_path)[16:])
 
     return FileResponse(zip_file_path, filename=os.path.basename(zip_file_path), media_type='application/zip')

@@ -9,7 +9,7 @@ import DropBox from "../../../../../common/components/DropBox";
 import Button from "../../../../../common/components/Button";
 
 const ModelSave = ({ refresh }) => {
-  const { drop, setDrop, parameters, setParameters } = useContext(AppContext);
+  const { drop, setDrop } = useContext(AppContext);
 
   const set_parameters = (e) => {
     setDrop((prevZip) => ({
@@ -19,8 +19,6 @@ const ModelSave = ({ refresh }) => {
         selected: e.target.value,
       },
     }));
-
-    setParameters({ ...parameters, [e.target.name]: e.target.value });
   };
   const saveModel = async () => {
     const modelName = drop.zip.selected.replace(/^temp\//, "");
