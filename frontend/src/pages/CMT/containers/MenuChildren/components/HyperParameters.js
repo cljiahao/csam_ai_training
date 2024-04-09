@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { TbRefresh } from "react-icons/tb";
-import { AppContext } from "../../../../../../contexts/context";
+import { AppContext } from "../../../../../contexts/context";
 
-import Input from "../../../../../../common/components/Input";
-import DropBox from "../../../../../../common/components/DropBox";
-import Button from "../../../../../../common/components/Button";
+import Input from "../../../../../common/components/Input";
+import DropBox from "../../../../../common/components/DropBox";
+import Button from "../../../../../common/components/Button";
 
 const HyperParameters = ({ refresh }) => {
   const { drop, setDrop, parameters, setParameters } = useContext(AppContext);
