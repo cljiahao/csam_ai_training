@@ -5,7 +5,9 @@ from apis.utils.recursive import recursion
 from apis.CMT.evaluate.batch_process import mask
 from apis.CMT.evaluate.chip_process import chips
 from apis.CMT.evaluate.image_process import create_border_img
+from apis.utils.misc import setup_logger
 
+logger = setup_logger('evaluation_logger', 'evaluation_results.csv')
 
 def process(path, item, key, results, model, labels):
     for root, dirs, files in os.walk(path):
@@ -47,6 +49,10 @@ def compare(root, pred_dict):
             )
         else:
             res["res"]["counter"] += 1
+
+    folder_name = root.split(os.sep)[-3]
+    #full_Label |Label|Total Images|Correct Predictions|Outflow
+    logger.info(f"{folder_name},{os.path.split(root)[-1]},{len(file_paths)},{res['res']['counter']},{len(res['res']['outflow'])}")
 
     return res
 
