@@ -8,6 +8,7 @@ backend/dataset
 backend/evaluation
 backend/models
 backend/results
+backend/datasend
 
 # Frontend
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
