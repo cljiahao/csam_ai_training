@@ -1,9 +1,11 @@
 import time
 from tensorflow import keras
 from keras import callbacks as cb
+from apis.utils.misc import setup_logger
 
 from core.read_json import read_config, write_config
 
+logger = setup_logger('training_logger', 'training_results.csv')
 
 class TrainCallback(cb.Callback):
     def __init__(self, epochs):
@@ -37,3 +39,6 @@ class TrainCallback(cb.Callback):
 
         train_set["Frontend"] = f_end_data
         write_config("./core/json/train.json", train_set)
+        #logging
+        logs_str = "|".join(f"{value.rstrip('s')}" if key == 'time' else f"{value}" for key, value in f_end_data.items() if key not in ['status', 'epoch_status'])
+        logger.info(f"{logs_str}")
