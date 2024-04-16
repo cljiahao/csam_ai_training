@@ -40,11 +40,13 @@ const ModelSave = ({ refresh }) => {
     {
       name: "Refresh",
       icon: <TbRefresh />,
+      style: { font: "text-xl" },
       onClick: () => refresh(),
     },
     {
       name: "Save",
       icon: <TbCloudDownload />,
+      style: { font: "text-xl" },
       onClick: saveModel,
     },
   ];
@@ -62,7 +64,7 @@ const ModelSave = ({ refresh }) => {
           />
           <div className="flex-center h-14 space-x-2">
             {button_info.map((button, index) => (
-              <Button key={index} button_info={button} length={4} />
+              <Button key={index} button_info={button} />
             ))}
           </div>
         </div>

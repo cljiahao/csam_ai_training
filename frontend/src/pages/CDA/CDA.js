@@ -111,22 +111,26 @@ function CDA() {
     random: {
       name: "Random",
       icon: <FaRandom />,
+      style: { font: "text-2xl" },
       onClick: get_random_files,
     },
     save: {
       name: "Save",
       icon: <MdSave />,
+      style: { font: "text-2xl" },
       onClick: update_range,
     },
     reset: {
       name: "Reset",
       icon: <GrPowerReset />,
+      style: { font: "text-2xl" },
       onClick: get_trackbar,
     },
     process: {
       name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
+      style: { font: "text-2xl" },
       disabled: state === "started" || Number(entry.random) < 100,
     },
   };
@@ -146,7 +150,7 @@ function CDA() {
         setTrigger,
       }}
     >
-      <main className="flex h-screen w-screen bg-amber-100">
+      <main className="flex h-screen w-screen overflow-hidden bg-amber-100">
         <section className="w-full">
           <Gallery />
         </section>

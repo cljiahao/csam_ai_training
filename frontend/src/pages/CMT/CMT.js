@@ -136,12 +136,14 @@ function CMT() {
     train: {
       name: "Train",
       icon: <LiaChalkboardTeacherSolid />,
+      style: { font: "text-4xl" },
       onClick: startTrain,
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
+      style: { font: "text-4xl" },
       onClick: () => startEval(drop.model.selected, drop.item.selected),
       disabled: graph.status !== "complete" || outflow.status !== "complete",
     },

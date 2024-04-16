@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AppContext } from "../../../../contexts/context";
 
-import Input from "../../../../common/components/Input";
+import InputCont from "../../../../common/components/InputCont";
 import DropBox from "../../../../common/components/DropBox";
 import Button from "../../../../common/components/Button";
 import { TbRefresh } from "react-icons/tb";
@@ -68,12 +68,13 @@ const Entry = ({ refresh }) => {
   const button_info = {
     name: "Refresh",
     icon: <TbRefresh />,
+    style: { font: "text-xl" },
     onClick: () => refresh(),
   };
 
   return (
     <div className="mx-1 flex flex-col 2xl:my-2 2xl:gap-2">
-      <div className="flex-center h-14">
+      <div className="flex-center text-md h-14 2xl:text-xl">
         <DropBox
           folder_name={"item"}
           drop={drop.item.list}
@@ -81,13 +82,11 @@ const Entry = ({ refresh }) => {
           selected={drop.item.selected}
         />
         <div className="flex-center h-full">
-          <Button button_info={button_info} length={4} />
+          <Button button_info={button_info} />
         </div>
       </div>
-      <div className="flex-center">
-        {Object.keys(input_info).map((key) => (
-          <Input key={key} name={key} input_info={input_info[key]} />
-        ))}
+      <div className="flex-center text-md 2xl:text-xl">
+        <InputCont input_info={input_info} />
       </div>
     </div>
   );
