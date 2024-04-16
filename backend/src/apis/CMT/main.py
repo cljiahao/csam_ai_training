@@ -14,7 +14,7 @@ async def training(sel, file_name, train_ds, train_info, validation_ds):
 
     if sel.model != "":
         folder, name = sel.model.split("/")
-        model_path = os.path.join(dire.models_path, folder, f"{name}.keras")
+        model_path = os.path.join(dire.models_path, folder, f"{name}.h5")
         model = models.load_model(model_path)
     else:
         model = create_new_model(train_info["class_counts"])
@@ -41,7 +41,7 @@ async def training(sel, file_name, train_ds, train_info, validation_ds):
             model_path = os.path.join(
                 dire.models_path,
                 "temp",
-                f"{file_name}.keras",
+                f"{file_name}.h5",
             )
             model.save(model_path)
 

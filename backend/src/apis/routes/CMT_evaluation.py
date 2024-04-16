@@ -23,8 +23,8 @@ def evaluate_folders(resp: response):
 
     base_path = os.path.join(dire.models_path, folder)
 
-    if f"{name}.keras" in os.listdir(base_path):
-        model = Models.load_model(os.path.join(base_path, f"{name}.keras"))
+    if f"{name}.h5" in os.listdir(base_path):
+        model = Models.load_model(os.path.join(base_path, f"{name}.h5"))
 
     if f"{name}.txt" in os.listdir(base_path):
         labels = []

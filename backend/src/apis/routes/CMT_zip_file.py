@@ -15,7 +15,7 @@ async def zip_model(model: ModelName):
     model_base_path = os.path.join(dire.temp_path, model.modelname)
 
     txt_file_path = f"{model_base_path}.txt"
-    keras_file_path = f"{model_base_path}.keras"
+    keras_file_path = f"{model_base_path}.h5"
 
     if not os.path.exists(txt_file_path) or not os.path.exists(keras_file_path):
         raise HTTPException(status_code=404, detail="Model files not found")
