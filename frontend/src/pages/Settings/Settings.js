@@ -16,11 +16,13 @@ const Settings = () => {
     train: {
       name: "Train",
       icon: <LiaChalkboardTeacherSolid />,
+      style: { font: "text-3xl" },
       onClick: () => (window.location.href = "/"),
     },
     evaluate: {
       name: "Evaluate",
       icon: <PiGauge />,
+      style: { font: "text-3xl" },
       onClick: () => (window.location.href = "/"),
     },
   };

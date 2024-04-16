@@ -12,21 +12,25 @@ const Menu = ({ openMenu, menu, children }) => {
     Main: {
       name: "Main",
       icon: <FaHome />,
+      style: { menu: true, font: "text-3xl" },
       onClick: () => (window.location.href = "/"),
     },
     CDA: {
       name: "CDA",
       icon: <FaLaptopCode />,
+      style: { menu: true, font: "text-3xl" },
       onClick: () => (window.location.href = "/CDA"),
     },
     CMT: {
       name: "CMT",
       icon: <LiaChalkboardTeacherSolid />,
+      style: { menu: true, font: "text-3xl" },
       onClick: () => (window.location.href = "/CMT"),
     },
     Settings: {
       name: "Settings",
       icon: <IoMdSettings />,
+      style: { menu: true, font: "text-3xl" },
       onClick: () => (window.location.href = "/Settings"),
     },
   };

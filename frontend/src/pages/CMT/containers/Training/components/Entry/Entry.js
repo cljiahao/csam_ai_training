@@ -34,6 +34,7 @@ const Entry = ({ refresh }) => {
   const button_info = {
     name: "Refresh",
     icon: <TbRefresh />,
+    style: { font: "text-xl" },
     onClick: () => refresh(),
   };
 
@@ -55,7 +56,7 @@ const Entry = ({ refresh }) => {
           selected={drop.folder.selected}
         />
         <div className="flex-center h-14">
-          <Button button_info={button_info} length={4} />
+          <Button button_info={button_info} />
         </div>
       </div>
     </div>

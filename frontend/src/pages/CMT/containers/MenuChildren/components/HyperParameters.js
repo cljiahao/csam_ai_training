@@ -32,6 +32,7 @@ const HyperParameters = ({ refresh }) => {
   const button_info = {
     name: "Refresh",
     icon: <TbRefresh />,
+    style: { font: "text-xl" },
     onClick: () => refresh(),
   };
 
@@ -66,12 +67,14 @@ const HyperParameters = ({ refresh }) => {
           selected={drop.model.selected}
         />
         <div className="flex-center h-14">
-          <Button button_info={button_info} length={4} />
+          <Button button_info={button_info} />
         </div>
       </div>
       <div className="grid w-full grid-cols-2">
         {Object.keys(input_info).map((key) => (
-          <Input key={key} name={key} input_info={input_info[key]} />
+          <div className="h-16">
+            <Input key={key} name={key} input_info={input_info[key]} />
+          </div>
         ))}
       </div>
     </div>
