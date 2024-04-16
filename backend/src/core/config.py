@@ -20,14 +20,16 @@ class Settings:
     DB: str = os.getenv("DB", "tdd")
     DATABASE_URL = f"{DBTYPE}://{USER}:{PASSWORD}@{SERVER}:{PORT}/{DB}"
 
-    ORIGIN: list = json.loads(os.getenv("ORIGIN"))
+    CORS: list = json.loads(os.getenv("CORS"))
     PRASS_URL: str = os.getenv("PRASS_URL")
-    LOT_NO_COL: str = os.getenv("LOT_NO_COL")
-    CHIP_TYPE_COL: str = os.getenv("CHIP_TYPE_COL")
-    CHIPTYPE: str = os.getenv("CHIPTYPE")
+    LOT_COL: str = os.getenv("LOT_NO_COL")
+    ITEM_COL: str = os.getenv("CHIP_TYPE_COL")
+    ITEM: str = os.getenv("CHIPTYPE")
 
     REALTIMEDB: str = os.getenv("REALTIMEDB")
-    TABLEID: str = os.getenv("TABLEID")
+    TABLEID_AUG: str = os.getenv("TABLEID_AUG")
+    TABLEID_TRAIN: str = os.getenv("TABLEID_TRAIN")
+    TABLEID_EVAL: str = os.getenv("TABLEID_EVAL")
 
     # For Augment
     G_TYPES: list = ["G", "Good", "g", "good"]
