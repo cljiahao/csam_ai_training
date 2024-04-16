@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from apis.CDA.main import aug_process
-from core.read_json import write_config
+from core.read_write import write_json
 
 
 router = APIRouter()
@@ -19,7 +19,7 @@ class Response(BaseModel):
 def process_img(input: Response):
 
     try:
-        write_config("./core/json/trackbar.json", input.range)
+        write_json("./core/json/trackbar.json", input.range)
         aug_process(input)
         title = (
             "Bypass Completed,\n Dataset Created"

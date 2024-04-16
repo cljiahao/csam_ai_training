@@ -8,11 +8,13 @@ class Directory:
     base_path = os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     )
-    image_path = os.path.join(base_path, "images")
-    dataset_path = os.path.join(base_path, "dataset")
-    eval_path = os.path.join(base_path, "evaluation")
-    datasend_path = os.path.join(base_path, "datasend")
-    models_path = os.path.join(base_path, "models")
+    data_path = os.path.join(base_path, "data")
+
+    image_path = os.path.join(data_path, "images")
+    dataset_path = os.path.join(data_path, "dataset")
+    eval_path = os.path.join(data_path, "evaluation")
+    data_send_path = os.path.join(data_path, "datasend")
+    models_path = os.path.join(data_path, "models")
     old_path = os.path.join(dataset_path, "old")
     temp_path = os.path.join(models_path, "temp")
 

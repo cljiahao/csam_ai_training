@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from core.read_json import read_config
+from core.read_write import read_json
 
 
 def mask(gray, img_shape, chip_type) -> list:
@@ -42,7 +42,7 @@ def mask_batch(gray, chip_type):
     morph : MatLike
         A masked image of non background
     """
-    adjust_batch = read_config("./core/json/adjust.json")[chip_type]["batch"]
+    adjust_batch = read_json("./core/json/adjust.json")[chip_type]["batch"]
     th, ret = cv2.threshold(gray, adjust_batch["threshold"], 255, cv2.THRESH_BINARY_INV)
     # Merge neighbouring chips to form a huge blob mask
     morph = cv2.morphologyEx(

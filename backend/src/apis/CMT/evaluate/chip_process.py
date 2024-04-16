@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 from core.config import settings
-from core.read_json import read_config
+from core.read_write import read_json
 from apis.utils.misc import time_print
 from apis.CMT.evaluate.batch_process import find_batch_no
 
@@ -109,7 +109,7 @@ def mask_chips(gray, chip_type):
     mask : MatLike
         A masked image of individual chips
     """
-    adjust_chip = read_config("./core/json/adjust.json")[chip_type]["chip"]
+    adjust_chip = read_json("./core/json/adjust.json")[chip_type]["chip"]
 
     th, ret = cv2.threshold(gray, adjust_chip["threshold"], 255, cv2.THRESH_BINARY_INV)
     morph = cv2.morphologyEx(

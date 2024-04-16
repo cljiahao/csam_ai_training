@@ -2,7 +2,7 @@ import time
 from tensorflow import keras
 from keras import callbacks as cb
 
-from core.read_json import read_config, write_config
+from core.read_write import read_json, write_json
 
 
 class TrainCallback(cb.Callback):
@@ -14,7 +14,7 @@ class TrainCallback(cb.Callback):
         self.start_time = time.time()
 
     def on_epoch_end(self, epoch, logs=None):
-        train_set = read_config("./core/json/train.json")
+        train_set = read_json("./core/json/train.json")
         f_end_data = train_set["Frontend"]
 
         if f_end_data["status"] == "complete":
@@ -36,4 +36,4 @@ class TrainCallback(cb.Callback):
         f_end_data["epoch_status"] = f"{f_end_data['epoch']}/{self.epochs}"
 
         train_set["Frontend"] = f_end_data
-        write_config("./core/json/train.json", train_set)
+        write_json("./core/json/train.json", train_set)

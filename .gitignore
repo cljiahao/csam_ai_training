@@ -3,11 +3,7 @@ __pycache__
 .env
 env
 csam_ai_training.db
-backend/images
-backend/dataset
-backend/evaluation
-backend/models
-backend/results
+backend/data
 
 # Frontend
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
