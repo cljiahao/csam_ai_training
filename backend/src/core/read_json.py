@@ -1,19 +1,37 @@
-import os
 import json
 
 
-def read_config(file_path):
+def read_json(file_path):
     with open(file_path, "r") as f:
-        config = json.load(f)
+        data = json.load(f)
 
-    return config
+    return data
 
 
-def write_config(file_path, dic):
-    config = read_config(file_path)
+def write_json(file_path, dic):
+    data = read_json(file_path)
 
     for k, v in dic.items():
-        config[k] = v
+        data[k] = v
 
     with open(file_path, "w") as f:
-        json.dump(config, f, indent=4)
+        json.dump(data, f, indent=4)
+
+
+def read_txt(file_path):
+    res = {}
+    with open(file_path, "r") as f:
+        data = f.readlines()
+        for x in data:
+            key, value = x.split("\n")[0].split(" ")
+            res[key] = value
+
+    return res
+
+
+def write_txt(file_path, dic):
+    txt_str = ""
+    with open(file_path, "w") as f:
+        for value in dic.values():
+            txt_str += f"{value}|"
+        f.write(txt_str[:-1])
