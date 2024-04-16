@@ -7,7 +7,7 @@ from datetime import datetime as dt
 from apis.routes.CMT_folder_file import dire
 from apis.CMT.main import training
 from apis.CMT.training.dataset import create_image_dataset
-from core.read_json import read_config
+from core.read_write import read_json
 
 
 router = APIRouter()
@@ -44,5 +44,5 @@ async def train_model(selected: trainModel):
 
 @router.get("/current_epoch")
 def current_epoch():
-    train_set = read_config("./core/json/train.json")
+    train_set = read_json("./core/json/train.json")
     return train_set["Frontend"]

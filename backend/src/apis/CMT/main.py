@@ -7,7 +7,7 @@ from apis.utils.directory import dire
 from apis.CMT.training.architecture import callback, create_new_model
 from apis.CMT.evaluate.evaluate import evaluate
 from apis.CMT.evaluate.process import process
-from core.read_json import read_config, write_config
+from core.read_write import read_json, write_json
 
 
 async def training(sel, file_name, train_ds, train_info, validation_ds):
@@ -61,9 +61,9 @@ def evaluation(item, model, labels):
             elif type.lower() == "p":
                 process(path, item, key, results, model, labels)
 
-    train_set = read_config("./core/json/train.json")
+    train_set = read_json("./core/json/train.json")
     f_end_data = train_set["Frontend"]
     f_end_data["status"] = "complete"
-    write_config("./core/json/train.json", train_set)
+    write_json("./core/json/train.json", train_set)
 
     return results
