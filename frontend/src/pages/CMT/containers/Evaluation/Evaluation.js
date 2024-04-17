@@ -33,7 +33,7 @@ const Evaluation = ({ refresh }) => {
     <div className="flex flex-1 flex-col overflow-auto px-3">
       <div className="flex-between h-16 w-full gap-5 px-3">
         {Object.keys(button_info).map((key) => (
-          <Button name={key} button_info={button_info[key]} />
+          <Button key={key} name={key} button_info={button_info[key]} />
         ))}
       </div>
       <div className="flex h-full w-full overflow-auto rounded-2xl bg-white py-5 pl-5 shadow-lg">

@@ -7,7 +7,10 @@ const ImageCards = ({ name, data }) => {
       <div className="w-full">{name}</div>
       <div className="grid w-full grid-cols-8 gap-x-5 gap-y-3">
         {data.map((value) => (
-          <div className="flex-center flex-col rounded-xl border border-slate-300 text-base font-normal">
+          <div
+            key={value.name}
+            className="flex-center flex-col rounded-xl border border-slate-300 text-base font-normal"
+          >
             <img
               src={`${API}/get_image/${value.image_path}`}
               alt={value.name}
