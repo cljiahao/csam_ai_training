@@ -11,18 +11,13 @@ export const getItemType = async () => {
   return json;
 };
 
-export const zipModel = async (modelName) => {
-  const response = await fetch(`${API}/CMT/zip_model/`, {
+export const zipModel = async (model_path) => {
+  const resp = await fetch(`${API}/CMT/zip_model`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ modelname: modelName }),
+    body: JSON.stringify({ m_path: model_path }),
   });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.statusText}`);
-  }
-  const blob = await response.blob();
-  return blob;
+  return resp;
 };
