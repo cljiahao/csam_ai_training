@@ -68,7 +68,6 @@ function CMT() {
   }, [graph]);
 
   useEffect(() => {
-    console.log(outflow);
     if (outflow.status === "started") {
       startEval(outflow.model, drop.item.selected);
     }
