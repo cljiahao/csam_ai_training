@@ -31,4 +31,9 @@ async def zip_model(model: ModelName):
         zipf.write(txt_path, arcname=os.path.basename(txt_path)[16:])
         zipf.write(keras_path, arcname=os.path.basename(keras_path)[16:])
 
-    return FileResponse(zip_file_path, filename=os.path.basename(zip_file_path), media_type='application/zip')
+    return FileResponse(
+        zip_path,
+        filename=os.path.basename(zip_path),
+        media_type="application/zip",
+        background=BackgroundTask(os.remove, zip_path),
+    )
