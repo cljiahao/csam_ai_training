@@ -1,9 +1,8 @@
 import os
-from fastapi import HTTPException
 import requests
+from fastapi import HTTPException
 from datetime import datetime as dt
 
-from apis.utils.directory import dire
 from core.config import settings
 
 
@@ -31,6 +30,6 @@ def via_http(file_path):
 
     if int(resp.content) != os.stat(os.path.join(file_path)).st_size:
         raise HTTPException(
-            status_code=522,
+            status_code=540,
             detail=f"File did not send to file server.",
         )
