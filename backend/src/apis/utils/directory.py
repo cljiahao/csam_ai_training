@@ -15,8 +15,6 @@ class Directory:
     eval_path = os.path.join(data_path, "evaluation")
     data_send_path = os.path.join(data_path, "datasend")
     models_path = os.path.join(data_path, "models")
-    old_path = os.path.join(dataset_path, "old")
-    temp_path = os.path.join(models_path, "temp")
 
 
 dire = Directory
