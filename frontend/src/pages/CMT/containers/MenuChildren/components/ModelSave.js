@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
+import Swal from "sweetalert2";
 import { TbRefresh, TbCloudDownload } from "react-icons/tb";
 import { AppContext } from "../../../../../contexts/context";
-import { zipModel } from "../../../../../utils/api_misc";
-import Swal from "sweetalert2";
 import { saveAs } from "file-saver";
 
 import DropBox from "../../../../../common/components/DropBox";
 import Button from "../../../../../common/components/Button";
+import { zipModel } from "../../../../../utils/api_misc";
 
 const ModelSave = ({ refresh }) => {
   const { drop, setDrop } = useContext(AppContext);
@@ -21,12 +21,12 @@ const ModelSave = ({ refresh }) => {
     }));
   };
   const saveModel = async () => {
-    const modelName = drop.zip.selected.replace(/^temp\//, "");
-    try {
-      const blob = await zipModel(modelName);
-      saveAs(blob, `${modelName}.zip`);
-    } catch (error) {
-      console.error("Error while saving the model:", error);
+    const [, model_name] = drop.zip.selected.split("/");
+    const resp = await zipModel(drop.zip.selected);
+    if (resp.ok) {
+      const blob = await resp.blob();
+      saveAs(blob, `${model_name}.zip`);
+    } else {
       Swal.fire({
         title: "Error",
         text: "An error occurred while saving the model. Please try again.",
