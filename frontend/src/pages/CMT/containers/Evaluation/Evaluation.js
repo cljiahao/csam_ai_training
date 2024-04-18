@@ -14,13 +14,13 @@ const Evaluation = ({ refresh }) => {
     refresh: {
       name: "Refresh",
       icon: <TbRefresh />,
-      style: { font: "text-3xl" },
+      style: { font: "text-3xl", width: "w-full" },
       onClick: () => refresh(drop.item.selected),
     },
     outflow: {
       name: "Outflow",
       icon: <MdWrongLocation />,
-      style: { font: "text-3xl" },
+      style: { font: "text-3xl", width: "w-full" },
       onClick: () =>
         setTrigger((prevTrigger) => ({
           ...prevTrigger,

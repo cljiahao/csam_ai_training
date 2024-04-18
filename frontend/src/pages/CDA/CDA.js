@@ -111,26 +111,26 @@ function CDA() {
     random: {
       name: "Random",
       icon: <FaRandom />,
-      style: { font: "text-2xl" },
+      style: { font: "text-2xl", width:"w-full" },
       onClick: get_random_files,
     },
     save: {
       name: "Save",
       icon: <MdSave />,
-      style: { font: "text-2xl" },
+      style: { font: "text-2xl", width:"w-full" },
       onClick: update_range,
     },
     reset: {
       name: "Reset",
       icon: <GrPowerReset />,
-      style: { font: "text-2xl" },
+      style: { font: "text-2xl", width:"w-full" },
       onClick: get_trackbar,
     },
     process: {
       name: "Process",
       icon: <VscRunAll />,
       onClick: process_img,
-      style: { font: "text-2xl" },
+      style: { font: "text-2xl", width:"w-full" },
       disabled: state === "started" || Number(entry.random) < 100,
     },
   };
