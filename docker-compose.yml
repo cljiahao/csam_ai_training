@@ -19,6 +19,8 @@ services:
       target: prod
     ports:
       - "3101"
+    environment:
+      REACT_APP_API: http://api.localhost
   nginx:
     depends_on:
       - api

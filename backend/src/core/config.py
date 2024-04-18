@@ -1,24 +1,14 @@
 import os
 import json
-from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path)
+load_dotenv(dotenv_path=find_dotenv())
 
 
 class Settings:
     PROJECT_NAME: str = "CSAM AI TRAINING"
     PROJECT_VERSION: str = "1.0.0"
-
-    DBTYPE: str = os.getenv("DBTYPE")
-    USER: str = os.getenv("USER")
-    PASSWORD = os.getenv("PASSWORD")
-    SERVER: str = os.getenv("SERVER", "localhost")
-    PORT: str = os.getenv("PORT", 5432)  # default postgres port is 5432
-    DB: str = os.getenv("DB", "tdd")
-    DATABASE_URL = f"{DBTYPE}://{USER}:{PASSWORD}@{SERVER}:{PORT}/{DB}"
 
     CORS: list = json.loads(os.getenv("CORS"))
     PRASS_URL: str = os.getenv("PRASS_URL")
