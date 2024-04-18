@@ -6,12 +6,10 @@ const Verbose = () => {
   const { graph, trigger, setTrigger } = useContext(AppContext);
 
   const epochs =
-  graph.status === "complete"
-    ? graph.graph.length === 0
-      ? [{ "Please start a new Training": "Press the button to start" }]
-      : [graph.graph[graph.graph.length - 1]]
-    : graph.graph.length === 0
-      ? [{ Awaiting: " ..." }]
+    graph.graph.length === 0
+      ? graph.status === "complete"
+        ? [{ "Please start a new Training": "Press the button to start" }]
+        : [{ Awaiting: " ..." }]
       : graph.graph;
 
   return (
@@ -20,8 +18,8 @@ const Verbose = () => {
         {trigger.expand ? (
           epochs.map((dict) => {
             let line = Object.keys(dict)
-            .filter((key) => key !== "epoch")
-            .map((key) => `${key}: ${dict[key]}`);
+              .filter((key) => key !== "epoch")
+              .map((key) => `${key}: ${dict[key]}`);
             return (
               <span key={line} className="pt-1">
                 {line.join(", ")}

@@ -72,8 +72,8 @@ const HyperParameters = ({ refresh }) => {
       </div>
       <div className="grid w-full grid-cols-2">
         {Object.keys(input_info).map((key) => (
-          <div className="h-16">
-            <Input key={key} name={key} input_info={input_info[key]} />
+          <div key={key} className="h-16">
+            <Input name={key} input_info={input_info[key]} />
           </div>
         ))}
       </div>
