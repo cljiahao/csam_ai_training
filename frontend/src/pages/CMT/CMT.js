@@ -14,7 +14,7 @@ import {
   initialEvaluation,
 } from "../../core/config";
 import Menu from "../../common/containers/Menu/Menu";
-import NavBar from "../../common/components/NavBar";
+import NavBar from "../../common/containers//NavBar/NavBar";
 import Training from "./containers/Training/Training";
 import Evaluation from "./containers/Evaluation/Evaluation";
 import Outflow from "./containers/Evaluation/components/Outflow/Outflow";

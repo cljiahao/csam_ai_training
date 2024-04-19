@@ -5,7 +5,7 @@ import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { IoMdSettings } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
 
-import NavBar from "../../components/NavBar";
+import NavBar from "../NavBar/NavBar";
 
 const Menu = ({ openMenu, menu, children }) => {
   const nav_info = {
@@ -44,7 +44,7 @@ const Menu = ({ openMenu, menu, children }) => {
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
-      <div className="absolute left-0 top-0 flex h-screen w-full flex-col bg-gray-500">
+      <div className="absolute left-0 top-0 flex h-screen w-full flex-col border-b-2 border-slate-400 bg-gray-500">
         <NavBar openMenu={openMenu} button_info={nav_info} menu={true} />
         <div className="w-full">{children}</div>
       </div>
