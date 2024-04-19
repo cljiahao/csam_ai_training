@@ -6,7 +6,7 @@ import { saveAs } from "file-saver";
 
 import DropBox from "../../../../../common/components/DropBox";
 import Button from "../../../../../common/components/Button";
-import { zipModel } from "../../../../../utils/api_misc";
+import { zipModel } from "../../../utils/api_misc";
 
 const ModelSave = ({ refresh }) => {
   const { drop, setDrop } = useContext(AppContext);
