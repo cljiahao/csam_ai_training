@@ -1,22 +1,33 @@
-version: "3.9"
 services:
   api:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+    image: "10.50.0.7:5001/csam_ai_training/api:1.0.0"
     volumes:
       - ./backend/data:/api/data
-      - ./backend/src/core:/api/src/core
+      - ./backend/conf:/api/conf
     ports:
       - "8101"
+    environment:
+      CORS: ${CORS}
+      PRASS_URL: ${PRASS_URL}
+      LOT_COL: ${LOT_COL}
+      ITEM_COL: ${ITEM_COL}
+      ITEM: ${ITEM}
+      REALTIMEDB: ${REALTIMEDB}
+      TABLEID_AUG: ${TABLEID_AUG}
+      TABLEID_TRAIN: ${TABLEID_TRAIN}
+      TABLEID_EVAL: ${TABLEID_EVAL}
     # deploy:
     #   mode: replicated
     #   replicas: 3
   app:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: prod
+      # context: ./frontend
+      # dockerfile: Dockerfile
+      # target: prod
+    image: "10.50.0.7:5001/csam_ai_training/app:1.0.0"
     ports:
       - "3101"
     environment:
@@ -25,8 +36,9 @@ services:
     depends_on:
       - api
     restart: always
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./nginx
+    image: "10.50.0.7:5001/csam_ai_training/nginx:1.0.0"
     ports:
       - "80:80"
