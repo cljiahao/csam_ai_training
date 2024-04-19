@@ -40,7 +40,7 @@ const Button = ({ name, button_info }) => {
   return (
     <div className="flex-center h-full font-semibold">
       <button
-        className={`flex-center group h-[75%] w-full gap-2 p-3 hover:text-white disabled:cursor-not-allowed disabled:bg-red-300 
+        className={`flex-center group h-[75%] gap-2 p-3 hover:text-white disabled:cursor-not-allowed disabled:bg-red-300 
         ${font.button} ${
           button_info.style?.menu ? "" : "bg-blue-400 hover:bg-blue-600"
         } ${circle} ${button_info.style?.width}`}

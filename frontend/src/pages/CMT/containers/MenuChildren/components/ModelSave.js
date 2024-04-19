@@ -40,13 +40,13 @@ const ModelSave = ({ refresh }) => {
     {
       name: "Refresh",
       icon: <TbRefresh />,
-      style: { font: "text-xl" },
+      style: { font: "text-xl", width: "w-full" },
       onClick: () => refresh(),
     },
     {
       name: "Save",
       icon: <TbCloudDownload />,
-      style: { font: "text-xl" },
+      style: { font: "text-xl", width: "w-full" },
       onClick: saveModel,
     },
   ];

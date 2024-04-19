@@ -34,7 +34,7 @@ const Entry = ({ refresh }) => {
   const button_info = {
     name: "Refresh",
     icon: <TbRefresh />,
-    style: { font: "text-xl" },
+    style: { font: "text-xl", width: "w-full" },
     onClick: () => refresh(),
   };
 
