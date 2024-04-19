@@ -19,6 +19,21 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
+def create_folders():
+    if not os.path.exists(dire.image_path):
+        os.makedirs(dire.image_path)
+    if not os.path.exists(dire.eval_path):
+        os.makedirs(dire.eval_path)
+    for i in ["base", "temp"]:
+        if not os.path.exists(os.path.join(dire.models_path, i)):
+            os.makedirs(os.path.join(dire.models_path, i))
+    if not os.path.exists(dire.conf_path):
+        os.makedirs(dire.conf_path)
+    for i in ["json"]:
+        if not os.path.exists(os.path.join(dire.conf_path, i)):
+            os.makedirs(os.path.join(dire.conf_path, i))
+
+
 def configure_cors(app):
     origins = settings.CORS
 
@@ -36,28 +51,10 @@ def include_router(app):
 
 
 def configure_staticfiles(app):
-
-    if not os.path.exists(dire.image_path):
-        os.makedirs(dire.image_path)
-    if not os.path.exists(dire.eval_path):
-        os.makedirs(dire.eval_path)
-    for i in ["base", "temp"]:
-        if not os.path.exists(os.path.join(dire.models_path, i)):
-            os.makedirs(os.path.join(dire.models_path, i))
     app.mount(
         "/images",
         StaticFiles(directory=dire.image_path),
         name="images",
-    )
-    app.mount(
-        "/evaluation",
-        StaticFiles(directory=dire.eval_path),
-        name="evaluation",
-    )
-    app.mount(
-        "/models",
-        StaticFiles(directory=dire.models_path),
-        name="models",
     )
 
 

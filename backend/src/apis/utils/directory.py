@@ -5,9 +5,10 @@ from shutil import make_archive, rmtree
 
 
 class Directory:
-    base_path = os.path.dirname(
-        os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    )
+    src_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    base_path = os.path.dirname(src_path)
+
+    conf_path = os.path.join(base_path, "conf")
     data_path = os.path.join(base_path, "data")
 
     image_path = os.path.join(data_path, "images")
