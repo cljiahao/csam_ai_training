@@ -24,7 +24,56 @@ const initialParameters = {
   callbacks: {},
 };
 
-const initialRange = { input: {}, slider: {} };
+const initialAugRange = {
+  hsv: {
+    "Low H": 1,
+    "High H": 255,
+    "Low S": 1,
+    "High S": 255,
+    "Low V": 15,
+    "High V": 255,
+  },
+  mask: {
+    Thresh: 1,
+    Erode_x: 1,
+    Erode_y: 1,
+  },
+};
+
+const initialSetRange = {
+  input: {
+    batch: {
+      threshold: 1,
+      close_x: 1,
+      close_y: 1,
+      erode_x: 1,
+      erode_y: 1,
+    },
+    chip: {
+      threshold: 1,
+      close_x: 1,
+      close_y: 1,
+      erode_x: 1,
+      erode_y: 1,
+    },
+  },
+  slider: {
+    batch: {
+      threshold: 1,
+      close_x: 1,
+      close_y: 1,
+      erode_x: 1,
+      erode_y: 1,
+    },
+    chip: {
+      threshold: 1,
+      close_x: 1,
+      close_y: 1,
+      erode_x: 1,
+      erode_y: 1,
+    },
+  },
+};
 
 const initialTable = {
   head1: {
@@ -54,7 +103,8 @@ export {
   initialOutflow,
   initialParameters,
   initialRandom,
-  initialRange,
+  initialAugRange,
+  initialSetRange,
   initialTable,
   initialTrigger,
 };
