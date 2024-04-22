@@ -21,15 +21,20 @@ async def zip_model(model: ModelName):
 
     txt_path = f"{model_base_path}.txt"
     keras_path = f"{model_base_path}.h5"
+    settings_path = os.path.join(dire.json_path, "settings.json")
 
     if not os.path.exists(txt_path) or not os.path.exists(keras_path):
         raise HTTPException(status_code=525, detail="Model files not found")
+
+    if not os.path.exists(settings_path):
+        raise HTTPException(status_code=525, detail="Settings files not found")
 
     zip_path = f"{model_base_path}.zip"
 
     with ZipFile(zip_path, "w") as zipf:
         zipf.write(txt_path, arcname=os.path.basename(txt_path)[16:])
         zipf.write(keras_path, arcname=os.path.basename(keras_path)[16:])
+        zipf.write(settings_path, arcname=os.path.basename(settings_path))
 
     return FileResponse(
         zip_path,
