@@ -61,9 +61,9 @@ def evaluation(item, model, labels):
             elif type.lower() == "p":
                 process(path, item, key, results, model, labels)
 
-    train_set = read_json("./core/json/train.json")
+    train_set = read_json(os.path.join(dire.json_path, "train.json"))
     f_end_data = train_set["Frontend"]
     f_end_data["status"] = "complete"
-    write_json("./core/json/train.json", train_set)
+    write_json(os.path.join(dire.json_path, "train.json"), train_set)
 
     return results
