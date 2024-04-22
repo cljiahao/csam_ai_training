@@ -1,15 +1,15 @@
 {
     "hsv": {
-        "Low H": 15,
-        "High H": 210,
-        "Low S": 35,
+        "Low H": 22,
+        "High H": 200,
+        "Low S": 0,
         "High S": 255,
-        "Low V": 35,
+        "Low V": 0,
         "High V": 255
     },
     "mask": {
         "Thresh": 230,
-        "Erode_x": 7,
-        "Erode_y": 7
+        "Erode_x": 2,
+        "Erode_y": 2
     }
 }
