@@ -176,7 +176,9 @@ function CMT() {
             trigger.expand ? "h-full" : "h-screen"
           }`}
         >
-          <NavBar openMenu={openMenu} button_info={button_info} />
+          <div className="w-full border-b-2 border-slate-400">
+            <NavBar openMenu={openMenu} button_info={button_info} />
+          </div>
           <Evaluation refresh={eval_refresh} />
           <Menu openMenu={openMenu} menu={trigger.menu}>
             <MenuChildren

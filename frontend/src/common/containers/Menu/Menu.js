@@ -45,7 +45,9 @@ const Menu = ({ openMenu, menu, children }) => {
       leaveTo="opacity-0"
     >
       <div className="absolute left-0 top-0 flex h-screen w-full flex-col border-b-2 border-slate-400 bg-gray-500">
-        <NavBar openMenu={openMenu} button_info={nav_info} menu={true} />
+        <div className="w-full border-b-2 border-slate-400">
+          <NavBar openMenu={openMenu} button_info={nav_info} menu={true} />
+        </div>
         <div className="w-full">{children}</div>
       </div>
     </Transition>

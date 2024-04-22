@@ -155,7 +155,9 @@ function CDA() {
           <Gallery />
         </section>
         <aside className="relative w-[60%] border-l-2 border-slate-400">
-          <NavBar openMenu={openMenu} button_info={button_info} />
+          <div className="w-full border-b-2 border-slate-400">
+            <NavBar openMenu={openMenu} button_info={button_info} />
+          </div>
           <Entry refresh={item_refresh} />
           <Trackbars />
           <Menu
