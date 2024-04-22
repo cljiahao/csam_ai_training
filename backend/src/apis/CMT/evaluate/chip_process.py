@@ -1,9 +1,11 @@
+import os
 import cv2
 import time
 import math
 import numpy as np
 from PIL import Image
 
+from apis.utils.directory import dire
 from core.config import settings
 from core.read_write import read_json
 from apis.utils.misc import time_print
@@ -109,14 +111,16 @@ def mask_chips(gray, chip_type):
     mask : MatLike
         A masked image of individual chips
     """
-    adjust_chip = read_json("./core/json/adjust.json")[chip_type]["chip"]
+    set_chip = read_json(os.path.join(dire.json_path, "settings.json"))[chip_type][
+        "chip"
+    ]
 
-    th, ret = cv2.threshold(gray, adjust_chip["threshold"], 255, cv2.THRESH_BINARY_INV)
+    th, ret = cv2.threshold(gray, set_chip["threshold"], 255, cv2.THRESH_BINARY_INV)
     morph = cv2.morphologyEx(
-        ret, cv2.MORPH_CLOSE, (adjust_chip["close_x"], adjust_chip["close_y"])
+        ret, cv2.MORPH_CLOSE, (set_chip["close_x"], set_chip["close_y"])
     )
     mask = cv2.erode(
-        morph, np.ones((adjust_chip["erode_x"], adjust_chip["erode_y"]), np.uint8)
+        morph, np.ones((set_chip["erode_x"], set_chip["erode_y"]), np.uint8)
     )
 
     return mask

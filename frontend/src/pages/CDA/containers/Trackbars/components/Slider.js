@@ -63,7 +63,7 @@ const Slider = ({ type, label }) => {
           className="w-full"
           id={label}
           type="range"
-          min="1"
+          min="0"
           max={label.split("_")[0] === "Erode" ? "50" : "255"}
           value={range.slider[type][label]}
           onChange={rangeChange}

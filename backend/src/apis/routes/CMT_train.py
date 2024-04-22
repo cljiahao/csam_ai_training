@@ -44,5 +44,5 @@ async def train_model(selected: trainModel):
 
 @router.get("/current_epoch")
 def current_epoch():
-    train_set = read_json("./core/json/train.json")
+    train_set = read_json(os.path.join(dire.json_path, "train.json"))
     return train_set["Frontend"]

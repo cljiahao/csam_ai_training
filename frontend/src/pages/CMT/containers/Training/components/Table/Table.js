@@ -7,7 +7,7 @@ const Table = () => {
     <table className="h-full w-full table-fixed justify-center text-center font-light">
       <thead className="h-10 border-b-2 border-slate-300 2xl:h-14">
         <tr>
-          <th className="w-24 border-r-2 border-slate-300 font-medium 2xl:w-36">
+          <th className="w-24 overflow-hidden border-r-2 border-slate-300 font-medium 2xl:w-36">
             {"Folder: "}
             <span className="font-semibold underline">{`${parameters.folder}`}</span>
           </th>

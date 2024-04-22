@@ -10,7 +10,7 @@ import {
   initialDrop,
   initialEntry,
   initialRandom,
-  initialRange,
+  initialAugRange,
   initialTrigger,
 } from "../../core/config";
 import Menu from "../../common/containers/Menu/Menu";
@@ -29,7 +29,7 @@ function CDA() {
   const [drop, setDrop] = useState(initialDrop);
   const [entry, setEntry] = useState(initialEntry);
   const [random, setRandom] = useState(initialRandom);
-  const [range, setRange] = useState(initialRange);
+  const [range, setRange] = useState(initialAugRange);
   const [trigger, setTrigger] = useState(initialTrigger);
 
   useEffect(() => {
@@ -155,7 +155,9 @@ function CDA() {
           <Gallery />
         </section>
         <aside className="relative w-[60%] border-l-2 border-slate-400">
-          <NavBar openMenu={openMenu} button_info={button_info} />
+          <div className="w-full border-b-2 border-slate-400">
+            <NavBar openMenu={openMenu} button_info={button_info} />
+          </div>
           <Entry refresh={item_refresh} />
           <Trackbars />
           <Menu

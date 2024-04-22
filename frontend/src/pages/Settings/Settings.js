@@ -2,11 +2,22 @@ import React, { useState } from "react";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { PiGauge } from "react-icons/pi";
 
+<<<<<<< Updated upstream
 import NavBar from "../../common/components/NavBar";
 import Menu from "../../common/containers/Menu/Menu";
 
 const Settings = () => {
   const [menu, setMenu] = useState(false);
+=======
+import { initialSetRange, initialTrigger } from "../../core/config";
+import Header from "./containers/Header/Header";
+import img_process from "./utils/img_process";
+
+const Settings = () => {
+  const [name, setName] = useState("");
+  const [trigger, setTrigger] = useState(initialTrigger);
+  const [range, setRange] = useState(initialSetRange);
+>>>>>>> Stashed changes
 
   const openMenu = async () => {
     setMenu(!menu);
