@@ -25,52 +25,69 @@ const initialParameters = {
 };
 
 const initialAugRange = {
-  hsv: {
-    "Low H": 1,
-    "High H": 255,
-    "Low S": 1,
-    "High S": 255,
-    "Low V": 15,
-    "High V": 255,
+  input: {
+    hsv: {
+      "Low H": 0,
+      "High H": 255,
+      "Low S": 0,
+      "High S": 255,
+      "Low V": 0,
+      "High V": 255,
+    },
+    mask: {
+      Thresh: 230,
+      Erode_x: 1,
+      Erode_y: 1,
+    },
   },
-  mask: {
-    Thresh: 1,
-    Erode_x: 1,
-    Erode_y: 1,
+  slider: {
+    hsv: {
+      "Low H": 0,
+      "High H": 255,
+      "Low S": 0,
+      "High S": 255,
+      "Low V": 0,
+      "High V": 255,
+    },
+    mask: {
+      Thresh: 230,
+      Erode_x: 1,
+      Erode_y: 1,
+    },
   },
 };
 
 const initialSetRange = {
   input: {
     batch: {
-      threshold: 1,
-      close_x: 1,
-      close_y: 1,
-      erode_x: 1,
-      erode_y: 1,
+      threshold: 0,
+      close_x: 0,
+      close_y: 0,
+      erode_x: 0,
+      erode_y: 0,
     },
     chip: {
-      threshold: 1,
-      close_x: 1,
-      close_y: 1,
-      erode_x: 1,
-      erode_y: 1,
+      threshold: 0,
+      close_x: 0,
+      close_y: 0,
+      erode_x: 0,
+      erode_y: 0,
     },
   },
   slider: {
     batch: {
-      threshold: 1,
-      close_x: 1,
-      close_y: 1,
-      erode_x: 1,
-      erode_y: 1,
+      threshold: 0,
+      close_x: 0,
+      close_y: 0,
+      erode_x: 0,
+      erode_y: 0,
     },
     chip: {
-      threshold: 1,
-      close_x: 1,
-      close_y: 1,
-      erode_x: 1,
-      erode_y: 1,
+      threshold: 0,
+      close_x: 0,
+      close_y: 0,
+      erode_x: 0,
+      erode_y: 0,
     },
   },
 };
