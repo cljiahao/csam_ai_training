@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 
+from apis.utils.directory import dire
 from core.read_write import read_json
 
 
@@ -38,7 +39,7 @@ def removed_bg(img):
 
 
 def bg_masking(img):
-    trackbar_set = read_json("./core/json/trackbar.json")
+    trackbar_set = read_json(os.path.join(dire.json_path, "trackbar.json"))
 
     background = np.where(
         (img[:, :, 0] >= 130) & (img[:, :, 1] >= 130) & (img[:, :, 2] >= 130)

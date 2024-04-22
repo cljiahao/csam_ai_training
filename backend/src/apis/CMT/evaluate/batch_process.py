@@ -1,6 +1,8 @@
+import os
 import cv2
 import numpy as np
 
+from apis.utils.directory import dire
 from core.read_write import read_json
 
 
@@ -42,16 +44,18 @@ def mask_batch(gray, chip_type):
     morph : MatLike
         A masked image of non background
     """
-    adjust_batch = read_json("./core/json/adjust.json")[chip_type]["batch"]
-    th, ret = cv2.threshold(gray, adjust_batch["threshold"], 255, cv2.THRESH_BINARY_INV)
+    set_batch = read_json(os.path.join(dire.json_path, "settings.json"))[chip_type][
+        "batch"
+    ]
+    th, ret = cv2.threshold(gray, set_batch["threshold"], 255, cv2.THRESH_BINARY_INV)
     # Merge neighbouring chips to form a huge blob mask
     morph = cv2.morphologyEx(
         ret,
         cv2.MORPH_CLOSE,
         np.ones(
             (
-                adjust_batch["close_y"],
-                adjust_batch["close_x"],
+                set_batch["close_y"],
+                set_batch["close_x"],
             ),
             np.uint8,
         ),
@@ -62,8 +66,8 @@ def mask_batch(gray, chip_type):
         cv2.MORPH_ERODE,
         np.ones(
             (
-                adjust_batch["erode_y"],
-                adjust_batch["erode_x"],
+                set_batch["erode_y"],
+                set_batch["erode_x"],
             ),
             np.uint8,
         ),

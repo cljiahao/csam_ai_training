@@ -9,8 +9,9 @@ class Directory:
     base_path = os.path.dirname(src_path)
 
     conf_path = os.path.join(base_path, "conf")
-    data_path = os.path.join(base_path, "data")
+    json_path = os.path.join(conf_path, "json")
 
+    data_path = os.path.join(base_path, "data")
     image_path = os.path.join(data_path, "images")
     dataset_path = os.path.join(data_path, "dataset")
     eval_path = os.path.join(data_path, "evaluation")
