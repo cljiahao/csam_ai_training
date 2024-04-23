@@ -1,4 +1,5 @@
-const API = process.env.REACT_APP_API;
+import { env } from "../env";
+const API = env.REACT_APP_API;
 
 const initialDrop = {
   folder: { list: [], selected: "" },
@@ -109,6 +110,7 @@ const initialTrigger = {
   menu: false,
   outflow: false,
   verbose: false,
+  image: null,
 };
 
 export {

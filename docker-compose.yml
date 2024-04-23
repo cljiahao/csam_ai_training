@@ -1,20 +1,19 @@
 services:
   api:
-    # build:
-    #   context: ./backend
-    #   dockerfile: Dockerfile
-    image: "10.50.0.7:5001/csam_ai_training/api:1.0.0"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      tags:
+        - "10.50.0.7:5001/csam_ai_training/api:latest"
+        - "10.50.0.7:5001/csam_ai_training/api:1.0.0"
     volumes:
       - ./backend/data:/api/data
       - ./backend/conf:/api/conf
     ports:
       - "8101"
     environment:
+      FASTAPI_ROOT: ${FASTAPI_ROOT}
       CORS: ${CORS}
-      PRASS_URL: ${PRASS_URL}
-      LOT_COL: ${LOT_COL}
-      ITEM_COL: ${ITEM_COL}
-      ITEM: ${ITEM}
       REALTIMEDB: ${REALTIMEDB}
       TABLEID_AUG: ${TABLEID_AUG}
       TABLEID_TRAIN: ${TABLEID_TRAIN}
@@ -24,21 +23,25 @@ services:
     #   replicas: 3
   app:
     build:
-      # context: ./frontend
-      # dockerfile: Dockerfile
-      # target: prod
-    image: "10.50.0.7:5001/csam_ai_training/app:1.0.0"
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+      tags:
+        - "10.50.0.7:5001/csam_ai_training/app:latest"
+        - "10.50.0.7:5001/csam_ai_training/apip:1.0.0"
     ports:
       - "3101"
     environment:
-      REACT_APP_API: http://api.localhost
+      REACT_APP_API: "http://mes-es21106/api"
   nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      tags:
+        - "10.50.0.7:5001/csam_ai_training/nginx:latest"
+        - "10.50.0.7:5001/csam_ai_training/nginx:1.0.0"
     depends_on:
       - api
     restart: always
-    # build:
-    #   dockerfile: Dockerfile
-    #   context: ./nginx
-    image: "10.50.0.7:5001/csam_ai_training/nginx:1.0.0"
     ports:
       - "80:80"
