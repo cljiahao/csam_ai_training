@@ -1,14 +1,6 @@
-import React, { useState } from "react";
-import { LiaChalkboardTeacherSolid } from "react-icons/lia";
-import { PiGauge } from "react-icons/pi";
+import React, { useEffect, useRef, useState } from "react";
+import { AppContext } from "../../contexts/context";
 
-<<<<<<< Updated upstream
-import NavBar from "../../common/components/NavBar";
-import Menu from "../../common/containers/Menu/Menu";
-
-const Settings = () => {
-  const [menu, setMenu] = useState(false);
-=======
 import { initialSetRange, initialTrigger } from "../../core/config";
 import Header from "./containers/Header/Header";
 import img_process from "./utils/img_process";
@@ -17,34 +9,51 @@ const Settings = () => {
   const [name, setName] = useState("");
   const [trigger, setTrigger] = useState(initialTrigger);
   const [range, setRange] = useState(initialSetRange);
->>>>>>> Stashed changes
 
-  const openMenu = async () => {
-    setMenu(!menu);
-  };
+  const batch_chip_ref = useRef({
+    batch: useRef(null),
+    chip: useRef(null),
+  });
 
-  const button_info = {
-    train: {
-      name: "Train",
-      icon: <LiaChalkboardTeacherSolid />,
-      style: { font: "text-3xl" },
-      onClick: () => (window.location.href = "/"),
-    },
-    evaluate: {
-      name: "Evaluate",
-      icon: <PiGauge />,
-      style: { font: "text-3xl" },
-      onClick: () => (window.location.href = "/"),
-    },
-  };
+  useEffect(() => {
+    const qty = img_process(
+      trigger.image,
+      range["slider"]["batch"],
+      batch_chip_ref.current["batch"],
+    );
+    console.log(qty);
+  }, [trigger, range]);
+
   return (
-    <main className="flex h-screen w-screen bg-amber-100">
-      <section className="w-full">test</section>
-      <aside className="relative w-[60%] border-l-2 border-slate-400">
-        <NavBar openMenu={openMenu} button_info={button_info} />
-        <Menu openMenu={openMenu} menu={menu} />
-      </aside>
-    </main>
+    <AppContext.Provider value={{ name, setName, trigger, setTrigger }}>
+      <main className="no-scrollbar flex h-screen max-h-screen w-screen flex-col overflow-auto bg-amber-100 px-2 text-sm 2xl:text-lg">
+        <Header />
+        <section className="flex h-full w-full">
+          {Object.keys(batch_chip_ref.current).map((key) => (
+            <div
+              key={key}
+              className={`flex h-full flex-col py-3 ${key === "batch" ? "w-full" : "w-[60%]"}`}
+            >
+              <div className="h-full w-full">
+                {trigger.image ? (
+                  <div className="h-80 2xl:h-[550px]">
+                    <canvas
+                      className="h-full w-full object-contain"
+                      ref={batch_chip_ref.current[key]}
+                    ></canvas>
+                  </div>
+                ) : (
+                  <div className="m-auto mx-5 h-full rounded-xl border-4 border-dashed border-gray-400 bg-gray-100" />
+                )}
+              </div>
+              <aside className="flex-center h-full w-full">
+                Work In Progress
+              </aside>
+            </div>
+          ))}
+        </section>
+      </main>
+    </AppContext.Provider>
   );
 };
 
