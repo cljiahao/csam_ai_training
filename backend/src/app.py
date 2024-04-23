@@ -59,7 +59,11 @@ def configure_staticfiles(app):
 
 
 def start_application():
-    app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version=settings.PROJECT_VERSION,
+        root_path=settings.FASTAPI_ROOT,
+    )
     create_tables()
     configure_cors(app)
     include_router(app)

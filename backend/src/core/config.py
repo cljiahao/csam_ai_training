@@ -10,11 +10,8 @@ class Settings:
     PROJECT_NAME: str = "CSAM AI TRAINING"
     PROJECT_VERSION: str = "1.0.0"
 
+    FASTAPI_ROOT: str = os.getenv("FASTAPI_ROOT")
     CORS: list = json.loads(os.getenv("CORS"))
-    PRASS_URL: str = os.getenv("PRASS_URL")
-    LOT_COL: str = os.getenv("LOT_NO_COL")
-    ITEM_COL: str = os.getenv("CHIP_TYPE_COL")
-    ITEM: str = os.getenv("CHIPTYPE")
 
     REALTIMEDB: str = os.getenv("REALTIMEDB")
     TABLEID_AUG: str = os.getenv("TABLEID_AUG")
