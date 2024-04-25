@@ -35,6 +35,14 @@ async def train_model(selected: trainModel):
         for i, cat in enumerate(train_info["classes"]):
             f.write(f"{i} {cat}\n")
 
+    # Delete old models file if folder more than 20
+    temp_path = os.path.join(dire.models_path, "temp")
+    folders = os.listdir(temp_path)
+    if 20 < len(folders):
+        to_del = folders[:2]
+        for j in to_del:
+            os.remove(os.path.join(temp_path, j))
+
     # Reset json file if error
     train_set = read_json(os.path.join(dire.json_path, "train.json"))
     train_set["Frontend"]["status"] = "complete"
