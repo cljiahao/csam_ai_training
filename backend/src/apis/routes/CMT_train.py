@@ -7,7 +7,7 @@ from datetime import datetime as dt
 from apis.routes.CMT_folder_file import dire
 from apis.CMT.main import training
 from apis.CMT.training.dataset import create_image_dataset
-from core.read_write import read_json
+from core.read_write import read_json, write_json
 
 
 router = APIRouter()
@@ -34,6 +34,11 @@ async def train_model(selected: trainModel):
     with open(os.path.join(dire.models_path, "temp", f"{file_name}.txt"), "w") as f:
         for i, cat in enumerate(train_info["classes"]):
             f.write(f"{i} {cat}\n")
+
+    # Reset json file if error
+    train_set = read_json(os.path.join(dire.json_path, "train.json"))
+    train_set["Frontend"]["status"] = "complete"
+    write_json(os.path.join(dire.json_path, "train.json"), train_set)
 
     asyncio.run_coroutine_threadsafe(
         training(selected, file_name, train_ds, train_info, validation_ds),
