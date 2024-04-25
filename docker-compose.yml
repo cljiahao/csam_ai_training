@@ -1,5 +1,6 @@
 services:
   api:
+    # image: "10.50.0.7:5001/csam_ai_training/api:latest"
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -12,7 +13,7 @@ services:
     ports:
       - "8101"
     environment:
-      FASTAPI_ROOT: ${FASTAPI_ROOT}
+      FASTAPI_ROOT: ${FASTAPI_ROOT}/
       CORS: ${CORS}
       REALTIMEDB: ${REALTIMEDB}
       TABLEID_AUG: ${TABLEID_AUG}
@@ -22,18 +23,20 @@ services:
     #   mode: replicated
     #   replicas: 3
   app:
+    # image: "10.50.0.7:5001/csam_ai_training/app:latest"
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: prod
       tags:
         - "10.50.0.7:5001/csam_ai_training/app:latest"
-        - "10.50.0.7:5001/csam_ai_training/apip:1.0.0"
+        - "10.50.0.7:5001/csam_ai_training/app:1.0.0"
     ports:
       - "3101"
     environment:
-      REACT_APP_API: "http://mes-es21106/api"
+      REACT_APP_API: ${PC_NAME}${FASTAPI_ROOT}
   nginx:
+    # image: "10.50.0.7:5001/csam_ai_training/nginx:latest"
     build:
       context: ./nginx
       dockerfile: Dockerfile
@@ -44,4 +47,4 @@ services:
       - api
     restart: always
     ports:
-      - "80:80"
+      - "8080:80"
