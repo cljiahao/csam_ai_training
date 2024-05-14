@@ -81,7 +81,7 @@ function CMT() {
   };
 
   const item_refresh = async () => {
-    const json = await getItemType();
+    const json = await getItemType("CMT");
     setDrop((prevDrop) => ({
       ...prevDrop,
       item: { list: json, selected: "" },

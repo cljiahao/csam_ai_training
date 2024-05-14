@@ -1,7 +1,7 @@
 import { API } from "../core/config";
 
-export const getItemType = async () => {
-  const resp = await fetch(`${API}/CMT/item_type`, {
+export const getItemType = async (type) => {
+  const resp = await fetch(`${API}/${type}/item_type`, {
     method: "GET",
     headers: {
       Accept: "application/json",
