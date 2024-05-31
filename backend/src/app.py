@@ -52,9 +52,9 @@ def include_router(app):
 
 def configure_staticfiles(app):
     app.mount(
-        "/images",
-        StaticFiles(directory=dire.image_path),
-        name="images",
+        "/data",
+        StaticFiles(directory=dire.data_path),
+        name="data",
     )
 
 
@@ -65,6 +65,7 @@ def start_application():
         root_path=settings.FASTAPI_ROOT,
     )
     create_tables()
+    create_folders()
     configure_cors(app)
     include_router(app)
     configure_staticfiles(app)
