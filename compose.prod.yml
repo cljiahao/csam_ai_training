@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: prod
+    volumes:
+      - ./backend/data:/api/data
+      - ./backend/conf:/api/conf
+    tags:
+      - "10.50.0.7:5001/csam_ai_training/app:latest"
+      - "10.50.0.7:5001/csam_ai_training/app:1.0.0"
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+      args:
+        - APP_PORT=${APP_PORT}
+        - NGINX_PORT=${NGINX_PORT}
+        - FASTAPI_ROOT=${FASTAPI_ROOT}
+        - PC_NAME=${PC_NAME}
+    tags:
+      - "10.50.0.7:5001/csam_ai_training/app:latest"
+      - "10.50.0.7:5001/csam_ai_training/app:1.0.0"
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    tags:
+      - "10.50.0.7:5001/csam_ai_training/nginx:latest"
+      - "10.50.0.7:5001/csam_ai_training/nginx:1.0.0"
