@@ -1,5 +1,4 @@
 import os
-import json
 
 from dotenv import load_dotenv, find_dotenv
 
@@ -10,9 +9,10 @@ class Settings:
     PROJECT_NAME: str = "CSAM AI TRAINING"
     PROJECT_VERSION: str = "1.0.0"
 
-    FASTAPI_ROOT: str = os.getenv("FASTAPI_ROOT")
-    CORS: list = json.loads(os.getenv("CORS"))
+    FASTAPI_ROOT: str = f"{os.getenv('FASTAPI_ROOT')}/"
+    CORS: list = [f"http://{os.getenv('PC_NAME')}:{os.getenv('NGINX_PORT')}"]
 
+    LOCAL_DB_PATH: str = os.getenv("LOCAL_DB_PATH")
     REALTIMEDB: str = os.getenv("REALTIMEDB")
     TABLEID_AUG: str = os.getenv("TABLEID_AUG")
     TABLEID_TRAIN: str = os.getenv("TABLEID_TRAIN")
