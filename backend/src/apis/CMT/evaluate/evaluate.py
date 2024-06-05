@@ -43,14 +43,14 @@ def predict(root, model, labels):
     pred = np.argmax(model.predict(pred_img), axis=1)
 
     res = {"res": {"counter": 0, "outflow": []}}
-
     for i, file_path in enumerate(pred_path):
-        if labels[pred[i]] != os.path.split(root)[-1]:
+        label = os.path.split(root)[-1]
+        if labels[pred[i]] != label:
             res["res"]["outflow"].append(
                 {
                     "image_path": file_path,
                     "name": os.path.split(file_path)[-1],
-                    "label": os.path.split(root)[-1],
+                    "label": label,
                     "pred": labels[pred[i]],
                 }
             )

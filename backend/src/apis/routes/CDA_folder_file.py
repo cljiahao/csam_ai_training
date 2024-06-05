@@ -25,6 +25,7 @@ class getRandomImg(BaseModel):
 @router.post("/random_img")
 def random_img(rand: getRandomImg):
     files_dict = get_files(rand.item)
+    path = os.path.join(dire.image_path, rand.item)
 
     for i in list(files_dict):
         if i in settings.BASE_TYPES + settings.G_TYPES:
@@ -37,7 +38,7 @@ def random_img(rand: getRandomImg):
             k, values = random.sample(sorted(values.items()), 1)[0]
             key = f"{key}/{k}"
         file_name = random.sample(values, 1)[0]
-        file_list.append(f"{rand.item}/{key}/{file_name}")
+        file_list.append(f"{path}/{key}/{file_name}")
 
     return file_list
 
@@ -63,7 +64,7 @@ def random_count(rand: getRandom):
             key = f"{key}/{k}"
         file_name = random.sample(values, 1)[0]
         file_count[fol] = {
-            "file_path": f"{rand.item}/{key}/{file_name}",
+            "file_path": f"{path}/{key}/{file_name}",
             "count": count,
         }
 
