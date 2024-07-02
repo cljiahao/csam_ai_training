@@ -59,37 +59,19 @@ const initialAugRange = {
 };
 
 const initialSetRange = {
-  input: {
-    batch: {
-      threshold: 0,
-      close_x: 0,
-      close_y: 0,
-      erode_x: 0,
-      erode_y: 0,
-    },
-    chip: {
-      threshold: 0,
-      close_x: 0,
-      close_y: 0,
-      erode_x: 0,
-      erode_y: 0,
-    },
+  batch: {
+    threshold: 0,
+    close_x: 0,
+    close_y: 0,
+    erode_x: 0,
+    erode_y: 0,
   },
-  slider: {
-    batch: {
-      threshold: 0,
-      close_x: 0,
-      close_y: 0,
-      erode_x: 0,
-      erode_y: 0,
-    },
-    chip: {
-      threshold: 0,
-      close_x: 0,
-      close_y: 0,
-      erode_x: 0,
-      erode_y: 0,
-    },
+  chip: {
+    threshold: 0,
+    close_x: 0,
+    close_y: 0,
+    erode_x: 0,
+    erode_y: 0,
   },
 };
 

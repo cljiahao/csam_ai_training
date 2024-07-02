@@ -11,8 +11,8 @@ export const getRange = async (name) => {
   return resp;
 };
 
-export const saveSettings = async ({ name, range }) => {
-  const resp = await fetch(`${API}/Settings/save_settings`, {
+export const saveParameters = async (name, range) => {
+  const resp = await fetch(`${API}/Settings/save_parameters`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

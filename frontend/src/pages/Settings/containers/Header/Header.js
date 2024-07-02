@@ -1,5 +1,7 @@
 import React, { useContext, useRef } from "react";
 import cv from "@techstark/opencv-js";
+import Swal from "sweetalert2";
+import { saveAs } from "file-saver";
 
 import { FaSave } from "react-icons/fa";
 import { FiUpload } from "react-icons/fi";
@@ -9,15 +11,12 @@ import { IoMdSettings } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
 import { AppContext } from "../../../../contexts/context";
 
-import Input from "../../../../common/components/Input";
-import Upload from "../../../../common/components/Upload";
-import Button from "../../../../common/components/Button";
+import { getRange, saveParameters } from "../../utils/api_settings";
+import UploadSave from "./components/UploadSave/UploadSave";
 import NavBar from "../../../../common/containers/NavBar/NavBar";
-import { getRange, saveSettings } from "../../utils/api_settings";
 
 const Header = () => {
-  const { name, setName, trigger, setTrigger, setRange } =
-    useContext(AppContext);
+  const { holder, setHolder, range, setRange } = useContext(AppContext);
   const img_ref = useRef(null);
 
   const process = async (e) => {
@@ -37,7 +36,7 @@ const Header = () => {
           let combine = new cv.Mat();
           for (let j = 0; j < channel.size() - 1; ++j) {
             const cn_thres = new cv.Mat();
-            cv.threshold(channel.get(j), cn_thres, 100, 255, cv.THRESH_BINARY);
+            cv.threshold(channel.get(j), cn_thres, 130, 255, cv.THRESH_BINARY);
             if (j === 0) combine = cn_thres;
             cv.bitwise_and(combine, cn_thres, combine);
           }
@@ -46,7 +45,7 @@ const Header = () => {
           const gray = new cv.Mat();
           cv.cvtColor(img, gray, cv.COLOR_BGR2GRAY);
 
-          setTrigger({ ...trigger, image: gray });
+          setHolder({ ...holder, image: gray });
         } catch (e) {
           console.log(e);
         }
@@ -54,10 +53,25 @@ const Header = () => {
     }
   };
 
-  const get_range = async () => {
-    const res = await getRange(name);
+  const save_parameters = async () => {
+    const res = await saveParameters(holder.name, range);
     if (res.ok) {
-      setRange(res.json());
+      const blob = await res.blob();
+      saveAs(blob, "settings.json");
+      Swal.fire({
+        title: "Saved",
+        text: "Settings Saved. Downloading File now.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
+  const get_range = async () => {
+    const res = await getRange(holder.name);
+    if (res.ok) {
+      const json = await res.json();
+      setRange(json);
     }
   };
 
@@ -75,15 +89,16 @@ const Header = () => {
   const input_info = {
     name: "Item Code",
     type: "text",
-    default: name,
-    onChange: (e) => setName(e.target.value),
+    default: holder.name,
+    onChange: (e) =>
+      setHolder((prevHold) => ({ ...prevHold, name: e.target.value })),
     onfocusout: get_range,
   };
   const button_info = {
     name: "Save",
     icon: <FaSave />,
     style: { font: "text-3xl" },
-    onClick: "",
+    onClick: save_parameters,
   };
   const nav_info = {
     Main: {
@@ -113,20 +128,16 @@ const Header = () => {
   };
 
   return (
-    <header className="flex-center h-20 w-full gap-3 2xl:h-28">
-      <div className="flex-center h-full w-full rounded-xl bg-red-200 px-2">
-        <img className="hidden" alt="input" ref={img_ref} />
-        <div className="w-48">
-          <Upload name="upload" upload_info={upload_info} />
-        </div>
-        <div className="h-[75%] w-full text-base 2xl:text-lg">
-          <Input name="item" input_info={input_info} />
-        </div>
-        <div className="w-44">
-          <Button name="save" button_info={button_info} />
-        </div>
+    <header className="grid h-full w-full grid-cols-5 gap-5">
+      <img className="hidden" alt="input" ref={img_ref} />
+      <div className="col-span-3 rounded-xl bg-red-200 px-2 py-2">
+        <UploadSave
+          upload_info={upload_info}
+          input_info={input_info}
+          button_info={button_info}
+        />
       </div>
-      <div className="h-full w-[60%] rounded-xl bg-red-200">
+      <div className="col-span-2 rounded-xl bg-red-200 px-2">
         <NavBar button_info={nav_info} />
       </div>
     </header>
