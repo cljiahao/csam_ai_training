@@ -4,40 +4,30 @@ x-defaults:
     restart: always
 
 services:
-  api:
+  backend:
     <<: *base
-    container_name: api
+    container_name: backend
     ports:
-      - ${API_PORT}
+      - "${DEV_API_PORT}:${DEV_API_PORT}"
     volumes:
       - ./backend/data:/api/data
-      - ./backend/conf:/api/conf
-    environment:
-      API_PORT: ${API_PORT}
-      NGINX_PORT: ${NGINX_PORT}
-      FASTAPI_ROOT: ${FASTAPI_ROOT}
-      PC_NAME: ${PC_NAME}
-      LOCAL_DB_PATH: ${LOCAL_DB_PATH}
-      REALTIMEDB: ${REALTIMEDB}
-      TABLEID_AUG: ${TABLEID_AUG}
-      TABLEID_TRAIN: ${TABLEID_TRAIN}
-      TABLEID_EVAL: ${TABLEID_EVAL}
-  app:
+      - ./backend/config:/api/config
+      - ./backend/log:/api/log
+    networks:
+      - load_balancer
+
+  frontend:
     <<: *base
-    container_name: app
+    container_name: frontend
     ports:
-      - ${APP_PORT}
-  nginx:
-    <<: *base
-    image: nginx
-    container_name: nginx
+      - "${DEV_APP_PORT}:${DEV_APP_PORT}"
+    env_file:
+      - .env
     depends_on:
-      - api
-      - app
-    volumes:
-      - ./nginx:/etc/nginx/templates
-    ports:
-      - ${NGINX_PORT}:80
-    environment:
-      API_PORT: ${API_PORT}
-      APP_PORT: ${APP_PORT}
+      - backend
+    networks:
+      - load_balancer
+
+networks:
+  load_balancer:
+    driver: bridge

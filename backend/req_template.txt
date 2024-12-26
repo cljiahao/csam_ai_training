@@ -1,0 +1,51 @@
+# API
+requests				            # HTTP request
+flask					            # MVC Framework
+django					            # MTV Framework
+fastapi					            # API Framework
+uvicorn					            # To run FastAPI
+python-multipart			        # Form Data Usage
+
+# Image/Video Manipulation
+opencv-python				        # Computer Vision (With GUI)
+opencv-contrib-python			    # Computer Vision Full Package (With GUI)
+opencv-python-headless			    # Computer Vision (Without GUI)
+opencv-contrib-python-headless		# Computer Vision Full Package (Without GUI)
+pillow					            # Processing Image
+
+# Data Science / Machine Learning
+matplotlib				            # Data Visual
+seaborn					            # Data Visual (for matplotlib)
+pandas					            # Data Analysis and Manipulation
+scikit-learn				        # ML algorithm
+pycaret					            # Low-code ML algorithm
+
+# Articial Intelligence
+tensorflow				            # Framework for Deep Learning AI Model
+torch					            # Framework for Deep Learning AI Model
+torchvision				            # Framework for Deep Learning AI Model
+torchaudio				            # Framework for Deep Learning AI Model
+transformers				        # Framework for Deep Learning AI Model
+NLTK					            # Framework for NLP Model
+langchain				            # Framework for LLM apps
+ultralytics				            # Object detect / segmentation
+
+# Database
+SQLAlchemy				            # Sql Engine (ORM)
+mysql-connector-python			    # Mysql
+
+# Security
+bcrypt					            # Hashing
+
+# Testing
+pytest					            # For Testing
+selenium				            # Browser Testing
+
+# Misc
+python-dotenv				        # Env File Reader
+virtualenv				            # Creating env
+jupyter 				            # Notebook
+pyinstaller				            # Convert python script to .exe format
+label-studio				        # Image Annotation
+
+

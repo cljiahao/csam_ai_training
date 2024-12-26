@@ -1,42 +1,35 @@
-ARG NODE=node:lts-alpine3.19
+# ARGs for image versions
+ARG NODE=node:20.17.0-alpine3.20
+ARG NGINX=nginx:alpine
 
-FROM $NODE as base
+# Stage 1: Base image for dependency installation
+FROM $NODE AS base
 WORKDIR /app
-COPY ./package*.json ./
-RUN npm install
+COPY ./package.json ./pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+
+# Stage 2: Build the application for staging and production
+FROM base AS build-stage
 COPY ./ ./
-COPY ./webpack.config.js ./node_modules/react-scripts/config/webpack.config.js
+RUN pnpm run build-stage
 
-FROM $NODE as build
-WORKDIR /app
-COPY --from=base ./app ./
-RUN npm run build
+FROM base AS build
+COPY ./ ./
+RUN pnpm run build
 
-FROM $NODE as prod
+# Development image
+FROM base AS dev
+COPY ./ ./
+CMD ["pnpm", "run", "dev"]
 
-WORKDIR /app
-COPY --from=build app/package*.json .
-COPY --from=build app/build ./build
-COPY --from=build app/index.js .
-RUN npm ci
-COPY ./webpack.config.js ./node_modules/react-scripts/config/webpack.config.js
-ARG PC_NAME
-ARG NGINX_PORT
-ARG FASTAPI_ROOT
-ARG APP_PORT
-ENV REACT_APP_API "http://$PC_NAME:$NGINX_PORT$FASTAPI_ROOT"
-ENV REACT_APP_PORT $APP_PORT
-EXPOSE $REACT_APP_PORT
-ENTRYPOINT npx react-inject-env set && node index
+# Staging image
+FROM base AS stage
+COPY ./.env.stage ./vite.config.js ./
+COPY --from=build-stage ./app/dist ./dist
+CMD ["pnpm", "run", "preview-stage"]
 
-FROM $NODE as dev
-WORKDIR /app
-COPY --from=base ./app ./
-ARG PC_NAME
-ARG NGINX_PORT
-ARG FASTAPI_ROOT
-ARG APP_PORT
-ENV REACT_APP_API "http://$PC_NAME:$NGINX_PORT$FASTAPI_ROOT"
-ENV REACT_APP_PORT $APP_PORT
-EXPOSE $REACT_APP_PORT
-ENTRYPOINT npx react-inject-env set && npm start
+# Production image:
+FROM $NGINX AS prod
+COPY --from=build ./app/dist ./usr/share/nginx/html
+COPY ./nginx.conf.template ./etc/nginx/templates/nginx.conf.template
+CMD ["nginx", "-g", "daemon off;"]

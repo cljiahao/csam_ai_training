@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 const plugin = require("tailwindcss/plugin");
 
-module.exports = {
-  important: true,
+export default {
   darkMode: ["class"],
-  content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,jsx}"],
+  prefix: "",
   theme: {
     screens: {
       xs: "400px",
@@ -28,37 +28,55 @@ module.exports = {
         inter: ["Inter", "sans-serif"],
       },
       colors: {
-        primary: "#2190FF",
-        black: {
-          DEFAULT: "#111111",
-          100: "#0D1117",
-          200: "#161B22",
-          300: "#1F2428",
-          400: "#242C38",
+        black: "#111111",
+        white: "#f5f5f5",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
-        grey: {
-          100: "#969BA5",
-          200: "#55616D",
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        white: {
-          DEFAULT: "#f5f5f5",
-          400: "#A3B3BC",
-          500: "#A4B8D5",
-          800: "#D0DFFF",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        purple: "#8C7CFF",
-        pink: "#ED5FBD",
-        violet: "#F16565",
-        orange: "#FF964B",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
       },
       animation: {
@@ -91,9 +109,9 @@ module.exports = {
               90: "90deg",
               120: "120deg",
               135: "135deg",
-            },
+            }
           ),
-        },
+        }
       );
     }),
   ],
