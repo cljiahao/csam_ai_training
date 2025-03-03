@@ -12,3 +12,8 @@ class ChipSettingsData(CoordsData):
 class BatchSettingsData(CoordsData):
     norm_data_width: float
     norm_data_height: float
+
+
+@dataclass
+class FileDataLists:
+    data_files: list[BatchSettingsData | ChipSettingsData]
