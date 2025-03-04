@@ -1,3 +1,6 @@
-import Home from "./home";
+import CsamMT from "./csammt";
+import CsamDA from "./csamda";
+import Home from "./Home";
+import Settings from "./settings";
 
-export { Home };
+export { CsamMT, CsamDA, Home, Settings };
