@@ -1,6 +1,6 @@
 import { FaHome } from "react-icons/fa";
-import { MdOutlineMoveToInbox } from "react-icons/md";
-import { LiaNetworkWiredSolid } from "react-icons/lia";
+import { FaLaptopCode } from "react-icons/fa";
+import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { IoMdSettings } from "react-icons/io";
 
 // Information for different sections or pages with descriptions
@@ -11,27 +11,33 @@ const navigation_info = [
     title: "Home Page",
     description: "Home Page",
     icon: FaHome,
+    component: "Home",
   },
   {
-    name: "Example1",
-    url: "/example1",
-    title: "Example - 1",
-    description: "Lead to Page Example 1.",
-    icon: MdOutlineMoveToInbox,
+    name: "CDA",
+    url: "/CDA",
+    title: "CSAM Defects Augmentations",
+    description:
+      "Website to generate more defective images using augmenetation.",
+    icon: FaLaptopCode,
+    component: "CsamDA",
   },
   {
-    name: "Example2",
-    url: "/example2",
-    title: "Example - 2",
-    description: "Lead to Page Example 2.",
-    icon: LiaNetworkWiredSolid,
+    name: "CMT",
+    url: "/CMT",
+    title: "CSAM Model Training",
+    description:
+      "Website for training AI models and evaluating models accuracy using evaluation points.",
+    icon: LiaChalkboardTeacherSolid,
+    component: "CsamMT",
   },
   {
-    name: "Example3",
-    url: "/example3",
-    title: "Example - 3",
-    description: "Lead to Page Example 3.",
+    name: "Settings",
+    url: "/Settings",
+    title: "Settings",
+    description: "Configurations webpage for user to edit parameters.",
     icon: IoMdSettings,
+    component: "Settings",
   },
 ];
 
