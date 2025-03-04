@@ -8,6 +8,13 @@ class ImageThreshold(Enum):
     BACKGROUND_THRESHOLD = 130
 
 
+class AugmentThreshold(Enum):
+    BASE_MULTIPLIER = 10
+    SMALL_SIZE_THRESHOLD = 5
+    BIG_SIZE_THRESHOLD = 40
+    MAX_FILE_COUNT = 30000
+
+
 class EvaluationThreshold(Enum):
     MIN_MASS_PRO_SET = 3
     MIN_PER_COLOR_SET = 10

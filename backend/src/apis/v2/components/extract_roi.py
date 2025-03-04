@@ -45,3 +45,49 @@ def get_hsv_mask_and_contour_area(roi_image: np.ndarray) -> tuple[np.ndarray, fl
     area_sum = np.count_nonzero(hsv_mask)
 
     return hsv_mask, area_sum
+
+
+def determine_size(area_sum: float, defect_area: float) -> str | None:
+    """Determines the size classification based on the area ratio."""
+    size_ratio = round(area_sum / defect_area * 100, 2)
+
+    if size_ratio == 0:
+        size = None
+    elif size_ratio < AugmentThreshold.SMALL_SIZE_THRESHOLD.value:
+        size = "small"
+    elif size_ratio > AugmentThreshold.BIG_SIZE_THRESHOLD.value:
+        size = "big"
+    else:
+        size = "medium"
+
+    return size
+
+
+def get_defect_color(defect: np.ndarray) -> str | None:
+    """Determine the most common color type of a defect, excluding black (background)."""
+
+    color_hexes, hex_count = np.unique(
+        defect.reshape(-1, defect.shape[-1]), axis=0, return_counts=True
+    )
+
+    # Remove black (background) color
+    color_hexes = np.delete(color_hexes, 0, axis=0)
+    hex_count = np.delete(hex_count, 0, axis=0)
+
+    if color_hexes.size == 0:
+        return None
+
+    # Find the most common color in the defect
+    most_common_color = color_hexes[np.argmax(hex_count)]
+
+    # Match the high count color to the csam_color dictionary
+    color_type = next(
+        (
+            csam_color.value.name
+            for csam_color in CSAMcolor
+            if np.array_equal(csam_color.value.bgr, most_common_color)
+        ),
+        None,
+    )
+
+    return color_type
