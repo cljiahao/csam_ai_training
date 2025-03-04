@@ -1,11 +1,31 @@
 import cv2
 import numpy as np
+from sqlalchemy.orm import Session
 
+from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from constants.colors import BGRColors
+from constants.image_thresholds import ImageThreshold
+from core.exceptions import MissingSettings
+from db.models.image_settings import ImageSettings
+from db.services.image_settings import ImageSettingsService
 from schemas.contours import ContourInfo, ContourList
 from utils.image_process.blob_handler import BlobHandler
 from utils.image_process.border_creator import BorderCreator
 from utils.image_process.contour_handler import ContourHandler
+from utils.image_process.mask_handler import MaskHandler
+
+
+def get_image_settings(item: str, db: Session) -> ImageSettings:
+
+    image_settings_service = ImageSettingsService(db)
+    image_settings = image_settings_service.read_settings(item)
+
+    if image_settings is None:
+        raise MissingSettings(
+            f"Image settings for '{item}' not found in API or database."
+        )
+
+    return image_settings
 
 
 def create_border(image: np.ndarray, border_pad: int = 0, crop_size: int = 0):
@@ -16,6 +36,30 @@ def create_border(image: np.ndarray, border_pad: int = 0, crop_size: int = 0):
     border_pad = border_creator.border_pad
 
     return border_creator.border_image, border_gray, border_blank, border_pad
+
+
+def create_contour_list(mask_image: np.ndarray) -> ContourList:
+    contours, _ = cv2.findContours(
+        mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    return ContourHandler.filter_and_build_contour_info(
+        contours, ImageThreshold.DENOISE_THRESHOLD.value
+    )
+
+
+def process_chip(
+    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+):
+    """Processes the chip data from the mask handler."""
+    chip_processor = ChipProcessor(
+        mask_handler,
+        image_settings.chip_erode,
+        image_settings.chip_close,
+        border_pad,
+        image_settings.crop_size,
+    )
+    return chip_processor
 
 
 def check_single(
