@@ -5,7 +5,7 @@ from dotenv import find_dotenv, load_dotenv
 
 def load_environment(env):
     """Load environment variables from .env files based on the environment."""
-    load_dotenv(dotenv_path=find_dotenv(".env.common"))
+    load_dotenv(dotenv_path=find_dotenv("../.env"))
     load_dotenv(dotenv_path=find_dotenv(f".env.{env}"))
 
 
@@ -33,7 +33,7 @@ def run_api():
     from core.logging import logger
 
     host = "0.0.0.0"
-    port = api_settings.API_PORT
+    port = api_settings.SERVER_API_PORT
     reload = common_settings.ENV_STAGE != "prod"
 
     logger.info(f"Starting server at http://{host}:{port} with reload={reload}")
