@@ -1,0 +1,68 @@
+import json
+from typing import Annotated
+from fastapi import APIRouter, UploadFile
+from fastapi import File, Form, Depends
+from sqlalchemy.orm import Session
+
+from apis.v2.helpers.HTTPExceptions import handle_exceptions
+from apis.v2.logic.base_image_creation import process_image_file
+from apis.v2.schemas.files import FileDataBatchDirectory
+from db.session import get_db
+
+router = APIRouter()
+
+
+def parse_form_data(
+    item: Annotated[str, Form(description="Item Type", example="GCM32ER71E106KA57")],
+    lot_no: Annotated[
+        str,
+        Form(
+            description="Lot Number",
+            pattern="[a-zA-Z0-9]{10}",
+            example="1234567890",
+        ),
+    ],
+    defect_batch_directory: Annotated[
+        str, Form(..., description="JSON string of FileDataBatchDirectory")
+    ],
+):
+    try:
+        # Convert JSON string to Pydantic model
+        defect_batch_directory = json.loads(defect_batch_directory)
+        defect_batch_directory = FileDataBatchDirectory(**defect_batch_directory)
+
+        # Return all extracted data
+        return {
+            "item": item,
+            "lot_no": lot_no,
+            "defect_batch_directory": defect_batch_directory,
+        }
+    except Exception as e:
+        raise ValueError(f"Invalid JSON: {str(e)}")
+
+
+@router.post(
+    "/process_image",
+    summary="Update local database with new user input",
+    operation_id="SaveLocal",
+)
+def start_defect_augment(
+    data: Annotated[dict, Depends(parse_form_data)],
+    file: Annotated[
+        UploadFile,
+        File(
+            description="Upload image file ('.jpg','.png')",
+            example="test.png",
+        ),
+    ],
+    db: Annotated[Session, Depends(get_db)],
+):
+    try:
+        item = data["item"]
+        lot_no = data["lot_no"]
+        defect_batch_directory = data["defect_batch_directory"]
+
+        process_image_file(item, lot_no, file, defect_batch_directory, db)
+        return True
+    except Exception as e:
+        handle_exceptions(e)
