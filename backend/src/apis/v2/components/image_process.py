@@ -6,10 +6,11 @@ from apis.v2.helpers.image_process_utils import (
     create_border,
     create_contour_list,
     get_image_settings,
-    process_chip,
 )
+from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
 from constants.chip_thresholds import ChipThreshold
+from db.models.image_settings import ImageSettings
 from schemas.contours import ContourList
 from utils.debug import timer
 from utils.image_process.mask_handler import MaskHandler
@@ -56,6 +57,20 @@ def process_csam_image(
         refined_contours_info_list,
         border_image,
     )
+
+
+def process_chip(
+    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+):
+    """Processes the chip data from the mask handler."""
+    chip_processor = ChipProcessor(
+        mask_handler,
+        image_settings.chip_erode,
+        image_settings.chip_close,
+        border_pad,
+        image_settings.crop_size,
+    )
+    return chip_processor
 
 
 @timer("Split and refining")
