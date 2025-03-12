@@ -10,12 +10,6 @@ class MaskHandlerInterface(ABC):
         pass
 
 
-class BatchProcessorInterface(ABC):
-    @abstractmethod
-    def find_batch_no(self, x: float, y: float) -> int:
-        pass
-
-
 class ChipProcessorInterface(ABC):
     @abstractmethod
     def rotate_chips(
