@@ -1,62 +1,19 @@
 import math
-import cv2
 import numpy as np
 
-from apis.v2.helpers.image_process_utils import check_single, create_border
+from apis.v2.helpers.image_process_utils import (
+    check_single,
+    create_border,
+    create_contour_list,
+)
 from constants.chip_thresholds import ChipThreshold
-from constants.image_thresholds import ImageThreshold
 from core.logging import logger
 from schemas.contours import ContourList
 from utils.debug import timer
-from utils.image_process.contour_handler import ContourHandler
 from utils.image_process.mask_handler import MaskHandler
 
 
-@timer("Auto Setting Finder Loop")
-def finder_loop(
-    image: np.ndarray, target_count: int, is_batch
-) -> tuple[int, int, ContourList]:
-
-    _, border_gray, border_blank, _ = create_border(image)
-
-    mask_handler = MaskHandler(border_gray)
-
-    # Parameter Search Loop
-    for erode_value in range(2, 50):
-        for close_value in range(2, 50):
-            mask_image = mask_handler.apply_morphology(erode_value, close_value)
-
-            contours, _ = cv2.findContours(
-                mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-            )
-
-            contour_info_list = ContourHandler.filter_and_build_contour_info(
-                contours, ImageThreshold.DENOISE_THRESHOLD.value
-            )
-
-            refined_contour_list = (
-                chip_crop_finder(contour_info_list, border_blank)
-                if not is_batch
-                else batch_finder(contour_info_list)
-            )
-
-            current_count = len(refined_contour_list.contours)
-            count_diff = target_count - current_count
-
-            if count_diff > 0:
-                break
-            if count_diff == 0:
-                logger.info(
-                    f"Best Parameter found for {'Batch' if is_batch else 'Chip'} - Erode : [{erode_value},{erode_value}], Close : [{close_value},{close_value}]"
-                )
-
-                return erode_value, close_value, refined_contour_list
-
-    raise ValueError(
-        f"Unable to match {target_count} for {'Batch' if is_batch else 'Chip'} in image"
-    )
-
-
+@timer("Auto Batch Setting Finder Loop")
 def batch_finder(
     contour_info_list: ContourList,
 ):
@@ -69,6 +26,7 @@ def batch_finder(
     return ContourList(contours=same_size_contours)
 
 
+@timer("Auto Chip and Crop Setting Finder Loop")
 def chip_crop_finder(
     contour_info_list: ContourList,
     border_blank: np.ndarray,
@@ -93,3 +51,41 @@ def chip_crop_finder(
     ]
 
     return ContourList(contours=refined_contours)
+
+
+def finder_loop(
+    image: np.ndarray, target_count: int, is_batch
+) -> tuple[int, int, ContourList]:
+
+    _, border_gray, border_blank, _ = create_border(image)
+
+    mask_handler = MaskHandler(border_gray)
+
+    # Parameter Search Loop
+    for erode_value in range(2, 50):
+        for close_value in range(2, 50):
+            mask_image = mask_handler.apply_morphology(erode_value, close_value)
+
+            contour_info_list = create_contour_list(mask_image)
+
+            refined_contour_list = (
+                chip_crop_finder(contour_info_list, border_blank)
+                if not is_batch
+                else batch_finder(contour_info_list)
+            )
+
+            current_count = len(refined_contour_list.contours)
+            count_diff = target_count - current_count
+
+            if count_diff > 0:
+                break
+            if count_diff == 0:
+                logger.info(
+                    f"Best Parameter found for {'Batch' if is_batch else 'Chip'} - Erode : [{erode_value},{erode_value}], Close : [{close_value},{close_value}]"
+                )
+
+                return erode_value, close_value, refined_contour_list
+
+    raise ValueError(
+        f"Unable to match {target_count} for {'Batch' if is_batch else 'Chip'} in image"
+    )
