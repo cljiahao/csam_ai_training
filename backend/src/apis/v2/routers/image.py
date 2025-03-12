@@ -5,7 +5,7 @@ from fastapi import File, Form, Depends
 from sqlalchemy.orm import Session
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
-from apis.v2.logic.base_image_creation import process_image_file
+from apis.v2.logic.eval_base_sets_creation import eval_base_image_sets_creation
 from apis.v2.schemas.files import FileDataBatchDirectory
 from db.session import get_db
 
@@ -62,7 +62,7 @@ def start_defect_augment(
         lot_no = data["lot_no"]
         defect_batch_directory = data["defect_batch_directory"]
 
-        process_image_file(item, lot_no, file, defect_batch_directory, db)
+        eval_base_image_sets_creation(item, lot_no, file, defect_batch_directory, db)
         return True
     except Exception as e:
         handle_exceptions(e)
