@@ -5,7 +5,13 @@ import { navigation_info } from "@/core/navigation";
 const UtilityPanel = ({ children }) => {
   return (
     <div className="flex-center h-full px-2">
-      <NavSheet nav_info={navigation_info}>{children}</NavSheet>
+      <NavSheet
+        nav_info={navigation_info.filter(
+          (nav) => nav.name.toLowerCase() != "cmt",
+        )}
+      >
+        {children}
+      </NavSheet>
     </div>
   );
 };
