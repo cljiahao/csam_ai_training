@@ -20,27 +20,34 @@ class EvalSetsService:
         self.mass_pro_repo = MassProEvalRepository(db)
         self.thousand_repo = ThousandEvalRepository(db)
 
-    def _read_eval_sets(self, item: str) -> EvalSets:
+    def read_eval_sets(self, item: str) -> EvalSets:
         """Service layer method to read eval sets"""
+        if not item:
+            raise InvalidInputError("Item cannot be empty.")
         filter_condition = {"item": item}
 
         return self.eval_sets_repo.read_eval_sets(filter_condition)
 
     def _read_or_create_eval_sets(self, item: str) -> EvalSets:
-        if not item:
-            raise InvalidInputError()
-        eval_sets = self._read_eval_sets(item)
+        eval_sets = self.read_eval_sets(item)
         if not eval_sets:
             eval_sets = self.eval_sets_repo.create_eval_sets({"item": item})
 
         return eval_sets
 
+    def _validate_eval_data_keys(
+        self, data: dict, valid_keys: set, eval_type: str
+    ) -> None:
+        """Validate the keys in eval data."""
+        invalid_keys = set(data) - valid_keys
+        if invalid_keys:
+            raise InvalidInputError(f"Unknown {eval_type} keys: {invalid_keys}")
+
     def create_color_eval(self, item: str, color_eval_data: dict) -> ColorsEval:
-        """Service layer method to create new or update color eval"""
-        if set(color_eval_data) - set([e.value for e in EvalColorNames]):
-            raise InvalidInputError(
-                f"Unknown Color keys: {set([e.value for e in EvalColorNames]) - set(color_eval_data)}"
-            )
+        """Service layer method to create new or update color eval."""
+        self._validate_eval_data_keys(
+            color_eval_data, {e.value for e in EvalColorNames}, "Color"
+        )
 
         eval_sets = self._read_or_create_eval_sets(item)
         data_condition = {"eval_sets_id": eval_sets.id}
@@ -49,15 +56,13 @@ class EvalSetsService:
             return self.colors_repo.update_color(data_condition, color_eval_data)
 
         color_eval_data.update({"eval_sets_id": eval_sets.id})
-
         return self.colors_repo.create_color(color_eval_data)
 
     def create_mass_pro_eval(self, item: str, mass_pro_eval_data: dict) -> MassProEval:
-        """Service layer method to create new or update mass pro eval"""
-        if not any(key in mass_pro_eval_data for key in ["plate_no", "no_of_chips"]):
-            raise InvalidInputError(
-                f"Unknown Mass Pro keys: {set(['plate_no', 'no_of_chips']) - set(mass_pro_eval_data)}"
-            )
+        """Service layer method to create new or update mass pro eval."""
+        self._validate_eval_data_keys(
+            mass_pro_eval_data, {"plate_no", "no_of_chips"}, "Mass Pro"
+        )
 
         eval_sets = self._read_or_create_eval_sets(item)
         data_condition = {"eval_sets_id": eval_sets.id}
@@ -71,11 +76,10 @@ class EvalSetsService:
         return self.mass_pro_repo.create_mass_pro(mass_pro_eval_data)
 
     def create_thousand_eval(self, item: str, thousand_eval_data: dict) -> ThousandEval:
-        """Service layer method to create new or update thousand eval"""
-        if set(thousand_eval_data) - set([e.value for e in EvalThousandNames]):
-            raise InvalidInputError(
-                f"Unknown Thousand keys: {set([e.value for e in EvalThousandNames]) - set(thousand_eval_data)}"
-            )
+        """Service layer method to create new or update thousand eval."""
+        self._validate_eval_data_keys(
+            thousand_eval_data, {e.value for e in EvalThousandNames}, "Thousand"
+        )
 
         eval_sets = self._read_or_create_eval_sets(item)
         data_condition = {"eval_sets_id": eval_sets.id}
@@ -86,5 +90,4 @@ class EvalSetsService:
             )
 
         thousand_eval_data.update({"eval_sets_id": eval_sets.id})
-
         return self.thousand_repo.create_thousand(thousand_eval_data)

@@ -1,44 +1,122 @@
 import random
-
-import cv2
-from apis.v2.components.extract_roi import (
-    create_focus_chip_mask,
-    get_hsv_mask_and_contour_area,
-    get_largest_info_and_mask,
-)
-from constants.colors import CSAMcolor
+from sqlalchemy.orm import Session
+from apis.v2.components.eval_augment import augment_ng_for_eval
+from apis.v2.helpers.processor.eval_processor import EvalProcessor
+from constants.tf_model import ClassLabel
+from core.directory_manager import directory_manager as dm
+from db.services.eval_sets import EvalSetsService
 from schemas.chips_data import ImageData
+from utils.debug import timer
+from utils.image_process.image_manager import ImageManager
 
 
-def augment_ng_for_eval(
-    defect_imdata_list: list[ImageData],
-    base_imdata_list: list[ImageData],
-) -> list[ImageData]:
+@timer("Create Evaluation sets")
+def create_evaluation_sets(
+    item: str,
+    plate_no: str,
+    image_data_list: list[ImageData],
+    defect_file_list: list[str],
+    db: Session,
+) -> tuple[list[ImageData], list[ImageData]]:
 
-    for base_image_data in base_imdata_list:
+    defect_imdata_list = [
+        image_data
+        for image_data in image_data_list
+        if image_data.file_name in defect_file_list
+    ]
 
-        if not base_image_data.rotated_image.flags.writeable:
-            base_image = base_image_data.rotated_image.copy()
-            base_image_data.rotated_image = base_image
+    eval_sets_service = EvalSetsService(db)
+    eval_processor = EvalProcessor(item, plate_no)
 
-        bin_image = create_focus_chip_mask(base_image)
-        _, largest_base_mask = get_largest_info_and_mask(bin_image)
+    if eval_processor.should_save_mass_pro():
 
-        defect_image_data = random.choice(defect_imdata_list)
-        defect_image = defect_image_data.rotated_image
-        defect_bin_image = create_focus_chip_mask(defect_image)
-        _, largest_defect_mask = get_largest_info_and_mask(defect_bin_image)
-
-        major_defect_roi = cv2.bitwise_and(
-            defect_image, defect_image, mask=largest_defect_mask
+        _save_mass_pro_images(
+            eval_processor, plate_no, image_data_list, defect_imdata_list
         )
-        defect_mask, _ = get_hsv_mask_and_contour_area(major_defect_roi)
-        impose_defect_mask = cv2.bitwise_and(largest_base_mask, defect_mask)
-        csam_color = random.choice([c.value for c in CSAMcolor])
 
-        base_image[impose_defect_mask > 0] = csam_color.bgr
+        eval_sets_service.create_mass_pro_eval(
+            item,
+            {
+                "plate_no": plate_no,
+                "no_of_chips": len(image_data_list),
+                "no_of_ng": len(defect_imdata_list),
+            },
+        )
+        return [], []
 
-        base_image_data.defect_color = csam_color.name
-        base_image_data.defect_size = defect_image_data.defect_size
+    temp_imdata_list = [
+        image_data
+        for image_data in image_data_list
+        if image_data.file_name not in defect_file_list
+    ]
+    random.shuffle(temp_imdata_list)
 
-    return base_imdata_list + defect_imdata_list
+    augmented_imdata_list, leftover_imdata_list = augment_ng_for_eval(
+        defect_imdata_list, temp_imdata_list
+    )
+
+    leftover_aug_imdata_list = _save_augmented_images(
+        eval_processor, augmented_imdata_list
+    )
+
+    eval_sets_service.create_color_eval(item, eval_processor.color_count)
+    eval_sets_service.create_thousand_eval(item, eval_processor.thousand_count)
+
+    return leftover_imdata_list, leftover_aug_imdata_list
+
+
+def _save_mass_pro_images(
+    eval_processor: EvalProcessor,
+    plate_no: str,
+    image_data_list: list[ImageData],
+    defect_imdata_list: list[ImageData],
+) -> None:
+    """Saves images into the Mass Production directory."""
+
+    file_dir = eval_processor.mass_pro_dir / plate_no
+
+    for mass_pro_name in [ClassLabel.TEMP.value, ClassLabel.NG.value]:
+        dm.create_directory(file_dir / mass_pro_name, create_parents=True)
+
+    for image_data in image_data_list:
+        ImageManager.save_image(
+            file_dir / ClassLabel.TEMP.value / image_data.file_name,
+            image_data.rotated_image,
+        )
+
+    for image_data in defect_imdata_list:
+        ImageManager.save_image(
+            file_dir / ClassLabel.NG.value / image_data.file_name,
+            image_data.rotated_image,
+        )
+
+
+def _save_augmented_images(
+    eval_processor: EvalProcessor, augmented_imdata_list: list[ImageData]
+) -> list[ImageData]:
+    """Saves augmented images into their respective directories (Color or Thousand sets)."""
+
+    leftover_aug_imdata_list = []
+
+    for augmented_image_data in augmented_imdata_list:
+        file_name = augmented_image_data.file_name
+        color = augmented_image_data.defect_color.lower()
+        size = augmented_image_data.defect_size.lower()
+        color_size = f"{color}_{size}"
+
+        if eval_processor.should_save_color(color_size) and random.random() < 0.5:
+            ImageManager.save_image(
+                eval_processor.color_dir / color_size / file_name,
+                augmented_image_data.rotated_image,
+            )
+            eval_processor.increment_color_count(color_size)
+        elif eval_processor.should_save_thousand(size):
+            ImageManager.save_image(
+                eval_processor.thousand_dir / size / file_name,
+                augmented_image_data.rotated_image,
+            )
+            eval_processor.increment_thousand_count(size)
+        else:
+            leftover_aug_imdata_list.append(augmented_image_data)
+
+    return leftover_aug_imdata_list
