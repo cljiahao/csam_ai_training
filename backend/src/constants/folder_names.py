@@ -9,5 +9,5 @@ class FolderNames(Enum):
     TRAIN = "train"
     VALIDATION = "validation"
     MASS_PRO = "mass_pro"
-    THOUSAND = "1000pcs"
+    THOUSANDS = "thousands"
     COLORS = "colors"

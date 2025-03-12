@@ -10,11 +10,11 @@ from constants.image_thresholds import (
     EvaluationThreshold,
 )
 from constants.tf_model import ClassLabel
-from core.directory import directory
 from db.services.eval_sets import EvalSetsService
 from schemas.chips_data import ImageData
 from utils.os_handle.file_manager import FileManager
 from utils.os_handle.image_manager import ImageManager
+from core.directory_manager import directory_manager as dm
 
 
 class EvalProcessor:
@@ -33,7 +33,7 @@ class EvalProcessor:
         self._create_defect_and_temp_list()
 
     def _initialize_directory(self) -> None:
-        eval_dir = directory.images_dir / FolderNames.EVAL.value / self.item
+        eval_dir = dm.images_dir / FolderNames.EVAL.value / self.item
         self.mass_lot_dir = eval_dir / FolderNames.MASS_PRO.value
         self.color_dir = eval_dir / FolderNames.COLORS.value
         self.thousand_dir = eval_dir / FolderNames.THOUSAND.value
