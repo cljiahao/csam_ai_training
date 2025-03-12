@@ -1,6 +1,23 @@
 from apis.v2.helpers.math_calculations import get_norm_coordinates
 from apis.v2.schemas.settings import BatchSettingsData, ChipSettingsData
 from schemas.contours import ContourList
+from utils.debug import timer
+
+
+@timer("Extract Batch Coords")
+def extract_batch_coords(
+    image_size: tuple[int, int], contour_info_list: ContourList
+) -> list[BatchSettingsData]:
+    """Extract batch coordinates from contour information."""
+    return _extract_coords(image_size, contour_info_list, is_batch=True)
+
+
+@timer("Extract Chips Coords")
+def extract_chip_coords(
+    image_size: tuple[int, int], contour_info_list: ContourList
+) -> list[ChipSettingsData]:
+    """Extract chip coordinates from contour information."""
+    return _extract_coords(image_size, contour_info_list, is_batch=False)
 
 
 def _extract_coords(
@@ -44,17 +61,3 @@ def _extract_coords(
             )
 
     return data_list
-
-
-def extract_batch_coords(
-    image_size: tuple[int, int], contour_info_list: ContourList
-) -> list[BatchSettingsData]:
-    """Extract batch coordinates from contour information."""
-    return _extract_coords(image_size, contour_info_list, is_batch=True)
-
-
-def extract_chip_coords(
-    image_size: tuple[int, int], contour_info_list: ContourList
-) -> list[ChipSettingsData]:
-    """Extract chip coordinates from contour information."""
-    return _extract_coords(image_size, contour_info_list, is_batch=False)
