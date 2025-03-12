@@ -5,25 +5,32 @@ from apis.v2.helpers.image_process_utils import (
     check_single,
     create_border,
     create_contour_list,
-    get_image_settings,
 )
 from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
 from constants.chip_thresholds import ChipThreshold
+from core.exceptions import NoResultsFound
 from db.models.image_settings import ImageSettings
+from db.services.image_settings import ImageSettingsService
 from schemas.contours import ContourList
 from utils.debug import timer
 from utils.image_process.mask_handler import MaskHandler
 
 
 @timer("Process CSAM Image")
-def process_csam_image(
+def pre_process_image(
     image: np.ndarray, item: str, lot_no: str, plate_no: str, db: Session
 ) -> tuple[DefectProcessor, str, ContourList, np.ndarray, int]:
     """Main function for processing the input image."""
 
     # Get crop size settings
-    image_settings = get_image_settings(item, db)
+    image_settings_service = ImageSettingsService(db)
+    image_settings = image_settings_service.read_image_settings(item)
+
+    if image_settings is None:
+        raise NoResultsFound(
+            f"Image settings for '{item}' not found in API or database."
+        )
 
     # Border Creation
     border_image, border_gray, border_blank, border_pad = create_border(
