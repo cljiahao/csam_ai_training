@@ -5,45 +5,32 @@ from sqlalchemy.orm import Session
 from collections import defaultdict
 
 from apis.v2.components.defects_data_process import process_chunk_contours
-from apis.v2.components.image_process import process_csam_image
-from apis.v2.helpers.processor.eval_processor import EvalProcessor
+from apis.v2.components.evaluation_sets import create_evaluation_sets
+from apis.v2.components.image_process import pre_process_image
 from apis.v2.schemas.files import FileDataBatchDirectory
 from constants.folder_names import FolderNames
 from constants.image_thresholds import AugmentThreshold
 from constants.tf_model import ClassLabel
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 from core.logging import logger
 from db.services.base_sets import BaseSetsService
 from schemas.chips_data import ImageData
-from utils.os_handle.file_manager import FileManager
-from utils.os_handle.image_manager import ImageManager
+from utils.debug import timer
+from utils.image_process.image_manager import ImageManager
 
 
-def process_image_file(
+@timer("Extract eval and base sets from image")
+def eval_base_image_sets_creation(
     item: str,
     lot_no: str,
     file: UploadFile,
     defect_batch_directory: FileDataBatchDirectory,
     db: Session,
 ) -> None:
+    """Main function to process base image creation."""
 
     plate_no = Path(file.filename).stem
-
-    image = ImageManager.file_to_image(file)
-
-    (
-        defect_processor,
-        base_file_name,
-        refined_contours_info_list,
-        border_image,
-    ) = process_csam_image(image, item, lot_no, plate_no, db)
-
-    image_data_list = process_chunk_contours(
-        defect_processor,
-        base_file_name,
-        refined_contours_info_list,
-        border_image,
-    )
+    image_data_list = process_csam_image(file, item, lot_no, plate_no, db)
 
     ng_data_file_names = [
         data_file.file_name
@@ -52,12 +39,11 @@ def process_image_file(
         if data_file.defect_mode == "ng"
     ]
 
-    eval_processor = EvalProcessor(item, plate_no, image_data_list, ng_data_file_names)
-    leftover_imdata_list, leftover_aug_imdata_list = (
-        eval_processor.create_evaluation_set(db)
+    leftover_imdata_list, leftover_aug_imdata_list = create_evaluation_sets(
+        item, plate_no, image_data_list, ng_data_file_names, db
     )
 
-    if leftover_imdata_list is None:
+    if not leftover_imdata_list:
         return
 
     label_image_data = defaultdict(list[ImageData])
@@ -65,12 +51,12 @@ def process_image_file(
         label_image_data[image_data.label_mode].append(image_data)
     label_image_data[ClassLabel.NG.value].extend(leftover_aug_imdata_list)
 
-    base_dir = directory.images_dir / FolderNames.BASE.value / item
+    base_dir = dm.images_dir / FolderNames.BASE.value / item
 
     for class_label in ClassLabel:
         if class_label.value == ClassLabel.TEMP.value:
             continue
-        FileManager.prepare_dst_dir(base_dir / class_label.value)
+        dm.create_directory(base_dir / class_label.value)
 
     base_fol_count = {
         base_folder.name: len(list(base_folder.iterdir()))
@@ -89,3 +75,25 @@ def process_image_file(
 
     base_sets_service = BaseSetsService(db)
     base_sets_service.create_or_update_base_sets(item, base_fol_count)
+
+
+@timer("Process CSAM Image")
+def process_csam_image(
+    file: UploadFile, item: str, lot_no: str, plate_no: str, db: Session
+) -> list[ImageData]:
+    """Processes the CSAM image, including contour extraction and defect processing."""
+    image = ImageManager.file_to_image(file)
+
+    (
+        defect_processor,
+        base_file_name,
+        refined_contours_info_list,
+        border_image,
+    ) = pre_process_image(image, item, lot_no, plate_no, db)
+
+    return process_chunk_contours(
+        defect_processor,
+        base_file_name,
+        refined_contours_info_list,
+        border_image,
+    )
