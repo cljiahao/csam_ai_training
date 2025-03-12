@@ -80,7 +80,7 @@ const UploadForm = ({ className, mode }) => {
           <HoverButton
             className="w-18 h-4/5"
             type="submit"
-            text="Upload"
+            hoverText="Upload"
             disabled={!item}
           />
         </form>
