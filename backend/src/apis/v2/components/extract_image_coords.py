@@ -1,6 +1,22 @@
-from apis.v2.helpers.math_calculations import get_norm_coordinates
 from apis.v2.schemas.settings import BatchSettingsData, ChipSettingsData
 from schemas.contours import ContourList
+from utils.debug import timer
+
+
+@timer("Extract Batch Coords")
+def extract_batch_coords(
+    image_size: tuple[int, int], contour_info_list: ContourList
+) -> list[BatchSettingsData]:
+    """Extract batch coordinates from contour information."""
+    return _extract_coords(image_size, contour_info_list, is_batch=True)
+
+
+@timer("Extract Chips Coords")
+def extract_chip_coords(
+    image_size: tuple[int, int], contour_info_list: ContourList
+) -> list[ChipSettingsData]:
+    """Extract chip coordinates from contour information."""
+    return _extract_coords(image_size, contour_info_list, is_batch=False)
 
 
 def _extract_coords(
@@ -13,7 +29,7 @@ def _extract_coords(
 
     for contour_info in contour_info_list.contours:
         coords, (temp_width, temp_height), _ = contour_info.rect
-        norm_x_center, norm_y_center = get_norm_coordinates(coords, image_size)
+        norm_x_center, norm_y_center = _get_norm_coordinates(coords, image_size)
 
         if is_batch:
             # Logic specific to batch settings
@@ -22,7 +38,7 @@ def _extract_coords(
                 if temp_width < temp_height
                 else (temp_height, temp_width)
             )
-            norm_data_width, norm_data_height = get_norm_coordinates(
+            norm_data_width, norm_data_height = _get_norm_coordinates(
                 data_size, image_size
             )
 
@@ -46,15 +62,11 @@ def _extract_coords(
     return data_list
 
 
-def extract_batch_coords(
-    image_size: tuple[int, int], contour_info_list: ContourList
-) -> list[BatchSettingsData]:
-    """Extract batch coordinates from contour information."""
-    return _extract_coords(image_size, contour_info_list, is_batch=True)
-
-
-def extract_chip_coords(
-    image_size: tuple[int, int], contour_info_list: ContourList
-) -> list[ChipSettingsData]:
-    """Extract chip coordinates from contour information."""
-    return _extract_coords(image_size, contour_info_list, is_batch=False)
+def _get_norm_coordinates(
+    coords: list[int, int], size: list[int, int], border_pad: int = 0
+):
+    x, y = coords
+    height, width = size
+    norm_x = round((x - border_pad) / (width - border_pad * 2), 6)
+    norm_y = round((y - border_pad) / (height - border_pad * 2), 6)
+    return norm_x, norm_y
