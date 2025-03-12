@@ -11,9 +11,9 @@ from app import app
 from db.base import Base
 from db.session import get_db
 
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{directory.base_dir}/tests/test_db.db"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{dm.base_dir}/tests/test_db.db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
