@@ -9,7 +9,7 @@ from apis.v2.components.finder_loop import finder_loop
 from apis.v2.schemas.settings import FileDataLists
 from db.services.image_settings import ImageSettingsService
 from utils.debug import timer
-from utils.os_handle.image_manager import ImageManager
+from utils.image_process.image_manager import ImageManager
 
 
 @timer("Auto Settings Finder")
