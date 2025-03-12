@@ -28,7 +28,7 @@ export default {
         poppins: ["Poppins", "sans-serif"],
         inter: ["Inter", "sans-serif"],
       },
-      color: {
+      colors: {
         black: "#111111",
         white: "#f5f5f5",
         border: "hsl(var(--border))",
