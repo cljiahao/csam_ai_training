@@ -1,3 +1,4 @@
+import math
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
@@ -43,13 +44,17 @@ def write_to_db(
     db: Session, item: str, erode: int, close: int, average_length: int, is_batch: bool
 ) -> None:
     """Writes lot and chip details to the database."""
-    settings_service = ImageSettingsService(db)
-    settings = settings_service.read_settings(item)
 
-    if settings:
-        settings_service.update_settings(item, erode, close, is_batch)
-    else:
-        settings_service.create_settings(item, erode, close, average_length, is_batch)
+    settings_data = {
+        "batch_erode" if is_batch else "chip_erode": erode,
+        "batch_close" if is_batch else "chip_close": close,
+    }
+
+    if not is_batch and average_length:
+        settings_data["crop_size"] = math.ceil(average_length * 2)
+
+    image_settings_service = ImageSettingsService(db)
+    image_settings_service.create_or_update_image_settings(item, settings_data)
 
 
 @timer("Extracting Coordinates")
