@@ -17,18 +17,18 @@ class AugmentThreshold(Enum):
 
 class EvaluationThreshold(Enum):
     MIN_MASS_PRO_SET = 3
-    MIN_PER_COLOR_SET = 10
-    MIN_SMALL_THOUSAND_SET = 800
-    MIN_MEDIUM_BIG_THOUSAND_SET = 100
+    MIN_PER_COLORS_SET = 10
+    MIN_SMALL_THOUSANDS_SET = 800
+    MIN_MEDIUM_BIG_THOUSANDS_SET = 100
 
 
-class EvalThousandNames(Enum):
+class EvalThousandsNames(Enum):
     SMALL = "small"
     MEDIUM = "medium"
     BIG = "big"
 
 
-class EvalColorNames(Enum):
+class EvalColorsNames(Enum):
     BLACK_BIG = "black_big"
     BLUE_SMALL = "blue_small"
     BLUE_MEDIUM = "blue_medium"

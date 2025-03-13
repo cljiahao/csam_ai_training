@@ -53,13 +53,13 @@ def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
 
 
 def evaluate_model(item: str, model_name: str) -> list[dict]:
-    """Evaluates the model using images from various directories (color, thousand, mass_pro)."""
+    """Evaluates the model using images from various directories (colors, thousands, mass_pro)."""
     eval_processor = EvalProcessor(item)
     tf_model = TensorflowModel(model_name)
 
     directories = [
-        (FolderNames.COLORS.value, eval_processor.color_dir),
-        (FolderNames.THOUSANDS.value, eval_processor.thousand_dir),
+        (FolderNames.COLORS.value, eval_processor.colors_dir),
+        (FolderNames.THOUSANDS.value, eval_processor.thousands_dir),
         (FolderNames.MASS_PRO.value, eval_processor.mass_pro_dir),
     ]
 

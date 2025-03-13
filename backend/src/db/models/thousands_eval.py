@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.base import Base
 
 
-class ThousandEval(Base):
+class ThousandsEval(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
@@ -14,10 +14,10 @@ class ThousandEval(Base):
     big: Mapped[int] = mapped_column(default=0)
 
     # Relationship to EvalSet
-    eval_sets: Mapped["EvalSets"] = relationship("EvalSets", back_populates="thousand")
+    eval_sets: Mapped["EvalSets"] = relationship("EvalSets", back_populates="thousands")
 
     # Foreign key to ChipLotDetails
     eval_sets_id: Mapped[int] = mapped_column(ForeignKey("evalsets.id"))
 
     def __repr__(self):
-        return f"<ThousandEval(id={self.id}, eval_sets_id='{self.eval_sets_id}')>"
+        return f"<ThousandsEval(id={self.id}, eval_sets_id='{self.eval_sets_id}')>"
