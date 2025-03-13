@@ -10,7 +10,7 @@ const useEvaluationResults = ({ setError }) => {
   return useMutation({
     mutationKey: ["evaluateModel"],
     mutationFn: async ({ item, modelName }) =>
-      await startEvaluation(item, { model_name: modelName }),
+      await startEvaluation(item, { model_file_name: modelName }),
     onSuccess: (data) => {
       queryClient.setQueryData(["evaluatedModel"], data);
     },
@@ -41,8 +41,8 @@ const useEvaluate = ({ setError, item }) => {
 
   useEffect(() => {
     if (status === "trained") {
-      evaluateModel({ item, modelName: trainModel.model_name }).then((data) =>
-        updateStatus(data?.status),
+      evaluateModel({ item, modelName: trainModel.model_file_name }).then(
+        (data) => updateStatus(data?.status),
       );
     }
   }, [item, evaluateModel, trainModel, status, updateStatus]);
