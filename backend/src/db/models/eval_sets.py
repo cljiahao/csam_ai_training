@@ -15,8 +15,8 @@ class EvalSets(Base):
     colors: Mapped[list["ColorsEval"]] = relationship(
         "ColorsEval", back_populates="eval_sets"
     )
-    thousand: Mapped[list["ThousandEval"]] = relationship(
-        "ThousandEval", back_populates="eval_sets"
+    thousands: Mapped[list["ThousandsEval"]] = relationship(
+        "ThousandsEval", back_populates="eval_sets"
     )
     mass_pro: Mapped[list["MassProEval"]] = relationship(
         "MassProEval", back_populates="eval_sets"

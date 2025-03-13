@@ -1,5 +1,6 @@
 import random
 from sqlalchemy.orm import Session
+
 from apis.v2.components.eval_augment import augment_ng_for_eval
 from apis.v2.helpers.processor.eval_processor import EvalProcessor
 from constants.tf_model import ClassLabel
@@ -59,8 +60,8 @@ def create_evaluation_sets(
         eval_processor, augmented_imdata_list
     )
 
-    eval_sets_service.create_color_eval(item, eval_processor.color_count)
-    eval_sets_service.create_thousand_eval(item, eval_processor.thousand_count)
+    eval_sets_service.create_colors_eval(item, eval_processor.colors_count)
+    eval_sets_service.create_thousands_eval(item, eval_processor.thousands_count)
 
     return leftover_imdata_list, leftover_aug_imdata_list
 
@@ -94,7 +95,7 @@ def _save_mass_pro_images(
 def _save_augmented_images(
     eval_processor: EvalProcessor, augmented_imdata_list: list[ImageData]
 ) -> list[ImageData]:
-    """Saves augmented images into their respective directories (Color or Thousand sets)."""
+    """Saves augmented images into their respective directories (Colors or Thousands sets)."""
 
     leftover_aug_imdata_list = []
 
@@ -104,18 +105,18 @@ def _save_augmented_images(
         size = augmented_image_data.defect_size.lower()
         color_size = f"{color}_{size}"
 
-        if eval_processor.should_save_color(color_size) and random.random() < 0.5:
+        if eval_processor.should_save_colors(color_size) and random.random() < 0.5:
             ImageManager.save_image(
-                eval_processor.color_dir / color_size / file_name,
+                eval_processor.colors_dir / color_size / file_name,
                 augmented_image_data.rotated_image,
             )
-            eval_processor.increment_color_count(color_size)
-        elif eval_processor.should_save_thousand(size):
+            eval_processor.increment_colors_count(color_size)
+        elif eval_processor.should_save_thousands(size):
             ImageManager.save_image(
-                eval_processor.thousand_dir / size / file_name,
+                eval_processor.thousands_dir / size / file_name,
                 augmented_image_data.rotated_image,
             )
-            eval_processor.increment_thousand_count(size)
+            eval_processor.increment_thousands_count(size)
         else:
             leftover_aug_imdata_list.append(augmented_image_data)
 
