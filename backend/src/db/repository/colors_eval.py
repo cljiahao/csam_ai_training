@@ -15,24 +15,24 @@ class ColorsEvalRepository(BaseRepository[ColorsEval]):
             print_message=f"Error creating colors eval sets from the database.",
         )
 
-    def read_colors(self, filter_condition: dict) -> ColorsEval:
+    def read_colors(self, filter_conditions: dict) -> ColorsEval:
         """Read colors eval sets based on filter."""
         return self.read(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error reading colors eval sets from the database.",
         )
 
-    def update_colors(self, filter_condition: dict, update_data: dict) -> ColorsEval:
+    def update_colors(self, filter_conditions: dict, update_data: dict) -> ColorsEval:
         """Update colors eval sets with provided data."""
         return self.update(
-            filter_condition,
+            filter_conditions,
             update_data,
             print_message=f"Error updating colors eval sets in the database.",
         )
 
-    def delete_colors(self, filter_condition: dict) -> ColorsEval:
+    def delete_colors(self, filter_conditions: dict) -> ColorsEval:
         """Delete colors eval sets based on filter."""
         return self.delete(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error deleting colors eval sets from the database.",
         )

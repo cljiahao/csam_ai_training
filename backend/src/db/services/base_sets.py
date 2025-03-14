@@ -21,13 +21,18 @@ class BaseSetsService:
                 f"Unknown keys in image settings data: {', '.join(invalid_keys)}"
             )
 
+    def read_all_base_sets(self) -> list[BaseSets]:
+        """Service layer method to read base sets"""
+
+        return self.repo.read_all_base_sets({})
+
     def read_base_sets(self, item: str) -> BaseSets:
         """Service layer method to read base sets"""
         if not item:
             raise InvalidInputError("Filter conditions: Item cannot be empty.")
-        filter_condition = {"item": item}
+        filter_conditions = {"item": item}
 
-        return self.repo.read_base_sets(filter_condition)
+        return self.repo.read_base_sets(filter_conditions)
 
     def create_or_update_base_sets(
         self, item: str, base_sets_data: dict[str, int]
@@ -48,4 +53,6 @@ class BaseSetsService:
             new_base_sets_data.update(data_condition)
             return self.repo.create_base_sets(new_base_sets_data)
 
-        return self.repo.update_base_sets(data_condition, new_base_sets_data)
+        return self.repo.update_base_sets(
+            {"filter_conditions": data_condition, "update_data": new_base_sets_data}
+        )

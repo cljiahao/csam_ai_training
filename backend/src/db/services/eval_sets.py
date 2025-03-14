@@ -20,13 +20,18 @@ class EvalSetsService:
         self.mass_pro_repo = MassProEvalRepository(db)
         self.thousands_repo = ThousandsEvalRepository(db)
 
+    def read_all_eval_sets(self) -> list[EvalSets]:
+        """Service layer method to read eval sets"""
+
+        return self.eval_sets_repo.read_all_eval_sets({})
+
     def read_eval_sets(self, item: str) -> EvalSets:
         """Service layer method to read eval sets"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
-        filter_condition = {"item": item}
+        filter_conditions = {"item": item}
 
-        return self.eval_sets_repo.read_eval_sets(filter_condition)
+        return self.eval_sets_repo.read_eval_sets(filter_conditions)
 
     def _read_or_create_eval_sets(self, item: str) -> EvalSets:
         eval_sets = self.read_eval_sets(item)
@@ -41,7 +46,9 @@ class EvalSetsService:
         """Validate the keys in eval data."""
         invalid_keys = set(data) - valid_keys
         if invalid_keys:
-            raise InvalidInputError(f"Unknown {eval_type} keys: {invalid_keys}")
+            raise InvalidInputError(
+                f"Unknown keys in {eval_type} data: {', '.join(invalid_keys)}"
+            )
 
     def create_colors_eval(self, item: str, color_eval_data: dict) -> ColorsEval:
         """Service layer method to create new or update colors eval."""
@@ -53,7 +60,9 @@ class EvalSetsService:
         data_condition = {"eval_sets_id": eval_sets.id}
 
         if self.colors_repo.read_colors(data_condition):
-            return self.colors_repo.update_colors(data_condition, color_eval_data)
+            return self.colors_repo.update_colors(
+                {"filter_conditions": data_condition, "update_data": color_eval_data}
+            )
 
         color_eval_data.update({"eval_sets_id": eval_sets.id})
         return self.colors_repo.create_colors(color_eval_data)
@@ -69,7 +78,7 @@ class EvalSetsService:
 
         if self.mass_pro_repo.read_mass_pro(data_condition):
             return self.mass_pro_repo.update_mass_pro(
-                data_condition, mass_pro_eval_data
+                {"filter_conditions": data_condition, "update_data": mass_pro_eval_data}
             )
 
         mass_pro_eval_data.update({"eval_sets_id": eval_sets.id})
@@ -88,7 +97,10 @@ class EvalSetsService:
 
         if self.thousands_repo.read_thousands(data_condition):
             return self.thousands_repo.update_thousands(
-                data_condition, thousands_eval_data
+                {
+                    "filter_conditions": data_condition,
+                    "update_data": thousands_eval_data,
+                }
             )
 
         thousands_eval_data.update({"eval_sets_id": eval_sets.id})

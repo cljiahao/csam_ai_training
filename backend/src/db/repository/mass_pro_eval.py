@@ -15,24 +15,26 @@ class MassProEvalRepository(BaseRepository[MassProEval]):
             print_message=f"Error creating mass pro eval sets from the database.",
         )
 
-    def read_mass_pro(self, filter_condition: dict) -> MassProEval:
+    def read_mass_pro(self, filter_conditions: dict) -> MassProEval:
         """Read mass pro eval sets based on filter."""
         return self.read(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error reading mass pro eval sets from the database.",
         )
 
-    def update_mass_pro(self, filter_condition: dict, update_data: dict) -> MassProEval:
+    def update_mass_pro(
+        self, filter_conditions: dict, update_data: dict
+    ) -> MassProEval:
         """Update mass pro eval sets with provided data."""
         return self.update(
-            filter_condition,
+            filter_conditions,
             update_data,
             print_message=f"Error updating mass pro eval sets in the database.",
         )
 
-    def delete_mass_pro(self, filter_condition: dict) -> MassProEval:
+    def delete_mass_pro(self, filter_conditions: dict) -> MassProEval:
         """Delete mass pro eval sets based on filter."""
         return self.delete(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error deleting mass pro eval sets from the database.",
         )
