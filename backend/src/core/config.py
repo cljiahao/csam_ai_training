@@ -58,7 +58,7 @@ class DatabaseSettings(Settings):
 
     DB_NAME: str = Field(default="local.db")
     REALTIMEDB_URL: str = Field(default="")
-    TABLEID_CSAM_SERVER: str = Field(default="")
+    TABLEID_CSAM_TRAIN: str = Field(default="")
 
 
 class ServiceSettings(Settings):
@@ -66,6 +66,7 @@ class ServiceSettings(Settings):
 
     TEST_LOT_NO: str = Field(default="1234567890")
     TEST_ITEM: str = Field(default="GCM32ER71E106KA59_+B55-E01GJ")
+    AI_SERVER_URL: str = Field(default="")
     PRASS_URL: str = Field(default="")
     LOT_COLUMN: str = Field(default="")
     ITEM_COLUMN: str = Field(default="")
