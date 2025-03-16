@@ -15,26 +15,26 @@ class ThousandsEvalRepository(BaseRepository[ThousandsEval]):
             print_message=f"Error creating thousands eval sets from the database.",
         )
 
-    def read_thousands(self, filter_condition: dict) -> ThousandsEval:
+    def read_thousands(self, filter_conditions: dict) -> ThousandsEval:
         """Read thousands eval sets based on filter."""
         return self.read(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error reading thousands eval sets from the database.",
         )
 
     def update_thousands(
-        self, filter_condition: dict, update_data: dict
+        self, filter_conditions: dict, update_data: dict
     ) -> ThousandsEval:
         """Update thousands eval sets with provided data."""
         return self.update(
-            filter_condition,
+            filter_conditions,
             update_data,
             print_message=f"Error updating thousands eval sets in the database.",
         )
 
-    def delete_thousands(self, filter_condition: dict) -> ThousandsEval:
+    def delete_thousands(self, filter_conditions: dict) -> ThousandsEval:
         """Delete thousands eval sets based on filter."""
         return self.delete(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error deleting thousands eval sets from the database.",
         )
