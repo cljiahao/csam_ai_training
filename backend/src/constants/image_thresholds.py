@@ -16,7 +16,7 @@ class AugmentThreshold(Enum):
 
 
 class EvaluationThreshold(Enum):
-    MIN_MASS_PRO_SET = 3
+    MIN_MASS_PRO_SET = 5
     MIN_PER_COLORS_SET = 10
     MIN_SMALL_THOUSANDS_SET = 800
     MIN_MEDIUM_BIG_THOUSANDS_SET = 100
