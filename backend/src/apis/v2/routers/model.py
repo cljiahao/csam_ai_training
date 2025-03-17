@@ -59,7 +59,7 @@ async def start_train_model(
             train_ds,
             validation_ds,
         )
-        return {"status": "training", "model_file_name": file_name}
+        return {"status": "training", "ai_model_name": file_name}
     except Exception as e:
         handle_exceptions(e)
 
@@ -81,10 +81,10 @@ def current_epoch():
 )
 def start_evaluate_model(
     item: Annotated[str, Query(description="Item Type")],
-    model_file_name: Annotated[str, Body(description="Name of the model", embed=True)],
+    ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
 ):
     try:
-        evaluate_results = evaluate_model(item, model_file_name)
+        evaluate_results = evaluate_model(item, ai_model_name)
         return {"status": "evaluated", "results": evaluate_results}
 
     except Exception as e:
