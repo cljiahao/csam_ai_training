@@ -15,13 +15,15 @@ router = APIRouter()
 
 
 def parse_form_data(
-    item: Annotated[str, Form(description="Item Type", example="GCM32ER71E106KA57")],
+    item: Annotated[
+        str, Form(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
     lot_no: Annotated[
         str,
         Form(
             description="Lot Number",
             pattern="[a-zA-Z0-9]{10}",
-            example="1234567890",
+            examples=["1234567890"],
         ),
     ],
     defect_batch_directory: Annotated[
@@ -52,10 +54,7 @@ def start_defect_augment(
     data: Annotated[dict, Depends(parse_form_data)],
     file: Annotated[
         UploadFile,
-        File(
-            description="Upload image file ('.jpg','.png')",
-            example="test.png",
-        ),
+        File(description="Upload image file ('.jpg','.png')"),
     ],
     db: Annotated[Session, Depends(get_db)],
 ):
