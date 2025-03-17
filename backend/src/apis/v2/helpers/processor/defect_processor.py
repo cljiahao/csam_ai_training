@@ -1,7 +1,11 @@
 import cv2
 import numpy as np
 
-from apis.v2.helpers.image_process_utils import create_focus_chip_mask, extract_hsv_mask_and_area_sum, get_largest_info_and_mask
+from apis.v2.helpers.image_process_utils import (
+    create_focus_chip_mask,
+    extract_hsv_mask_and_area_sum,
+    get_largest_info_and_mask,
+)
 from constants.colors import CSAMcolor
 from constants.image_thresholds import AugmentThreshold
 from constants.tf_model import ClassLabel
@@ -103,7 +107,7 @@ class DefectProcessor:
             return ClassLabel.OTHERS.value, None, None
         return ClassLabel.NG.value, defect_color, defect_size
 
-    def _get_defect_color(defect: np.ndarray) -> str | None:
+    def _get_defect_color(self, defect: np.ndarray) -> str | None:
         """Determine the most common color type of a defect, excluding black (background)."""
 
         color_hexes, hex_count = np.unique(
@@ -130,7 +134,7 @@ class DefectProcessor:
             None,
         )
 
-    def _determine_size(area_sum: float, defect_area: float) -> str | None:
+    def _determine_size(self, area_sum: float, defect_area: float) -> str | None:
         """Determines the size classification based on the area ratio."""
         size_ratio = round(area_sum / defect_area * 100, 2)
 
