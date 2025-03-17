@@ -60,8 +60,14 @@ def _apply_defect_to_image(base_image: cv2.Mat, defect_image_data: ImageData) ->
     )
     defect_mask, _ = extract_hsv_mask_and_area_sum(major_defect_roi)
 
+    # Generate the base image mask
+    base_bin_image = create_focus_chip_mask(base_image)
+    _, largest_base_mask = get_largest_info_and_mask(base_bin_image)
+
     # Combine the base image with the defect mask
-    impose_defect_mask = cv2.bitwise_and(base_image, base_image, mask=defect_mask)
+    impose_defect_mask = cv2.bitwise_and(
+        largest_base_mask, largest_base_mask, mask=defect_mask
+    )
     csam_color = random.choice([c.value for c in CSAMcolor])
 
     base_image[impose_defect_mask > 0] = csam_color.bgr
