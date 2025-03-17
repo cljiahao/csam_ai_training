@@ -15,6 +15,14 @@ class EvalSetsRepository(BaseRepository[EvalSets]):
             print_message=f"Error creating eval sets from the database.",
         )
 
+    def read_all_eval_sets(self, filter_conditions: dict) -> EvalSets:
+        """Read all eval sets based on filter."""
+        return self.read(
+            filter_conditions,
+            return_all=True,
+            print_message=f"Error reading eval sets from the database.",
+        )
+
     def read_eval_sets(self, filter_conditions: dict) -> EvalSets:
         """Read eval sets based on filter."""
         return self.read(
