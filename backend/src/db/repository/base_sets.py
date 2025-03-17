@@ -22,11 +22,10 @@ class BaseSetsRepository(BaseRepository[BaseSets]):
             print_message=f"Error reading base sets from the database.",
         )
 
-    def update_base_sets(self, filter_conditions: dict, update_data: dict) -> BaseSets:
+    def update_base_sets(self, updates_list: list[dict[str, dict]]) -> BaseSets:
         """Update base sets with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating base sets in the database.",
         )
 

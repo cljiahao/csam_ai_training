@@ -22,11 +22,10 @@ class EvalSetsRepository(BaseRepository[EvalSets]):
             print_message=f"Error reading eval sets from the database.",
         )
 
-    def update_eval_sets(self, filter_conditions: dict, update_data: dict) -> EvalSets:
+    def update_eval_sets(self, updates_list: list[dict[str, dict]]) -> EvalSets:
         """Update eval sets with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating eval sets in the database.",
         )
 

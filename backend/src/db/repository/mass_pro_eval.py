@@ -22,13 +22,10 @@ class MassProEvalRepository(BaseRepository[MassProEval]):
             print_message=f"Error reading mass pro eval sets from the database.",
         )
 
-    def update_mass_pro(
-        self, filter_conditions: dict, update_data: dict
-    ) -> MassProEval:
+    def update_mass_pro(self, updates_list: list[dict[str, dict]]) -> MassProEval:
         """Update mass pro eval sets with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating mass pro eval sets in the database.",
         )
 
