@@ -27,6 +27,8 @@ def defects_augmentation(item: str):
     train_processor.create_directories()
 
     base_processor = BaseProcessor(item)
+    base_processor.create_directories()
+
     ng_file_paths = dm.list_png_paths(base_processor.ng_dir)
     g_file_paths = dm.list_png_paths(base_processor.g_dir)
     others_file_paths = dm.list_png_paths(base_processor.others_dir)
