@@ -11,9 +11,9 @@ from utils.image_process.contour_handler import ContourHandler
 from utils.image_process.mask_handler import MaskHandler
 
 
-def create_border(image: np.ndarray, border_pad: int = 0, crop_size: int = 0):
+def create_border(image: np.ndarray, padding: int = 0, crop_size: int = 0):
     """Creates border images and returns relevant data."""
-    border_creator = BorderCreator(image, border_pad, crop_size)
+    border_creator = BorderCreator(image, padding, crop_size)
     border_gray = border_creator.convert_background_white_and_grayscale()
     border_blank = border_creator.create_blank_image()
     border_pad = border_creator.border_pad
