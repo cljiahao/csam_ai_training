@@ -22,11 +22,10 @@ class ColorsEvalRepository(BaseRepository[ColorsEval]):
             print_message=f"Error reading colors eval sets from the database.",
         )
 
-    def update_colors(self, filter_conditions: dict, update_data: dict) -> ColorsEval:
+    def update_colors(self, updates_list: list[dict[str, dict]]) -> ColorsEval:
         """Update colors eval sets with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating colors eval sets in the database.",
         )
 

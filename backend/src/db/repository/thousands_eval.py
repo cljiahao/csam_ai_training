@@ -22,13 +22,10 @@ class ThousandsEvalRepository(BaseRepository[ThousandsEval]):
             print_message=f"Error reading thousands eval sets from the database.",
         )
 
-    def update_thousands(
-        self, filter_conditions: dict, update_data: dict
-    ) -> ThousandsEval:
+    def update_thousands(self, updates_list: list[dict[str, dict]]) -> ThousandsEval:
         """Update thousands eval sets with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating thousands eval sets in the database.",
         )
 
