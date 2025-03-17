@@ -37,8 +37,8 @@ def create_evaluation_sets(
 
         eval_sets_service.create_mass_pro_eval(
             item,
+            plate_no,
             {
-                "plate_no": plate_no,
                 "no_of_chips": len(image_data_list),
                 "no_of_ng": len(defect_imdata_list),
             },
@@ -77,7 +77,7 @@ def _save_mass_pro_images(
     file_dir = eval_processor.mass_pro_dir / plate_no
 
     for mass_pro_name in [ClassLabel.TEMP.value, ClassLabel.NG.value]:
-        dm.create_directory(file_dir / mass_pro_name, create_parents=True)
+        dm.create_directory(file_dir / mass_pro_name)
 
     for image_data in image_data_list:
         ImageManager.save_image(

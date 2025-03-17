@@ -67,14 +67,16 @@ class EvalSetsService:
         color_eval_data.update({"eval_sets_id": eval_sets.id})
         return self.colors_repo.create_colors(color_eval_data)
 
-    def create_mass_pro_eval(self, item: str, mass_pro_eval_data: dict) -> MassProEval:
+    def create_mass_pro_eval(
+        self, item: str, plate_no: str, mass_pro_eval_data: dict
+    ) -> MassProEval:
         """Service layer method to create new or update mass pro eval."""
         self._validate_eval_data_keys(
-            mass_pro_eval_data, {"plate_no", "no_of_chips"}, "Mass Pro"
+            mass_pro_eval_data, {"plate_no", "no_of_chips", "no_of_ng"}, "Mass Pro"
         )
 
         eval_sets = self._read_or_create_eval_sets(item)
-        data_condition = {"eval_sets_id": eval_sets.id}
+        data_condition = {"eval_sets_id": eval_sets.id, "plate_no": plate_no}
 
         if self.mass_pro_repo.read_mass_pro(data_condition):
             return self.mass_pro_repo.update_mass_pro(
