@@ -15,6 +15,14 @@ class BaseSetsRepository(BaseRepository[BaseSets]):
             print_message=f"Error creating base sets from the database.",
         )
 
+    def read_all_base_sets(self, filter_conditions: dict) -> BaseSets:
+        """Read all base sets based on filter."""
+        return self.read(
+            filter_conditions,
+            return_all=True,
+            print_message=f"Error reading base sets from the database.",
+        )
+
     def read_base_sets(self, filter_conditions: dict) -> BaseSets:
         """Read base sets based on filter."""
         return self.read(
