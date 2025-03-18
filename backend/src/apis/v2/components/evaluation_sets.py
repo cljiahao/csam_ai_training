@@ -27,7 +27,8 @@ def create_evaluation_sets(
     ]
 
     eval_sets_service = EvalSetsService(db)
-    eval_processor = EvalProcessor(item, plate_no)
+    eval_processor = EvalProcessor(item)
+    eval_processor.create_directories()
 
     if eval_processor.should_save_mass_pro():
 
