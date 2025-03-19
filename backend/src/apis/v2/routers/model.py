@@ -11,7 +11,7 @@ from apis.v2.logic.defects_augmentation import defects_augmentation
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 from db.session import get_db
-from services.train import post_model_files
+from services.server import post_model_files
 from utils.ai_training.tf_model import TensorflowModel
 
 
