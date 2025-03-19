@@ -22,6 +22,7 @@ class EvalSetsData:
 
 @dataclass
 class EvalBaseSets:
+    id: int
     item: str
     eval_data: EvalSetsData
     base_data: BaseSetsData
