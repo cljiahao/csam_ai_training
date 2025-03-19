@@ -11,6 +11,7 @@ from apis.v2.logic.defects_augmentation import defects_augmentation
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 from db.session import get_db
+from services.train import post_model_files
 from utils.ai_training.tf_model import TensorflowModel
 
 
@@ -87,5 +88,42 @@ def start_evaluate_model(
         evaluate_results = evaluate_model(item, ai_model_name)
         return {"status": "evaluated", "results": evaluate_results}
 
+    except Exception as e:
+        handle_exceptions(e)
+
+
+@router.get(
+    "/model_names",
+    summary="Get all model names stored in model folder.",
+    operation_id="AllModelNames",
+)
+def get_all_model_names():
+    try:
+        return {
+            item_dir.stem: [
+                model_path.name
+                for model_path in item_dir.iterdir()
+                if model_path.is_file() and model_path.suffix != ".txt"
+            ]
+            for item_dir in dm.model_dir.iterdir()
+            if item_dir.is_dir()
+        }
+    except Exception as e:
+        handle_exceptions(e)
+
+
+@router.post(
+    "/install_model",
+    summary="Post model selected to be install in Server (Production).",
+    operation_id="InstallModel",
+)
+def install_model_in_server(
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
+    file_name: Annotated[str, Query(description="Model File Name")],
+):
+    try:
+        return post_model_files(item, file_name)
     except Exception as e:
         handle_exceptions(e)
