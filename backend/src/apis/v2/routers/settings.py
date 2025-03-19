@@ -7,9 +7,26 @@ from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.logic.auto_settings_finder import auto_settings_finder
 from apis.v2.schemas.base import SettingsMode
 from apis.v2.schemas.settings import FileDataLists
+from db.services.image_settings import ImageSettingsService
 from db.session import get_db
 
 router = APIRouter()
+
+
+@router.get(
+    "/image",
+    summary="Return image settings found in database",
+    operation_id="ImageSettings",
+)
+def get_image_settings(
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
+    db: Annotated[Session, Depends(get_db)],
+):
+    image_settings_service = ImageSettingsService(db)
+    image_settings = image_settings_service.read_image_settings(item)
+    return image_settings
 
 
 @router.post(
