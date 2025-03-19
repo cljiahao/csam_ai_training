@@ -55,7 +55,7 @@ def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
 def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
     """Evaluates the model using images from various directories (colors, thousands, mass_pro)."""
     eval_processor = EvalProcessor(item)
-    tf_model = TensorflowModel(ai_model_name)
+    tf_model = TensorflowModel(item, ai_model_name)
 
     directories = [
         (FolderNames.COLORS.value, eval_processor.colors_dir),

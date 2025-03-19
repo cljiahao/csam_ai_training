@@ -43,7 +43,7 @@ async def start_train_model(
     background_tasks: BackgroundTasks,
 ):
     try:
-        model_json_dir = dm.config_dir / "json" / "training.json"
+        model_json_dir = dm.json_dir / "training.json"
         FileManager.write_json(model_json_dir, [])
 
         file_name = f"{dt.now().strftime('%Y%m%d_%H%M%S')}_{item}"
@@ -51,7 +51,7 @@ async def start_train_model(
             file_name, item, db
         )
 
-        tf_model = TensorflowModel(file_name)
+        tf_model = TensorflowModel(item, file_name)
         background_tasks.add_task(
             tf_model.start_training,
             input_size,
