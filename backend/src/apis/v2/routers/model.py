@@ -24,7 +24,9 @@ router = APIRouter()
     operation_id="Augment",
 )
 def start_defect_augment(
-    item: Annotated[str, Query(description="Item Type")],
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
 ):
     try:
         defects_augmentation(item)
@@ -39,7 +41,9 @@ def start_defect_augment(
     operation_id="TrainModel",
 )
 async def start_train_model(
-    item: Annotated[str, Query(description="Item Type")],
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
     db: Annotated[Session, Depends(get_db)],
     background_tasks: BackgroundTasks,
 ):
@@ -81,7 +85,9 @@ def current_epoch():
     operation_id="EvaluateModel",
 )
 def start_evaluate_model(
-    item: Annotated[str, Query(description="Item Type")],
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
     ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
 ):
     try:
