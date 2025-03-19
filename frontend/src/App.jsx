@@ -15,7 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const element_info = {
   Home: lazy(() => import("@/pages/Home")),
-  CDA: lazy(() => import("@/pages/csamda")),
+  CDS: lazy(() => import("@/pages/csamds")),
   CMT: lazy(() => import("@/pages/csammt")),
   Settings: lazy(() => import("@/pages/settings")),
 };
