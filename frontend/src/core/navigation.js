@@ -1,5 +1,5 @@
 import { FaHome } from "react-icons/fa";
-import { FaLaptopCode } from "react-icons/fa";
+import { TbTableSpark } from "react-icons/tb";
 import { LiaChalkboardTeacherSolid } from "react-icons/lia";
 import { IoMdSettings } from "react-icons/io";
 
@@ -14,13 +14,12 @@ const navigation_info = [
     component: "Home",
   },
   {
-    name: "CDA",
-    url: "/CDA",
-    title: "CSAM Defects Augmentations",
-    description:
-      "Website to generate more defective images using augmenetation.",
-    icon: FaLaptopCode,
-    component: "CsamDA",
+    name: "CDS",
+    url: "/CDS",
+    title: "CSAM Dataset Summary",
+    description: "Checklist of CSAM dataset summary for CSAM Model Training.",
+    icon: TbTableSpark,
+    component: "CsamDS",
   },
   {
     name: "CMT",
