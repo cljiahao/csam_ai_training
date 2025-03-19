@@ -34,7 +34,9 @@ def pre_process_dataset(
     txt_content = "\n".join(
         f"{i} {label}" for i, label in enumerate(train_info.classes)
     )
-    FileManager.write_txt(dm.model_dir / f"{file_name}.txt", txt_content)
+    item_model_dir = dm.model_dir / item
+    dm.create_directory(item_model_dir)
+    FileManager.write_txt(item_model_dir / f"{file_name}.txt", txt_content)
 
     AUTOTUNE = data.AUTOTUNE
     train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)

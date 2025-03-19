@@ -11,13 +11,17 @@ from utils.ai_training.custom_callbacks import EpochHistory
 class TensorflowModel:
     """A class to handle building, training, and evaluating TensorFlow models."""
 
-    def __init__(self, ai_model_name: str) -> None:
+    def __init__(self, item: str, ai_model_name: str) -> None:
         self.ai_model_name = ai_model_name
+        item_model_dir = dm.model_dir / item
+        dm.create_directory(item_model_dir)
+        self.item_model_dir = item_model_dir
         self.model = None
 
     def _load_model(self) -> models.Sequential:
         """Loads a saved Keras model from disk."""
-        model_path = dm.model_dir / f"{self.ai_model_name}.h5"
+
+        model_path = self.item_model_dir / f"{self.ai_model_name}.h5"
         if not model_path.exists():
             raise FileNotFoundError(
                 f"{self.ai_model_name}.h5 not found in {dm.model_dir}"
@@ -86,7 +90,7 @@ class TensorflowModel:
             callbacks=callbacks,
         )
 
-        model_path = dm.model_dir / f"{self.ai_model_name}.h5"
+        model_path = dm.model_dir / self.item / f"{self.ai_model_name}.h5"
         self.model.save(model_path)
 
     def start_evaluating(
