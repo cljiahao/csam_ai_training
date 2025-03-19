@@ -26,8 +26,9 @@ def get_eval_base_sets_data(db: Session) -> EvalBaseSetsData:
     base_set_data = get_all_base_sets_data(db)
 
     eval_base_set_data = []
-    for key in set(eval_set_data.keys()).union(base_set_data.keys()):
+    for i, key in enumerate(set(eval_set_data.keys()).union(base_set_data.keys())):
         combined_entry = EvalBaseSets(
+            id=i + 1,
             item=key,
             eval_data=eval_set_data.get(key, {}),
             base_data=base_set_data.get(key, BaseSetsData()),
