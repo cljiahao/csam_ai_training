@@ -1,6 +1,6 @@
 import json
 from typing import Annotated
-from fastapi import APIRouter, Path, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Path, UploadFile
 from fastapi import File, Form, Depends
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -57,13 +57,21 @@ def start_defect_augment(
         File(description="Upload image file ('.jpg','.png')"),
     ],
     db: Annotated[Session, Depends(get_db)],
+    background_tasks: BackgroundTasks,
 ):
     try:
         item = data["item"]
         lot_no = data["lot_no"]
         defect_batch_directory = data["defect_batch_directory"]
 
-        eval_base_image_sets_creation(item, lot_no, file, defect_batch_directory, db)
+        background_tasks.add_task(
+            eval_base_image_sets_creation,
+            item,
+            lot_no,
+            file,
+            defect_batch_directory,
+            db,
+        )
         return True
     except Exception as e:
         handle_exceptions(e)
