@@ -37,7 +37,9 @@ def get_image_settings(
 )
 def run_settings_finder(
     settings_mode: Annotated[SettingsMode, Path(description="Settings Mode")],
-    item: Annotated[str, Query(description="Item Type")],
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
     target_count: Annotated[int, Query(description="Target Count")],
     file: Annotated[UploadFile, File(description="Upload image file ('.jpg','.png')")],
     db: Annotated[Session, Depends(get_db)],
