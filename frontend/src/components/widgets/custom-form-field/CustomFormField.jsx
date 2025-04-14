@@ -6,34 +6,47 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
-import { Input } from "@/components/ui/input";
+import { cloneElement } from "react";
 
 const CustomFormField = ({
+  className,
+  children,
   control,
   name,
   label,
-  placeholder,
-  onBlur,
-  disabled,
+  popoverTrigger,
 }) => {
   return (
     <FormField
       name={name}
       control={control}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={cn("flex-center w-full flex-col", className)}>
           <div className="flex-center space-x-3">
-            <FormLabel className="flex-end w-1/4">{label}</FormLabel>
-            <FormControl className="flex w-3/4">
-              <Input
-                {...field}
-                placeholder={placeholder}
-                value={field.value}
-                onBlur={onBlur}
-                disabled={disabled}
-              />
-            </FormControl>
+            <FormLabel className="w-1/4">{label}</FormLabel>
+            {popoverTrigger ? (
+              <Popover>
+                <PopoverTrigger>
+                  <FormControl>
+                    {cloneElement(popoverTrigger, { ...field })}
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent>
+                  {cloneElement(children, { ...field })}
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <FormControl className="w-3/4">
+                {cloneElement(children, { ...field })}
+              </FormControl>
+            )}
           </div>
           <FormDescription />
           <FormMessage className="flex-center" />
