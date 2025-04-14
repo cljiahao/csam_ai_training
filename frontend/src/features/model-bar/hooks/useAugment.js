@@ -1,21 +1,22 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
 import { createAugment } from "@/services/api_model";
 import useTrainStore from "@/store/train";
 
-const useAugmentMutation = ({ setError }) => {
+const useAugmentMutation = ({ updateError }) => {
   return useMutation({
     mutationKey: ["augment"],
     mutationFn: async ({ item }) => await createAugment(item),
     onError: (error) => {
       console.log(error.message);
-      setError(error.message);
+      updateError(error.message);
     },
   });
 };
 
-const useAugment = ({ setError, item }) => {
+const useAugment = ({ updateError, item }) => {
+  const queryClient = useQueryClient();
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
@@ -23,10 +24,11 @@ const useAugment = ({ setError, item }) => {
     })),
   );
 
-  const { mutateAsync: augmentData } = useAugmentMutation({ setError });
+  const { mutateAsync: augmentData } = useAugmentMutation({ updateError });
 
   const handleStartTrain = () => {
     updateStatus("processing");
+    queryClient.removeQueries();
     augmentData({ item }).then((data) => updateStatus(data?.status));
   };
 
