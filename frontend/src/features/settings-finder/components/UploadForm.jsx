@@ -34,6 +34,7 @@ const UploadForm = ({ className, mode }) => {
 
       const fileName = file.name;
       const targetCount = uploadForm.getValues("quantity");
+
       setImage(URL.createObjectURL(file));
 
       toast({
@@ -55,15 +56,17 @@ const UploadForm = ({ className, mode }) => {
         file,
         markRef?.current?.addMark,
       );
+
+      e.target.value = null;
     }
   };
 
   return (
-    <div className={cn("h-full w-full py-4", className)}>
+    <div className={cn("h-full w-full", className)}>
       <Form {...uploadForm}>
         <form
           onSubmit={uploadForm.handleSubmit(onSubmit)}
-          className="flex-center hw-full space-x-8"
+          className="flex-center hw-full space-x-8 px-4"
         >
           {Object.keys(uploadFormInfo).map((key) => {
             const { label, placeholder } = uploadFormInfo[key];
@@ -73,8 +76,9 @@ const UploadForm = ({ className, mode }) => {
                 key={key}
                 name={key}
                 label={`${mode} ${label}`}
-                placeholder={placeholder}
-              />
+              >
+                <Input placeholder={placeholder} />
+              </CustomFormField>
             );
           })}
           <HoverButton
