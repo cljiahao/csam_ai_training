@@ -1,3 +1,4 @@
+import Swal from "sweetalert2";
 import { useSearchParams } from "react-router-dom";
 
 import BaseLayout from "@/components/layouts/BaseLayout";
@@ -6,6 +7,9 @@ import { Separator } from "@/components/ui/separator";
 import ModelBar from "@/features/model-bar/ModelBar";
 import ModelTrainer from "@/features/model-trainer/ModelTrainer";
 import EvaluationResults from "@/features/evaluation-results/EvaluationResults";
+import useBaseStore from "@/store/base";
+import useTrainStore from "@/store/train";
+import { useShallow } from "zustand/react/shallow";
 
 const CsamMT = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +19,30 @@ const CsamMT = () => {
   // TODO: If item or method don't exists, re-direct to CDS
   // TODO: check if item exists in backend database.
   // TODO: if model train completed, show sweetalert
+
+  const error = useBaseStore((state) => state.error);
+  const { status, updateStatus } = useTrainStore(
+    useShallow((state) => ({
+      status: state.status,
+      updateStatus: state.updateStatus,
+    })),
+  );
+
+  if (error) {
+    updateStatus("idle");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: error,
+    });
+  }
+
+  if (status == "Evaluated")
+    Swal.fire({
+      icon: "success",
+      title: "Model Trained Completed",
+      text: "Please check if there is any Outflows before installing.",
+    });
 
   return (
     <BaseLayout
