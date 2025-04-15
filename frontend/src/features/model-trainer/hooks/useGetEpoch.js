@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useTrainStore from "@/store/train";
 import { getEpoch, startTrain } from "@/services/api_model";
 
-const useTrainDataMutation = ({ setError }) => {
+const useTrainDataMutation = ({ updateError }) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["trainData"],
@@ -15,13 +15,13 @@ const useTrainDataMutation = ({ setError }) => {
     },
     onError: (error) => {
       console.log(error.message);
-      setError(error.message);
+      updateError(error.message);
       queryClient.removeQueries(["trainedModel"]); // Clear cache on error
     },
   });
 };
 
-const useGetEpoch = ({ setError, item }) => {
+const useGetEpoch = ({ updateError, item }) => {
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
@@ -29,11 +29,12 @@ const useGetEpoch = ({ setError, item }) => {
     })),
   );
 
-  const { mutateAsync: trainData } = useTrainDataMutation({ setError });
+  const { mutateAsync: trainData } = useTrainDataMutation({ updateError });
   const { data: epochs } = useQuery({
     queryKey: ["getEpoch"],
-    queryFn: () => getEpoch(item),
+    queryFn: async () => await getEpoch(item),
     enabled: status === "training",
+    staleTime: 0,
     refetchInterval: status === "training" ? 5000 : false,
   });
 
