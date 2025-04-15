@@ -26,3 +26,16 @@ export const startEvaluation = async (item, body) => {
   const options = createRequestOptions("POST", body);
   return await sendRequest(url, options);
 };
+
+export const getAllModels = async () => {
+  const url = `/api/model/model_names`;
+  const options = createRequestOptions("GET");
+  return await sendRequest(url, options);
+};
+
+export const installModel = async (item, file_name) => {
+  const params = new URLSearchParams({ item, file_name });
+  const url = `/api/model/install_model?${params.toString()}`;
+  const options = createRequestOptions("POST");
+  return await sendRequest(url, options);
+};
