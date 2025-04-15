@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 import CustomDialog from "@/components/widgets/custom-dialog/CustomDialog";
 import HoverButton from "@/components/widgets/hover-button/HoverButton";
 import MediaCard from "@/components/widgets/media-card/MediaCard";
@@ -34,26 +33,41 @@ const EvalOutflow = ({ disabled }) => {
       open={isDialogOpen}
       onOpenChange={handleDialogOpen}
     >
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 overflow-hidden">
         {evalResults?.results.map((evalResult) => (
           <Accordion key={evalResult?.mode} type="single" collapsible>
             <AccordionItem value="item-1">
-              <AccordionTrigger>{`${evalResult?.mode} - Number of Outflows: ${evalResult?.cm_results?.false_neg}`}</AccordionTrigger>
-              <AccordionContent className="grid grid-cols-5">
-                {evalResult?.outflows?.map((file_src) => {
-                  const fileName = file_src.split("\\").pop();
-                  return (
-                    <MediaCard
-                      key={file_src}
-                      className="hover:bg-slate-100"
-                      title={fileName}
-                      description="Outflow"
-                      descClassName="pb-2"
-                    >
-                      {<img src={`/api/image/${file_src}`} alt={fileName} />}
-                    </MediaCard>
-                  );
-                })}
+              <AccordionTrigger>{`${evalResult?.mode} - Number of Outflows: ${evalResult?.outflows?.length}`}</AccordionTrigger>
+              <AccordionContent
+                style={{
+                  height: `${window.innerHeight / 2}px`,
+                  overflowY: "auto",
+                }}
+                className="grid grid-cols-5"
+              >
+                {evalResult?.outflows?.length ? (
+                  evalResult.outflows.map((file_src) => {
+                    const fileName = file_src.split("\\").pop();
+                    return (
+                      <MediaCard
+                        key={file_src}
+                        className="p-1 text-xs hover:bg-slate-100 2xl:text-sm"
+                        title={fileName}
+                        descClassName=""
+                      >
+                        <img
+                          className="w-[60%]"
+                          src={`/api/image/${file_src}`}
+                          alt={fileName}
+                        />
+                      </MediaCard>
+                    );
+                  })
+                ) : (
+                  <div className="flex-center col-span-5 py-16 text-lg font-semibold text-gray-500">
+                    No Outflows found
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>

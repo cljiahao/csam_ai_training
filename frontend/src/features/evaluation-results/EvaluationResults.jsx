@@ -1,18 +1,18 @@
-import { useState } from "react";
-
 import { cn } from "@/lib/utils";
 import ConfusionMatrix from "./components/ConfusionMatrix";
 import useEvaluate from "./hooks/useEvaluate";
+import useBaseStore from "@/store/base";
+import Loading from "@/components/static/loading";
 
 const EvaluationResults = ({ className, item }) => {
-  const [error, setError] = useState("");
+  const updateError = useBaseStore((state) => state.updateError);
 
   const {
-    state: { evalResults },
-  } = useEvaluate({ setError, item });
+    state: { status, evalResults },
+  } = useEvaluate({ updateError, item });
 
-  // TODO
-  console.log(error);
+  if (status != "idle" && status != "evaluated")
+    return <Loading className={className} />;
 
   return (
     <div className={cn("grid h-full w-full grid-rows-3 gap-2", className)}>

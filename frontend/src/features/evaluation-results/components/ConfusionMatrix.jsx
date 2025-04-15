@@ -20,17 +20,19 @@ const ConfusionMatrix = ({ evalResult = {} }) => {
           {capitalize(mode)}
         </div>
 
-        {/* Actual Headers */}
+        {/* Predicted Headers */}
         <div className="col-span-8 row-span-2 grid grid-cols-2">
-          <div className="flex-center col-span-2 text-sm underline">Actual</div>
+          <div className="flex-center col-span-2 text-sm underline">
+            Predicted
+          </div>
           <div className="flex-center text-sm">NG</div>
           <div className="flex-center text-sm">Good</div>
         </div>
 
-        {/* Predicted Headers */}
+        {/* Actual Headers */}
         <div className="col-span-5 row-span-4 grid grid-cols-3">
           <div className="flex-center row-span-2 -rotate-90 text-sm underline">
-            Predicted
+            Actual
           </div>
           <div className="flex-center col-span-2 text-sm">NG</div>
           <div className="flex-center col-span-2 text-sm">Good</div>
@@ -41,12 +43,8 @@ const ConfusionMatrix = ({ evalResult = {} }) => {
           {Object.entries(cm_results).map(([key, value]) => (
             <HoverButton
               key={key}
-              className="flex-center hw-full rounded-xl border-2 border-gray-200 text-lg"
-              text={
-                key.includes("pos")
-                  ? percentage(value, total_count)
-                  : percentage(value, total_count)
-              }
+              className={`flex-center hw-full rounded-xl border-2 border-gray-200 text-lg ${key.includes("false_neg") ? (total_count ? "bg-red-500 hover:bg-red-400" : "bg-green-500hover:bg-green-400") : ""}`}
+              text={percentage(value, total_count)}
               hoverText={value}
             />
           ))}

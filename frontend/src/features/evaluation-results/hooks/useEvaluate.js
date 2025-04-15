@@ -5,24 +5,24 @@ import { useShallow } from "zustand/react/shallow";
 import useTrainStore from "@/store/train";
 import { startEvaluation } from "@/services/api_model";
 
-const useEvaluationResults = ({ setError }) => {
+const useEvaluationResults = ({ updateError }) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["evaluateModel"],
-    mutationFn: async ({ item, modelName }) =>
-      await startEvaluation(item, { ai_model_name: modelName }),
+    mutationFn: async ({ item, ai_model_name }) =>
+      await startEvaluation(item, { ai_model_name }),
     onSuccess: (data) => {
       queryClient.setQueryData(["evaluatedModel"], data);
     },
     onError: (error) => {
       console.log(error.message);
-      setError(error.message);
+      updateError(error.message);
       queryClient.removeQueries(["evaluatedModel"]); // Clear cache on error
     },
   });
 };
 
-const useEvaluate = ({ setError, item }) => {
+const useEvaluate = ({ updateError, item }) => {
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
@@ -35,19 +35,17 @@ const useEvaluate = ({ setError, item }) => {
   });
 
   const { mutateAsync: evaluateModel, data: evalResults } =
-    useEvaluationResults({
-      setError,
-    });
+    useEvaluationResults({ updateError });
 
   useEffect(() => {
     if (status === "trained") {
-      evaluateModel({ item, modelName: trainModel.ai_model_name }).then(
+      evaluateModel({ item, ai_model_name: trainModel?.ai_model_name }).then(
         (data) => updateStatus(data?.status),
       );
     }
   }, [item, evaluateModel, trainModel, status, updateStatus]);
 
-  return { state: { evalResults }, action: {} };
+  return { state: { status, evalResults }, action: {} };
 };
 
 export default useEvaluate;
