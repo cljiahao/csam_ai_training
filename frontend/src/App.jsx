@@ -14,7 +14,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const element_info = {
-  Home: lazy(() => import("@/pages/Home")),
+  Home: lazy(() => import("@/pages/home")),
   CDS: lazy(() => import("@/pages/csamds")),
   CMT: lazy(() => import("@/pages/csammt")),
   Settings: lazy(() => import("@/pages/settings")),
@@ -45,7 +45,7 @@ function SubApp() {
           key={info.name}
           path={info.url}
           element={
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<Loading className="h-screen" />}>
               <SeoHead title={info.title} />
               {createElement(element_info[info.name])}
             </Suspense>
