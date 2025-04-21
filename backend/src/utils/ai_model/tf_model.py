@@ -3,9 +3,9 @@ from tensorflow import keras
 from sklearn.metrics import confusion_matrix
 from keras import layers, models, optimizers, losses, callbacks as cb
 
-from constants.tf_model import TFModel
+from constants.tf_model import TFModelParams
 from core.directory_manager import directory_manager as dm
-from utils.ai_training.custom_callbacks import EpochHistory
+from utils.ai_model.epoch_history_callbacks import EpochHistory
 
 
 class TensorflowModel:
@@ -31,15 +31,15 @@ class TensorflowModel:
 
     def _build_model(self, input_size: int, output_size: int) -> models.Sequential:
         """Builds and compiles a CNN model based on predefined architecture."""
-        ker = TFModel.KER.value
-        ker2 = TFModel.KER2.value
+        ker = TFModelParams.KER
+        ker2 = TFModelParams.KER2
         input_shape = (input_size, input_size, 3)
 
         model = models.Sequential(
             [
                 layers.Input(shape=input_shape),
                 layers.Rescaling(1.0 / 255),
-                layers.RandomFlip("horizontal_and_vertical", seed=TFModel.SEED.value),
+                layers.RandomFlip("horizontal_and_vertical", seed=TFModelParams.SEED),
                 layers.Conv2D(16, kernel_size=ker, activation="relu", padding="same"),
                 layers.Conv2D(32, kernel_size=ker2, activation="relu", padding="same"),
                 layers.MaxPool2D(2, 2),
@@ -85,12 +85,12 @@ class TensorflowModel:
         self.model.fit(
             train_ds,
             validation_data=validation_ds,
-            epochs=TFModel.EPOCHS.value,
+            epochs=TFModelParams.EPOCHS,
             verbose=1,
             callbacks=callbacks,
         )
 
-        model_path = dm.model_dir / self.item / f"{self.ai_model_name}.h5"
+        model_path = self.item_model_dir / f"{self.ai_model_name}.h5"
         self.model.save(model_path)
 
     def start_evaluating(
@@ -118,4 +118,7 @@ class TensorflowModel:
             "true_neg": int(TN[1]),
         }
 
-        return cm_results, true_label_list != predictions
+        outflow_indexes = (true_label_list == 1) & (predictions == 0)
+        fake_ng_indexes = (true_label_list == 0) & (predictions == 1)
+
+        return cm_results, outflow_indexes, fake_ng_indexes

@@ -6,7 +6,7 @@ from apis.v2.helpers.processor.eval_processor import EvalProcessor
 from constants.folder_names import FolderNames
 from constants.tf_model import ClassLabel
 from core.directory_manager import directory_manager as dm
-from utils.ai_training.tf_model import TensorflowModel
+from utils.ai_model.tf_model import TensorflowModel
 from utils.image_process.image_manager import ImageManager
 
 

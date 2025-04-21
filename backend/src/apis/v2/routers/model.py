@@ -12,7 +12,7 @@ from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 from db.session import get_db
 from services.server import post_model_files
-from utils.ai_training.tf_model import TensorflowModel
+from utils.ai_model.tf_model import TensorflowModel
 
 
 router = APIRouter()
