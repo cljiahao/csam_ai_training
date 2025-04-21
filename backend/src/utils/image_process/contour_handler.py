@@ -1,9 +1,11 @@
-import os
 import cv2
+import os
 import numpy as np
 
 from core.logging import logger
 from schemas.contours import ContourInfo, ContourList
+from schemas.misc import NormalizeCoordinates
+from utils.misc.calculations import normalize_coordinates
 
 
 class ContourHandler:
@@ -11,20 +13,36 @@ class ContourHandler:
 
     @staticmethod
     def chunking(contours: list[ContourInfo]) -> list[list[ContourInfo]]:
-        """Divide contours into chunks based on CPU core count for multiprocessing."""
+        """Divide contours into chunks based on CPU core count for multiprocessing.
+
+        Args:
+            contours: A list of ContourInfo objects.
+
+        Returns:
+            A list of lists of ContourInfo objects, representing chunks.
+        """
         cpu_count = os.cpu_count() or 1
         chunk_size = max(1, len(contours) // cpu_count)
         chunk_contours = [
             contours[i : i + chunk_size] for i in range(0, len(contours), chunk_size)
         ]
-
         logger.debug(f"Chunk size: {chunk_size} based on CPU Count: {cpu_count}")
 
         return chunk_contours
 
     @staticmethod
     def get_median_area(contours: list[np.ndarray]) -> float:
-        """Calculate the median area of the contours in the list."""
+        """Calculate the median area of the contours in the list.
+
+        Args:
+            contours: A list of NumPy arrays representing contours.
+
+        Returns:
+            The median area of the contours.
+
+        Raises:
+            ValueError: If the input list is empty.
+        """
         if not contours:
             raise ValueError("No contours available to calculate median area.")
         contour_areas = np.array([cv2.contourArea(contour) for contour in contours])
@@ -38,8 +56,15 @@ class ContourHandler:
         contours: list[np.ndarray],
         denoise_threshold: int = 0,
     ) -> ContourList:
-        """Remove noise from mask image and return contour info."""
+        """Remove noise from mask image and return contour info.
 
+        Args:
+            contours: A list of NumPy arrays representing contours.
+            denoise_threshold: The minimum area for a contour to be included.
+
+        Returns:
+            A ContourList object containing filtered ContourInfo objects.
+        """
         clean_contours = [
             ContourInfo(
                 contour=contour,
@@ -54,3 +79,26 @@ class ContourHandler:
         )
 
         return ContourList(contours=clean_contours)
+
+    @staticmethod
+    def extract_norm_coordinates(
+        contour_info_list: ContourList,
+        image_size: tuple[int, int],
+        rect_index: int = 0,
+    ) -> list[NormalizeCoordinates]:
+        """Extracts and normalizes coordinates from a specified rectangle within each contour.
+
+        Args:
+            contour_info_list: A ContourList object containing contour information.
+            image_size: A tuple containing the (height, width) of the image.
+            rect_index: The index of the rectangle within the contour's 'rect' list
+                        to extract coordinates from (default: 0).
+
+        Returns:
+            A list of NormalizeCoordinates objects representing the normalized
+            coordinates extracted from the specified rectangle of each contour.
+        """
+        return [
+            normalize_coordinates(contour_info.rect[rect_index], image_size)
+            for contour_info in contour_info_list
+        ]
