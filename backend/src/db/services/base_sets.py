@@ -12,13 +12,13 @@ class BaseSetsService:
         self.repo = BaseSetsRepository(db)
 
     def _validate_base_sets_keys(self, base_sets_data: dict) -> None:
-        """Validate the keys in the image settings data."""
+        """Validate the keys in the base sets data."""
         valid_keys = set([c.value for c in ClassLabel])
 
         invalid_keys = set(base_sets_data) - valid_keys
         if invalid_keys:
             raise InvalidInputError(
-                f"Unknown keys in image settings data: {', '.join(invalid_keys)}"
+                f"Unknown keys in base sets data: {', '.join(invalid_keys)}"
             )
 
     def read_all_base_sets(self) -> list[BaseSets]:
