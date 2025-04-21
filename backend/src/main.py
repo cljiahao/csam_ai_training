@@ -25,9 +25,12 @@ def load_environment(env: str) -> None:
         print(f"Environment-specific .env file not found.")
 
 
+def parse_arguments() -> argparse.Namespace:
+    """Parses command-line arguments for the backend server.
 
-def parse_arguments():
-    """Parse command-line arguments."""
+    Returns:
+        An argparse.Namespace object containing the parsed arguments.
+    """
     parser = argparse.ArgumentParser(
         description="FastAPI Backend Server",
         allow_abbrev=False,
@@ -43,8 +46,8 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def run_api():
-    """Run the FastAPI server."""
+def run_api() -> None:
+    """Runs the FastAPI server using Uvicorn."""
 
     from core.config import api_settings, common_settings
     from core.logging import logger
