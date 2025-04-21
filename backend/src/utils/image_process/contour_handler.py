@@ -13,20 +13,36 @@ class ContourHandler:
 
     @staticmethod
     def chunking(contours: list[ContourInfo]) -> list[list[ContourInfo]]:
-        """Divide contours into chunks based on CPU core count for multiprocessing."""
+        """Divide contours into chunks based on CPU core count for multiprocessing.
+
+        Args:
+            contours: A list of ContourInfo objects.
+
+        Returns:
+            A list of lists of ContourInfo objects, representing chunks.
+        """
         cpu_count = os.cpu_count() or 1
         chunk_size = max(1, len(contours) // cpu_count)
         chunk_contours = [
             contours[i : i + chunk_size] for i in range(0, len(contours), chunk_size)
         ]
-
         logger.debug(f"Chunk size: {chunk_size} based on CPU Count: {cpu_count}")
 
         return chunk_contours
 
     @staticmethod
     def get_median_area(contours: list[np.ndarray]) -> float:
-        """Calculate the median area of the contours in the list."""
+        """Calculate the median area of the contours in the list.
+
+        Args:
+            contours: A list of NumPy arrays representing contours.
+
+        Returns:
+            The median area of the contours.
+
+        Raises:
+            ValueError: If the input list is empty.
+        """
         if not contours:
             raise ValueError("No contours available to calculate median area.")
         contour_areas = np.array([cv2.contourArea(contour) for contour in contours])
@@ -40,8 +56,15 @@ class ContourHandler:
         contours: list[np.ndarray],
         denoise_threshold: int = 0,
     ) -> ContourList:
-        """Remove noise from mask image and return contour info."""
+        """Remove noise from mask image and return contour info.
 
+        Args:
+            contours: A list of NumPy arrays representing contours.
+            denoise_threshold: The minimum area for a contour to be included.
+
+        Returns:
+            A ContourList object containing filtered ContourInfo objects.
+        """
         clean_contours = [
             ContourInfo(
                 contour=contour,
