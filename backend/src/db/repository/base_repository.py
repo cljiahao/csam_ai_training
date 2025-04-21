@@ -42,8 +42,8 @@ class BaseRepository(Generic[T]):
     def create(
         self,
         data: dict | list[dict],
-    ) -> T | list[T]:
         print_message: str = "Error creating new data into the database.",
+    ) -> list[T]:
         """Create one or multiple record."""
         try:
             if isinstance(data, list):
@@ -60,7 +60,7 @@ class BaseRepository(Generic[T]):
                 self.db.add(instance)
                 self.db.commit()
                 self.db.refresh(instance)
-                return instance
+                return [instance]
         except Exception as e:
             self.db.rollback()
             raise SQLAlchemyError(print_message) from e
@@ -70,7 +70,7 @@ class BaseRepository(Generic[T]):
         filter_conditions: dict,
         return_all: bool = False,
         print_message: str = "Error reading data from database.",
-    ) -> T | list[T]:
+    ) -> list[T]:
         """Read one or multiple record."""
         try:
             if filter_conditions:
@@ -79,7 +79,7 @@ class BaseRepository(Generic[T]):
                 result = self.db.execute(statement)
                 if return_all:
                     return result.scalars().all()
-                return result.scalars().first()
+                return [result.scalars().first()]
             else:
                 statement = sa.select(self.model)
                 result = self.db.execute(statement)
