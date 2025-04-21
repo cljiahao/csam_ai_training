@@ -1,6 +1,6 @@
 import cv2
-import time
 import numpy as np
+import time
 from datetime import timedelta
 from typing import Callable
 
@@ -11,28 +11,27 @@ def cvWin(image: np.ndarray, name: str = "image") -> None:
     """Display an image using OpenCV for debugging purposes.
 
     Args:
-        image : np.ndarray
-            The image to be displayed.
-        name : str
-            The name of the window. Defaults to "image".
+        image: The image to be displayed.
+        name: The name of the window. Defaults to "image".
     """
-
     cv2.namedWindow(name, cv2.WINDOW_FREERATIO)
     cv2.imshow(name, image)
     if cv2.waitKey(0) & 0xFF == ord("q"):
         cv2.destroyAllWindows()
 
 
-def timer(print_message: str = ""):
+def timer(print_message: str = "") -> Callable:
     """A decorator to log the time taken by a function.
 
     Args:
-        print_message : str
-            A custom message to be logged along with the elapsed time.
+        print_message: An optional custom message to be logged along with the elapsed time.
+
+    Returns:
+        A decorator that takes a callable and returns a wrapped callable that logs its execution time.
     """
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args: any, **kwargs: any) -> any:
             start_time = time.time()
             result = func(*args, **kwargs)
             end_time = time.time()
