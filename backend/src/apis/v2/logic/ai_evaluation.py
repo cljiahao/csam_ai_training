@@ -6,10 +6,12 @@ from apis.v2.helpers.processor.eval_processor import EvalProcessor
 from constants.folder_names import FolderNames
 from constants.tf_model import ClassLabel
 from core.directory_manager import directory_manager as dm
-from utils.ai_training.tf_model import TensorflowModel
+from utils.ai_model.tf_model import TensorflowModel
+from utils.debug import timer
 from utils.image_process.image_manager import ImageManager
 
 
+@timer("Loaded Other Evaluation Files")
 def load_images_from_directory(
     directory: Path,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -32,6 +34,7 @@ def load_images_from_directory(
     return np.array(rgb_images), np.array(labels), np.array(image_paths)
 
 
+@timer("Loaded Mass Production Files")
 def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
     """Loads mass production files, grouped by their stem name."""
     rgb_images = []
@@ -40,18 +43,23 @@ def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
 
     for mass_pro_folder in mass_pro_dir.iterdir():
         if mass_pro_folder.is_dir():
-            ng_files = list((mass_pro_folder / ClassLabel.NG.value).iterdir())
+            ng_files = [
+                ng_file_path.name
+                for ng_file_path in (mass_pro_folder / ClassLabel.NG.value).iterdir()
+            ]
             for temp_file_path in (mass_pro_folder / ClassLabel.TEMP.value).iterdir():
-                image = cv2.cvtColor(
-                    ImageManager.path_to_image(temp_file_path), cv2.COLOR_BGR2RGB
-                )
-                rgb_images.append(image)
-                labels.append(1 if temp_file_path in ng_files else 0)
-                image_paths.append(str(temp_file_path.relative_to(dm.images_dir)))
+                if temp_file_path.is_file():
+                    image = cv2.cvtColor(
+                        ImageManager.path_to_image(temp_file_path), cv2.COLOR_BGR2RGB
+                    )
+                    rgb_images.append(image)
+                    labels.append(1 if temp_file_path.name in ng_files else 0)
+                    image_paths.append(str(temp_file_path.relative_to(dm.images_dir)))
 
     return np.array(rgb_images), np.array(labels), np.array(image_paths)
 
 
+@timer("Evaluated Model")
 def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
     """Evaluates the model using images from various directories (colors, thousands, mass_pro)."""
     eval_processor = EvalProcessor(item)
@@ -73,10 +81,13 @@ def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
         )
 
         # Initialize the model and evaluate
-        cm_result, outflow_index = tf_model.start_evaluating(files, labels)
+        cm_result, outflow_indexes, fake_ng_indexes = tf_model.start_evaluating(
+            files, labels
+        )
 
         # Get the outflow images (incorrectly classified images)
-        outflow_images = file_paths[outflow_index]
+        outflow_images = file_paths[outflow_indexes]
+        fake_ng_images = file_paths[fake_ng_indexes]
 
         # Append results
         results.append(
@@ -85,6 +96,7 @@ def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
                 "total_count": len(file_paths),
                 "cm_results": cm_result,
                 "outflows": list(outflow_images),
+                "fake_ng": list(fake_ng_images),
             }
         )
 
