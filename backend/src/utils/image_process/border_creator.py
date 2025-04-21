@@ -41,7 +41,7 @@ class BorderCreator:
             value=BGRColors.BACKGROUND.value,
         )
 
-    def create_blank_image(self):
+    def create_blank_image(self) -> np.ndarray:
         """Creates a blank image with the same dimensions as the bordered image."""
         return np.zeros(self.border_image.shape[:2], np.uint8)
 
