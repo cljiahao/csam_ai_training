@@ -10,8 +10,7 @@ T = TypeVar("T")
 
 
 class BaseRepository(Generic[T]):
-    """
-    Base repository class to handle CRUD operations.
+    """Base repository class to handle CRUD operations.
 
     Args:
         db: SQLAlchemy session object
