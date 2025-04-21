@@ -64,7 +64,7 @@ class ImageManager:
         """
         image = cv2.imread(str(path))
         if image is None:
-            raise Exception()
+            raise ImageProcessError(f"cv2.imread failed to read image from {path}")
         return image
 
     @staticmethod
@@ -81,4 +81,5 @@ class ImageManager:
         """
         if isinstance(file_path, Path):
             file_path = str(file_path)
-        cv2.imwrite(file_path, image)
+        if not cv2.imwrite(file_path, image):
+            raise ImageProcessError(f"cv2.imwrite failed to save image to {file_path}")
