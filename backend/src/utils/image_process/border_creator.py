@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 
 from constants.colors import BGRColors
-from constants.image_thresholds import ImageThreshold
 
 
 class BorderCreator:
@@ -46,16 +45,16 @@ class BorderCreator:
         """Creates a blank image with the same dimensions as the bordered image."""
         return np.zeros(self.border_image.shape[:2], np.uint8)
 
-    def convert_background_white(self) -> np.ndarray:
+    def convert_background_white(self, background_threshold: int = 0) -> np.ndarray:
         """Converts the background of the bordered image to white based on a threshold."""
         border_image_copy = self.border_image.copy()
-        background = np.all(
-            border_image_copy >= ImageThreshold.BACKGROUND_THRESHOLD.value, axis=-1
-        )
+        background = np.all(border_image_copy >= background_threshold, axis=-1)
         border_image_copy[background] = BGRColors.WHITE.value
         return border_image_copy
 
-    def convert_background_white_and_grayscale(self) -> np.ndarray:
+    def convert_background_white_and_grayscale(
+        self, background_threshold: int = 0
+    ) -> np.ndarray:
         """Converts the bordered image to grayscale."""
-        border_white_bg_image = self.convert_background_white()
+        border_white_bg_image = self.convert_background_white(background_threshold)
         return cv2.cvtColor(border_white_bg_image, cv2.COLOR_BGR2GRAY)
