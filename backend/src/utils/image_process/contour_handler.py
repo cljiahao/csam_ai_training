@@ -1,5 +1,5 @@
-import os
 import cv2
+import os
 import numpy as np
 
 from core.logging import logger
