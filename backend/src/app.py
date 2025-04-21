@@ -4,13 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apis.routes import router
 from core.config import common_settings, api_settings
-from db.base import Base
-from db.session import engine
-
-
-def create_tables() -> None:
-    """Create database tables based on the metadata."""
-    Base.metadata.create_all(bind=engine)
+from db.base import create_tables
 
 
 def configure_cors(app: FastAPI) -> None:
