@@ -43,14 +43,18 @@ def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
 
     for mass_pro_folder in mass_pro_dir.iterdir():
         if mass_pro_folder.is_dir():
-            ng_files = list((mass_pro_folder / ClassLabel.NG.value).iterdir())
+            ng_files = [
+                ng_file_path.name
+                for ng_file_path in (mass_pro_folder / ClassLabel.NG.value).iterdir()
+            ]
             for temp_file_path in (mass_pro_folder / ClassLabel.TEMP.value).iterdir():
-                image = cv2.cvtColor(
-                    ImageManager.path_to_image(temp_file_path), cv2.COLOR_BGR2RGB
-                )
-                rgb_images.append(image)
-                labels.append(1 if temp_file_path in ng_files else 0)
-                image_paths.append(str(temp_file_path.relative_to(dm.images_dir)))
+                if temp_file_path.is_file():
+                    image = cv2.cvtColor(
+                        ImageManager.path_to_image(temp_file_path), cv2.COLOR_BGR2RGB
+                    )
+                    rgb_images.append(image)
+                    labels.append(1 if temp_file_path.name in ng_files else 0)
+                    image_paths.append(str(temp_file_path.relative_to(dm.images_dir)))
 
     return np.array(rgb_images), np.array(labels), np.array(image_paths)
 
