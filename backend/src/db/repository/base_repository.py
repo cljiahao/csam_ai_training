@@ -140,11 +140,11 @@ class BaseRepository(Generic[T]):
                 raise ValueError(
                     "Invalid input: updates must be a dict or list of dicts."
                 )
+        except NoResultsFound:
+            raise
         except Exception as e:
             self.db.rollback()
-            raise SQLAlchemyError(
-                str(e) if isinstance(e, NoResultsFound) else print_message
-            )
+            raise SQLAlchemyError(print_message) from e
 
     def delete(
         self,
@@ -174,8 +174,8 @@ class BaseRepository(Generic[T]):
                 self.db.commit()
                 self.db.expire_all()
                 return result.rowcount
+        except NoResultsFound:
+            raise
         except Exception as e:
             self.db.rollback()
-            raise SQLAlchemyError(
-                str(e) if isinstance(e, NoResultsFound) else print_message
-            )
+            raise SQLAlchemyError(print_message) from e
