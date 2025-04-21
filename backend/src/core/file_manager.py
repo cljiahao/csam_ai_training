@@ -3,10 +3,9 @@ from pathlib import Path
 from shutil import copyfile, move
 
 from core.directory_manager import directory_manager as dm
-from interface.os_handle import FileManagerInterface
 
 
-class FileManager(FileManagerInterface):
+class FileManager:
     """A utility class for file management operations."""
 
     @staticmethod
@@ -28,6 +27,28 @@ class FileManager(FileManagerInterface):
         try:
             with open(file_path, "r", encoding="utf-8") as file:
                 return file.read()
+        except Exception as e:
+            raise IOError(f"Failed to read file {file_path}: {e}")
+
+    @staticmethod
+    def readlines_txt(file_path: Path) -> str:
+        """Reads content from a text file and returns it as a string.
+
+        Args:
+            file_path: The path to the text file.
+
+        Returns:
+            The content of the file as a string.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            IOError: If an error occurs while reading the file.
+        """
+        if not file_path.exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                return file.readlines()
         except Exception as e:
             raise IOError(f"Failed to read file {file_path}: {e}")
 
