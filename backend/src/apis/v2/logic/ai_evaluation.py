@@ -7,9 +7,11 @@ from constants.folder_names import FolderNames
 from constants.tf_model import ClassLabel
 from core.directory_manager import directory_manager as dm
 from utils.ai_model.tf_model import TensorflowModel
+from utils.debug import timer
 from utils.image_process.image_manager import ImageManager
 
 
+@timer("Loaded Other Evaluation Files")
 def load_images_from_directory(
     directory: Path,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -32,6 +34,7 @@ def load_images_from_directory(
     return np.array(rgb_images), np.array(labels), np.array(image_paths)
 
 
+@timer("Loaded Mass Production Files")
 def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
     """Loads mass production files, grouped by their stem name."""
     rgb_images = []
@@ -52,6 +55,7 @@ def load_mass_production_files(mass_pro_dir: Path) -> dict[str, list]:
     return np.array(rgb_images), np.array(labels), np.array(image_paths)
 
 
+@timer("Evaluated Model")
 def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
     """Evaluates the model using images from various directories (colors, thousands, mass_pro)."""
     eval_processor = EvalProcessor(item)
