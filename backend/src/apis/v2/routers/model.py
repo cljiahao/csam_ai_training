@@ -104,15 +104,16 @@ def start_evaluate_model(
 )
 def get_all_model_names():
     try:
-        return {
-            item_dir.stem: [
-                model_path.name
-                for model_path in item_dir.iterdir()
-                if model_path.is_file() and model_path.suffix != ".txt"
-            ]
+        return [
+            {
+                "item": item_dir.name,
+                "file_name": model_path.name,
+            }
             for item_dir in dm.model_dir.iterdir()
             if item_dir.is_dir()
-        }
+            for model_path in item_dir.iterdir()
+            if model_path.is_file() and model_path.suffix != ".txt"
+        ]
     except Exception as e:
         handle_exceptions(e)
 
