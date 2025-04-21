@@ -22,7 +22,6 @@ class BaseRepository(Generic[T]):
     """
 
     def __init__(self, db: Session, model: Type[T]) -> None:
-
         self.db = db
         self.model = model
 
@@ -43,8 +42,8 @@ class BaseRepository(Generic[T]):
     def create(
         self,
         data: dict | list[dict],
-        print_message: str = "Error creating data into database.",
     ) -> T | list[T]:
+        print_message: str = "Error creating new data into the database.",
         """Create one or multiple record."""
         try:
             if isinstance(data, list):
