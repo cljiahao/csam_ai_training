@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import Generic, TypeVar, Type
 
 from core.exceptions import NoResultsFound
+from utils.debug import error_handler
 
 # Define generic types for the model
 T = TypeVar("T")
@@ -39,6 +40,7 @@ class BaseRepository(Generic[T]):
                 )
         return conditions
 
+    @error_handler()
     def create(
         self,
         data: dict | list[dict],
@@ -65,6 +67,7 @@ class BaseRepository(Generic[T]):
             self.db.rollback()
             raise SQLAlchemyError(print_message) from e
 
+    @error_handler()
     def read(
         self,
         filter_conditions: dict,
@@ -88,6 +91,7 @@ class BaseRepository(Generic[T]):
             self.db.rollback()
             raise SQLAlchemyError(print_message) from e
 
+    @error_handler()
     def update(
         self,
         update_conditions: dict[str, dict] | list[dict[str, dict]],
@@ -146,6 +150,7 @@ class BaseRepository(Generic[T]):
             self.db.rollback()
             raise SQLAlchemyError(print_message) from e
 
+    @error_handler()
     def delete(
         self,
         filter_conditions: dict | list[dict],
