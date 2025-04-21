@@ -5,7 +5,7 @@ from keras import preprocessing as pp
 
 
 from apis.v2.helpers.processor.train_processor import TrainProcessor
-from constants.tf_model import TFModel
+from constants.tf_model import TFModelParams
 from core.exceptions import NoResultsFound
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
@@ -50,9 +50,6 @@ def get_dataset_info(
 ) -> tuple[list, DatasetInfo]:
     """Returns information about the dataset if it exists, else returns an empty info."""
 
-    dataset = None
-    info = DatasetInfo(count=0, classes=[], class_counts={})
-
     if not directory.exists() or not any(directory.iterdir()):
         raise FileNotFoundError(
             f"Warning: The directory '{directory}' is empty or doesn't exist."
@@ -61,9 +58,9 @@ def get_dataset_info(
     dataset = pp.image_dataset_from_directory(
         directory,
         labels="inferred",
-        batch_size=TFModel.BATCH_SIZE.value,
-        image_size=input_size,
-        seed=TFModel.SEED.value,
+        batch_size=TFModelParams.BATCH_SIZE,
+        image_size=[input_size, input_size],
+        seed=TFModelParams.SEED,
         shuffle=shuffle,
     )
     class_names = dataset.class_names
