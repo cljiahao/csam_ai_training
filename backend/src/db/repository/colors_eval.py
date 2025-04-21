@@ -8,30 +8,30 @@ class ColorsEvalRepository(BaseRepository[ColorsEval]):
     def __init__(self, db: Session):
         super().__init__(db, ColorsEval)
 
-    def create_colors(self, colors_data: dict) -> ColorsEval:
+    def create_colors(self, colors_data: dict) -> list[ColorsEval]:
         """Create new colors eval sets."""
         return self.create(
             colors_data,
-            print_message=f"Error creating colors eval sets from the database.",
+            print_message="Error creating new data into ColorsEval database.",
         )
 
-    def read_colors(self, filter_conditions: dict) -> ColorsEval:
+    def read_colors(self, filter_conditions: dict) -> list[ColorsEval]:
         """Read colors eval sets based on filter."""
         return self.read(
             filter_conditions,
-            print_message=f"Error reading colors eval sets from the database.",
+            print_message="Error reading data from ColorsEval database.",
         )
 
-    def update_colors(self, updates_list: list[dict[str, dict]]) -> ColorsEval:
+    def update_colors(self, update_lists: dict[str, dict]) -> int:
         """Update colors eval sets with provided data."""
         return self.update(
-            updates_list,
-            print_message=f"Error updating colors eval sets in the database.",
+            update_lists,
+            print_message="Error updating data in ColorsEval database.",
         )
 
-    def delete_colors(self, filter_conditions: dict) -> ColorsEval:
+    def delete_colors(self, filter_conditions: dict) -> int:
         """Delete colors eval sets based on filter."""
         return self.delete(
             filter_conditions,
-            print_message=f"Error deleting colors eval sets from the database.",
+            print_message="Error deleting data from ColorsEval database.",
         )
