@@ -9,7 +9,7 @@ class ImageSettings(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
-    item: Mapped[str] = mapped_column(index=True)
+    item: Mapped[str] = mapped_column(unique=True, index=True)
     batch_erode: Mapped[int] = mapped_column(default=0)
     batch_close: Mapped[int] = mapped_column(default=0)
     chip_erode: Mapped[int] = mapped_column(default=0)
