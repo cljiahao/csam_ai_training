@@ -15,7 +15,7 @@ class CommonSettings(BaseSettings):
         - 🐞 [Issues](https://www.github.com/issue)
         """
     )
-    ENV_STAGE: str = Field(default="stage")
+    ENV_STAGE: str = Field(default="dev")
 
 
 class APISettings(BaseSettings):
@@ -60,7 +60,6 @@ class ServiceSettings(BaseSettings):
     TEST_ITEM: str = Field(default="GCM32ER71E106KA59_+B55-E02GJ")
     AI_SERVER_URL: str = Field(default="")
     PRASS_URL: str = Field(default="")
-    LOT_COLUMN: str = Field(default="")
     ITEM_COLUMN: str = Field(default="")
 
 
