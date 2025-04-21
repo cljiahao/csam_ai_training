@@ -58,3 +58,14 @@ class BorderCreator:
         """Converts the bordered image to grayscale."""
         border_white_bg_image = self.convert_background_white(background_threshold)
         return cv2.cvtColor(border_white_bg_image, cv2.COLOR_BGR2GRAY)
+
+    def change_border_color(
+        self, border_width: int, border_color: tuple[int, int, int]
+    ) -> np.ndarray:
+        """Modifies the borders of a copy of the image with the specified color."""
+        border_image_copy = self.border_image.copy()
+        border_image_copy[:border_width, :] = border_color
+        border_image_copy[-border_width:, :] = border_color
+        border_image_copy[border_width:-border_width, :border_width] = border_color
+        border_image_copy[border_width:-border_width, -border_width:] = border_color
+        return border_image_copy
