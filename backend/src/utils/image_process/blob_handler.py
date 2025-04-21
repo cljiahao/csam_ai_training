@@ -23,12 +23,13 @@ class BlobHandler:
         image: np.ndarray, max_kernel_size: int = 15
     ) -> list[np.ndarray]:
         """Applies erosion on the image with varying kernel sizes to attempt splitting contours."""
+        copy_image = image.copy()
         for x_coords in range(1, max_kernel_size + 1):
             for y_coords in range(1, max_kernel_size + 1):
                 erode_kernel = np.ones((x_coords, y_coords), np.uint8)
-                image[:] = cv2.erode(image, erode_kernel)
+                eroded = cv2.erode(copy_image, erode_kernel)
                 new_contours, _ = cv2.findContours(
-                    image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+                    eroded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
                 )
 
                 if not new_contours:
