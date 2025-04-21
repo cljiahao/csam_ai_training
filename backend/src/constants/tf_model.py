@@ -1,7 +1,10 @@
-from enum import Enum
+from enum import StrEnum
+from dataclasses import dataclass
 
 
-class ModelStatus(Enum):
+class ModelStatus(StrEnum):
+    """Enum for model status."""
+
     AUGMENT = "augment"
     AUGMENTED = "augmented"
     TRAINING = "training"
@@ -10,16 +13,21 @@ class ModelStatus(Enum):
     COMPLETED = "completed"
 
 
-class ClassLabel(Enum):
+class ClassLabel(StrEnum):
+    """Enum for class labels."""
+
     NG = "NG"
     G = "G"
     OTHERS = "Others"
     TEMP = "Temp"
 
 
-class TFModel(Enum):
-    BATCH_SIZE = 64
-    EPOCHS = 10000
-    SEED = 12345
-    KER = (3, 3)
-    KER2 = (1, 1)
+@dataclass(frozen=True)
+class TFModelParams:
+    """Dataclass for TensorFlow model parameters."""
+
+    BATCH_SIZE: int = 64
+    EPOCHS: int = 10000
+    SEED: int = 12345
+    KER: tuple[int, int] = (3, 3)
+    KER2: tuple[int, int] = (1, 1)

@@ -1,7 +1,9 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class FolderNames(Enum):
+class FolderNames(StrEnum):
+    """Enum for folder names."""
+
     BASE = "base"
     EVAL = "eval"
     RETRAIN = "retrain"
