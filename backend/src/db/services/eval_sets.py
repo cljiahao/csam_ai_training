@@ -34,6 +34,7 @@ class EvalSetsService:
         return self.eval_sets_repo.read_eval_sets(filter_conditions)
 
     def _read_or_create_eval_sets(self, item: str) -> EvalSets:
+        """Read evaluation sets for an item, or create them if they don't exist."""
         eval_sets = self.read_eval_sets(item)
         if not eval_sets:
             eval_sets = self.eval_sets_repo.create_eval_sets({"item": item})
@@ -64,7 +65,7 @@ class EvalSetsService:
                 {"filter_conditions": data_condition, "update_data": color_eval_data}
             )
 
-        color_eval_data.update({"eval_sets_id": eval_sets.id})
+        color_eval_data.update(data_condition)
         return self.colors_repo.create_colors(color_eval_data)
 
     def create_mass_pro_eval(
@@ -83,7 +84,7 @@ class EvalSetsService:
                 {"filter_conditions": data_condition, "update_data": mass_pro_eval_data}
             )
 
-        mass_pro_eval_data.update({"eval_sets_id": eval_sets.id})
+        mass_pro_eval_data.update(data_condition)
         return self.mass_pro_repo.create_mass_pro(mass_pro_eval_data)
 
     def create_thousands_eval(
@@ -105,5 +106,5 @@ class EvalSetsService:
                 }
             )
 
-        thousands_eval_data.update({"eval_sets_id": eval_sets.id})
+        thousands_eval_data.update(data_condition)
         return self.thousands_repo.create_thousands(thousands_eval_data)
