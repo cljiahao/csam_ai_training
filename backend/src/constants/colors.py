@@ -3,6 +3,8 @@ from enum import Enum
 
 
 class BGRColors(Enum):
+    """Enum for BGR color values."""
+
     BACKGROUND = (192, 192, 192)
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -17,11 +19,15 @@ class BGRColors(Enum):
 
 @dataclass(frozen=True)
 class ColorInfo:
+    """Dataclass for color information."""
+
     name: str
     bgr: tuple[int, int, int]
 
 
 class CSAMcolor(Enum):
+    """Enum for CSAM colors."""
+
     BLACK = ColorInfo(name="Black", bgr=BGRColors.BLACK.value)
     BLUE = ColorInfo(name="Blue", bgr=BGRColors.BLUE.value)
     CYAN = ColorInfo(name="Cyan", bgr=BGRColors.CYAN.value)
@@ -29,3 +35,11 @@ class CSAMcolor(Enum):
     LIME = ColorInfo(name="Lime", bgr=BGRColors.LIME.value)
     ORANGE = ColorInfo(name="Orange", bgr=BGRColors.ORANGE.value)
     YELLOW = ColorInfo(name="Yellow", bgr=BGRColors.YELLOW.value)
+
+    def get_name(self) -> str:
+        """Returns the BGR name value for the CSAM color."""
+        return self.value.name
+
+    def get_bgr(self) -> tuple[int, int, int]:
+        """Returns the BGR color value for the CSAM color."""
+        return self.value.bgr
