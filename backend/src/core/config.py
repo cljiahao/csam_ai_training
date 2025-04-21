@@ -27,8 +27,8 @@ class APISettings(BaseSettings):
     SERVER_APP_PORT: int = Field(default=5173)
     ALLOWED_CORS: list[str] = []
 
-    def __init__(self, **data):
-        super().__init__(**data)
+    def model_post_init(self, __context):
+        """Compute allowed CORS origins after initialization."""
         self.ALLOWED_CORS = self._compute_allowed_cors()
 
     def _compute_allowed_cors(self) -> list[str]:
