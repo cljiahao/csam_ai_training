@@ -1,16 +1,8 @@
-from pydantic import ConfigDict, Field, field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
-class Settings(BaseSettings):
-    """Base settings configuration."""
-
-    __config__ = ConfigDict(
-        env_file=".env", env_file_encoding="utf-8", case_sensitive=True
-    )
-
-
-class CommonSettings(Settings):
+class CommonSettings(BaseSettings):
     """Common settings for the application."""
 
     PROJECT_NAME: str = Field(default="My Project")
@@ -26,7 +18,7 @@ class CommonSettings(Settings):
     ENV_STAGE: str = Field(default="stage")
 
 
-class APISettings(Settings):
+class APISettings(BaseSettings):
     """API-specific settings."""
 
     FASTAPI_ROOT: str = Field(default="api")
@@ -53,7 +45,7 @@ class APISettings(Settings):
         return value.rstrip("/")
 
 
-class DatabaseSettings(Settings):
+class DatabaseSettings(BaseSettings):
     """Database configuration settings."""
 
     DB_NAME: str = Field(default="local.db")
@@ -61,7 +53,7 @@ class DatabaseSettings(Settings):
     TABLEID_CSAM_TRAIN: str = Field(default="")
 
 
-class ServiceSettings(Settings):
+class ServiceSettings(BaseSettings):
     """Service-specific settings."""
 
     TEST_LOT_NO: str = Field(default="1234567890")

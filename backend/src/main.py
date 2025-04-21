@@ -3,10 +3,27 @@ import argparse
 from dotenv import find_dotenv, load_dotenv
 
 
-def load_environment(env):
-    """Load environment variables from .env files based on the environment."""
-    load_dotenv(dotenv_path=find_dotenv("../.env"))
-    load_dotenv(dotenv_path=find_dotenv(f".env.{env}"))
+def load_environment(env: str) -> None:
+    """Load environment variables, prioritizing environment-specific settings.
+
+    Args:
+        env: The environment string (e.g., "dev", "stage", "prod") to load
+             the specific environment file for.
+    """
+    general_env_path = find_dotenv(".env")
+    if general_env_path:
+        load_dotenv(dotenv_path=general_env_path)
+        print(f"Loaded general environment variables from: {general_env_path}")
+    else:
+        print(f"General .env file not found.")
+
+    env_specific_path = find_dotenv(f".env.{env}")
+    if env_specific_path:
+        load_dotenv(dotenv_path=env_specific_path, override=False)
+        print(f"Loaded environment-specific variables from: {env_specific_path}")
+    else:
+        print(f"Environment-specific .env file not found.")
+
 
 
 def parse_arguments():
