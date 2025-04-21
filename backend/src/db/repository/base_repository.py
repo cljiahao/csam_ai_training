@@ -92,7 +92,7 @@ class BaseRepository(Generic[T]):
         self,
         updates_data: dict[str, dict] | list[dict[str, dict]],
         print_message: str = "Error updating data in database.",
-    ) -> int | T:
+    ) -> int:
         """Update one or multiple record."""
         try:
             if isinstance(updates_data, dict):
@@ -110,8 +110,8 @@ class BaseRepository(Generic[T]):
                     setattr(instance, key, value)
                 self.db.commit()
                 self.db.refresh(instance)
-                return instance
             elif isinstance(updates_data, list):
+                return 1
                 # Bulk update case
                 count = 0
                 for update_item in updates_data:
@@ -147,7 +147,7 @@ class BaseRepository(Generic[T]):
         self,
         filter_conditions: dict | list[dict],
         print_message: str = "Error deleting data from database.",
-    ) -> int | T:
+    ) -> int:
         """Delete one or multiple record."""
         try:
             if isinstance(filter_conditions, list):
