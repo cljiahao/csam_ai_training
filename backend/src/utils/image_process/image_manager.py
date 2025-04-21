@@ -5,11 +5,10 @@ from pathlib import Path
 
 from core.logging import logger
 from core.exceptions import ImageProcessError
-from interface.os_handle import ImageManagerInterface
 from utils.debug import error_handler
 
 
-class ImageManager(ImageManagerInterface):
+class ImageManager:
     @staticmethod
     def archive_existing_file(folder_path: Path, file_name: str) -> None:
         """Archives an existing file in the specified folder by renaming it with an index."""
