@@ -1,7 +1,7 @@
 import sqlalchemy as sa
-from typing import Generic, TypeVar, Type
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from typing import Generic, TypeVar, Type
 
 from core.exceptions import NoResultsFound
 
