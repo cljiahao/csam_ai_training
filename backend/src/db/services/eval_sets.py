@@ -34,6 +34,7 @@ class EvalSetsService:
         return self.eval_sets_repo.read_eval_sets(filter_conditions)
 
     def _read_or_create_eval_sets(self, item: str) -> EvalSets:
+        """Read evaluation sets for an item, or create them if they don't exist."""
         eval_sets = self.read_eval_sets(item)
         if not eval_sets:
             eval_sets = self.eval_sets_repo.create_eval_sets({"item": item})
