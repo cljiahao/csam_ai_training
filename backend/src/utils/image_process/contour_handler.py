@@ -4,6 +4,8 @@ import numpy as np
 
 from core.logging import logger
 from schemas.contours import ContourInfo, ContourList
+from schemas.misc import NormalizeCoordinates
+from utils.misc.calculations import normalize_coordinates
 
 
 class ContourHandler:
@@ -54,3 +56,26 @@ class ContourHandler:
         )
 
         return ContourList(contours=clean_contours)
+
+    @staticmethod
+    def extract_norm_coordinates(
+        contour_info_list: ContourList,
+        image_size: tuple[int, int],
+        rect_index: int = 0,
+    ) -> list[NormalizeCoordinates]:
+        """Extracts and normalizes coordinates from a specified rectangle within each contour.
+
+        Args:
+            contour_info_list: A ContourList object containing contour information.
+            image_size: A tuple containing the (height, width) of the image.
+            rect_index: The index of the rectangle within the contour's 'rect' list
+                        to extract coordinates from (default: 0).
+
+        Returns:
+            A list of NormalizeCoordinates objects representing the normalized
+            coordinates extracted from the specified rectangle of each contour.
+        """
+        return [
+            normalize_coordinates(contour_info.rect[rect_index], image_size)
+            for contour_info in contour_info_list
+        ]
