@@ -15,8 +15,9 @@ class ImageSettingsService:
         valid_keys = {
             "batch_erode",
             "batch_close",
+            "chip_noise_erode",
+            "chip_dilate",
             "chip_erode",
-            "chip_close",
             "crop_size",
         }
 
