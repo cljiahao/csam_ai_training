@@ -90,31 +90,34 @@ class BaseRepository(Generic[T]):
 
     def update(
         self,
-        updates_data: dict[str, dict] | list[dict[str, dict]],
+        update_conditions: dict[str, dict] | list[dict[str, dict]],
         print_message: str = "Error updating data in database.",
     ) -> int:
         """Update one or multiple record."""
         try:
-            if isinstance(updates_data, dict):
+            if isinstance(update_conditions, dict):
                 # Single update case
-                missing_key = {"filter_conditions", "update_data"} - updates_data.keys()
+                missing_key = {
+                    "filter_conditions",
+                    "update_data",
+                } - update_conditions.keys()
                 if missing_key:
                     raise KeyError(f"Missing key {missing_key}")
-                conditions = self._build_filter(updates_data["filter_conditions"])
+                conditions = self._build_filter(update_conditions["filter_conditions"])
                 statement = sa.select(self.model).filter(sa.and_(*conditions))
                 result = self.db.execute(statement)
                 instance = result.scalar_one_or_none()
                 if not instance:
                     raise NoResultsFound("No matching record found to update.")
-                for key, value in updates_data["update_data"].items():
+                for key, value in update_conditions["update_data"].items():
                     setattr(instance, key, value)
                 self.db.commit()
                 self.db.refresh(instance)
-            elif isinstance(updates_data, list):
                 return 1
+            elif isinstance(update_conditions, list):
                 # Bulk update case
                 count = 0
-                for update_item in updates_data:
+                for update_item in update_conditions:
                     missing_key = {
                         "filter_conditions",
                         "update_data",
