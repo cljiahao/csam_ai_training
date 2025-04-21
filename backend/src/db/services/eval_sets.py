@@ -65,7 +65,7 @@ class EvalSetsService:
                 {"filter_conditions": data_condition, "update_data": color_eval_data}
             )
 
-        color_eval_data.update({"eval_sets_id": eval_sets.id})
+        color_eval_data.update(data_condition)
         return self.colors_repo.create_colors(color_eval_data)
 
     def create_mass_pro_eval(
@@ -84,7 +84,7 @@ class EvalSetsService:
                 {"filter_conditions": data_condition, "update_data": mass_pro_eval_data}
             )
 
-        mass_pro_eval_data.update({"eval_sets_id": eval_sets.id})
+        mass_pro_eval_data.update(data_condition)
         return self.mass_pro_repo.create_mass_pro(mass_pro_eval_data)
 
     def create_thousands_eval(
@@ -106,5 +106,5 @@ class EvalSetsService:
                 }
             )
 
-        thousands_eval_data.update({"eval_sets_id": eval_sets.id})
+        thousands_eval_data.update(data_condition)
         return self.thousands_repo.create_thousands(thousands_eval_data)
