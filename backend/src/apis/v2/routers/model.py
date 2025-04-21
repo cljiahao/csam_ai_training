@@ -1,6 +1,6 @@
 from typing import Annotated
-from fastapi import APIRouter, BackgroundTasks, Body
-from fastapi import Depends, Query
+from fastapi import APIRouter, BackgroundTasks
+from fastapi import Body, Depends, Query
 from sqlalchemy.orm import Session
 from datetime import datetime as dt
 
@@ -93,7 +93,6 @@ def start_evaluate_model(
     try:
         evaluate_results = evaluate_model(item, ai_model_name)
         return {"status": "evaluated", "results": evaluate_results}
-
     except Exception as e:
         handle_exceptions(e)
 
