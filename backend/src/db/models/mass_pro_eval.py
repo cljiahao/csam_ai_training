@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from uuid import UUID
 
 from db.base import Base
 
@@ -17,7 +18,7 @@ class MassProEval(Base):
     eval_sets: Mapped["EvalSets"] = relationship("EvalSets", back_populates="mass_pro")
 
     # Foreign key to ChipLotDetails
-    eval_sets_id: Mapped[int] = mapped_column(ForeignKey("evalsets.id"))
+    eval_sets_id: Mapped[UUID] = mapped_column(ForeignKey("evalsets.id"))
 
     def __repr__(self):
         return f"<MassProEval(id={self.id}, eval_sets_id='{self.eval_sets_id}')>"

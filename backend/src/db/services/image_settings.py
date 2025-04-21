@@ -15,8 +15,9 @@ class ImageSettingsService:
         valid_keys = {
             "batch_erode",
             "batch_close",
+            "chip_noise_erode",
+            "chip_dilate",
             "chip_erode",
-            "chip_close",
             "crop_size",
         }
 
@@ -49,6 +50,9 @@ class ImageSettingsService:
         if not existing_settings:
             image_settings_data.update(data_condition)
             return self.repo.create_image_settings(image_settings_data)
+
+        if "crop_size" in image_settings_data and existing_settings.crop_size != 0:
+            del image_settings_data["crop_size"]
 
         return self.repo.update_image_settings(
             {"filter_conditions": data_condition, "update_data": image_settings_data}
