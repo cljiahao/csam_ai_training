@@ -8,21 +8,22 @@ class BorderCreator:
     """A utility class for creating and managing borders around an image.
 
     Args:
-            image (np.ndarray): The input image to add borders to.
-            crop_size (int): The crop size used to calculate the border padding.
+        image: The input image to add borders to.
+        border_padding: Explicit padding size for the border. If not provided, it's calculated based on crop_size.
+        crop_size: The crop size used to calculate the border padding if border_padding is not provided.
 
     Attributes:
-        image (np.ndarray): The input image for which borders are created.
-        border_pad (int): The calculated padding size for the border.
-        border_image (np.ndarray): The resulting image with the border added.
+        image: The input image to add borders to.
+        border_padding: The calculated or provided padding size for the border.
+        border_image: The resulting image with the border added.
     """
 
     def __init__(
-        self, image: np.ndarray, border_pad: int = 0, crop_size: int = 0
+        self, image: np.ndarray, border_padding: int = 0, crop_size: int = 0
     ) -> None:
         """Initializes the BorderCreator with an image and crop size."""
         self.image = image
-        self.border_pad = border_pad or self._calculate_border_pad(crop_size)
+        self.border_padding = border_padding or self._calculate_border_pad(crop_size)
         self.border_image = self._create_border_image()
 
     def _calculate_border_pad(self, crop_size: int) -> int:
@@ -33,10 +34,10 @@ class BorderCreator:
         """Creates an image with a border added to the original image."""
         return cv2.copyMakeBorder(
             self.image,
-            self.border_pad,  # Top
-            self.border_pad,  # Bottom
-            self.border_pad,  # Left
-            self.border_pad,  # Right
+            self.border_padding,  # Top
+            self.border_padding,  # Bottom
+            self.border_padding,  # Left
+            self.border_padding,  # Right
             cv2.BORDER_CONSTANT,
             value=BGRColors.BACKGROUND.value,
         )
