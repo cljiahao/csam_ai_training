@@ -51,6 +51,9 @@ class ImageSettingsService:
             image_settings_data.update(data_condition)
             return self.repo.create_image_settings(image_settings_data)
 
+        if "crop_size" in image_settings_data and existing_settings.crop_size != 0:
+            del image_settings_data["crop_size"]
+
         return self.repo.update_image_settings(
             {"filter_conditions": data_condition, "update_data": image_settings_data}
         )
