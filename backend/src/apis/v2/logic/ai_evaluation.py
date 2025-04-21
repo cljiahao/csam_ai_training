@@ -81,10 +81,13 @@ def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
         )
 
         # Initialize the model and evaluate
-        cm_result, outflow_index = tf_model.start_evaluating(files, labels)
+        cm_result, outflow_indexes, fake_ng_indexes = tf_model.start_evaluating(
+            files, labels
+        )
 
         # Get the outflow images (incorrectly classified images)
-        outflow_images = file_paths[outflow_index]
+        outflow_images = file_paths[outflow_indexes]
+        fake_ng_images = file_paths[fake_ng_indexes]
 
         # Append results
         results.append(
@@ -93,6 +96,7 @@ def evaluate_model(item: str, ai_model_name: str) -> list[dict]:
                 "total_count": len(file_paths),
                 "cm_results": cm_result,
                 "outflows": list(outflow_images),
+                "fake_ng": list(fake_ng_images),
             }
         )
 
