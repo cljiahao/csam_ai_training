@@ -11,6 +11,7 @@ from utils.debug import error_handler
 class ImageManager:
     """A utility class for managing image-related operations."""
 
+    @error_handler()
     @staticmethod
     def archive_existing_file(folder_path: Path, file_name: str) -> None:
         """Archives an existing file in the specified folder by renaming it with an index.
@@ -27,11 +28,8 @@ class ImageManager:
             file_path.rename(archived_file_path)
             logger.info(f"Archived file: {file_path} to {archived_file_path}")
 
+    @error_handler()
     @staticmethod
-    @error_handler(
-        print_message="Error converting file to cv2 format",
-        custom_error=ImageProcessError,
-    )
     def file_to_image(file: UploadFile) -> np.ndarray:
         """Converts an uploaded file to an OpenCV image.
 
@@ -45,14 +43,11 @@ class ImageManager:
         np_image = np.frombuffer(file_content, dtype=np.uint8)
         image = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
         if image is None:
-            raise Exception()
+            raise ImageProcessError("cv2.imdecode failed to decode image data.")
         return image
 
+    @error_handler()
     @staticmethod
-    @error_handler(
-        print_message="Error reading file from path.",
-        custom_error=ImageProcessError,
-    )
     def path_to_image(path: Path) -> np.ndarray:
         """Reads an image from a file path into an OpenCV image.
 
@@ -67,11 +62,8 @@ class ImageManager:
             raise ImageProcessError(f"cv2.imread failed to read image from {path}")
         return image
 
+    @error_handler()
     @staticmethod
-    @error_handler(
-        print_message="Error saving image to disk",
-        custom_error=ImageProcessError,
-    )
     def save_image(file_path: str | Path, image: np.ndarray) -> None:
         """Saves a NumPy array as an image file.
 
