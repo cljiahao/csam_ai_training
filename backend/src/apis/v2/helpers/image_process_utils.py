@@ -55,7 +55,7 @@ def check_single(
         ((x_center, y_center), _, _) = contour_info.rect
         crop_image = BlobHandler.crop_roi(drawn_roi, x_center, y_center, crop_size // 2)
 
-        new_contours = BlobHandler.erode_and_find_contours(crop_image)
+        new_contours = BlobHandler.split_blobs_with_erosion(crop_image)
         if new_contours:
             return ContourHandler.filter_and_build_contour_info(new_contours)
 
