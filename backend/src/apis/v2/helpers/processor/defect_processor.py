@@ -6,33 +6,34 @@ from apis.v2.helpers.image_process_utils import (
     extract_hsv_mask_and_area_sum,
     get_largest_info_and_mask,
 )
+from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from constants.colors import CSAMcolor
 from constants.image_thresholds import AugmentThreshold
 from constants.tf_model import ClassLabel
 from constants.chip_thresholds import ChipThreshold
-from interface.image_process import ChipProcessorInterface
 from schemas.chips_data import ImageData
 from schemas.contours import ContourInfo
+from utils.image_process.border_creator import BorderCreator
 
 
 class DefectProcessor:
     """A utility class for processing defects in images related to chips, including defect classification and batch processing.
 
     Args:
-        chip_processor (ChipProcessorInterface): The chip processor interface.
+        chip_processor (ChipProcessor): The chip processor interface.
         chip_threshold (ChipThreshold): The thresholds for chip defect classification.
 
     Attributes:
-        chip_processor (ChipProcessorInterface): The interface for chip processing.
+        chip_processor (ChipProcessor): The interface for chip processing.
         chip_threshold (ChipThreshold): The thresholds used to classify defects.
     """
 
     def __init__(
         self,
-        chip_processor: ChipProcessorInterface,
+        chip_processor: ChipProcessor,
         chip_threshold: ChipThreshold,
     ):
-        self.chip_processor: ChipProcessorInterface = chip_processor
+        self.chip_processor: ChipProcessor = chip_processor
         self.chip_threshold: ChipThreshold = chip_threshold
 
     def process_defects(
