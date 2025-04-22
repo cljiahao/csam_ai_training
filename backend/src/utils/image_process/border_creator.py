@@ -22,18 +22,17 @@ class BorderCreator:
         self, image: np.ndarray, border_padding: int = 0, crop_size: int = 0
     ) -> None:
         """Initializes the BorderCreator with an image and crop size."""
-        self.image = image
         self.border_padding = border_padding or self._calculate_border_pad(crop_size)
-        self.border_image = self._create_border_image()
+        self.border_image = self._create_border_image(image)
 
     def _calculate_border_pad(self, crop_size: int) -> int:
         """Calculates the padding size for the border based on the crop size."""
         return ((crop_size * 141) // 100 + 9) // 10 * 10
 
-    def _create_border_image(self) -> np.ndarray:
+    def _create_border_image(self, image: np.ndarray) -> np.ndarray:
         """Creates an image with a border added to the original image."""
         return cv2.copyMakeBorder(
-            self.image,
+            image,
             self.border_padding,  # Top
             self.border_padding,  # Bottom
             self.border_padding,  # Left
