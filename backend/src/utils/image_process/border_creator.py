@@ -55,7 +55,7 @@ class BorderCreator:
     def convert_background_white_and_grayscale(
         self, background_threshold: int = 0
     ) -> np.ndarray:
-        """Converts the bordered image to grayscale."""
+        """Converts the background of the bordered image to white based on a threshold and grayscale it."""
         border_white_bg_image = self.convert_background_white(background_threshold)
         return cv2.cvtColor(border_white_bg_image, cv2.COLOR_BGR2GRAY)
 
