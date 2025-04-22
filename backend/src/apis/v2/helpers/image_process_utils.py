@@ -8,7 +8,6 @@ from schemas.contours import ContourInfo, ContourList
 from utils.image_process.blob_handler import BlobHandler
 from utils.image_process.border_creator import BorderCreator
 from utils.image_process.contour_handler import ContourHandler
-from utils.image_process.mask_handler import MaskHandler
 
 
 def create_border(image: np.ndarray, padding: int = 0, crop_size: int = 0):
@@ -71,9 +70,9 @@ def create_focus_chip_mask(image: np.ndarray) -> np.ndarray:
     ]
 
     _, border_gray, _, _ = create_border(cropped_image, padding=focus_chip_pad)
+    _, binary_image = cv2.threshold(border_gray, 250, 255, cv2.THRESH_BINARY_INV)
 
-    mask_handler = MaskHandler(border_gray)
-    return mask_handler.binary_image
+    return binary_image
 
 
 def get_largest_info_and_mask(mask_image: np.ndarray) -> tuple[ContourInfo, np.ndarray]:
