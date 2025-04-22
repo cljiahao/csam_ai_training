@@ -17,7 +17,7 @@ def create_border(image: np.ndarray, padding: int = 0, crop_size: int = 0):
         background_threshold=ImageThreshold.BACKGROUND_THRESHOLD.value
     )
     border_blank = border_creator.create_blank_image()
-    border_pad = border_creator.border_pad
+    border_pad = border_creator.border_padding
 
     return border_creator.border_image, border_gray, border_blank, border_pad
 
