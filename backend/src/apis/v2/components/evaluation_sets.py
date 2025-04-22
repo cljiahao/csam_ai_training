@@ -18,7 +18,7 @@ def create_evaluation_sets(
     image_data_list: list[ImageData],
     defect_file_list: list[str],
     db: Session,
-) -> tuple[list[ImageData], list[ImageData]]:
+) -> list[ImageData]:
 
     defect_imdata_list = [
         image_data
@@ -44,7 +44,7 @@ def create_evaluation_sets(
                 "no_of_ng": len(defect_imdata_list),
             },
         )
-        return [], []
+        return []
 
     temp_imdata_list = [
         image_data
@@ -57,14 +57,12 @@ def create_evaluation_sets(
         defect_imdata_list, temp_imdata_list
     )
 
-    leftover_aug_imdata_list = _save_augmented_images(
-        eval_processor, augmented_imdata_list
-    )
+    _save_augmented_images(eval_processor, augmented_imdata_list)
 
     eval_sets_service.create_colors_eval(item, eval_processor.colors_count)
     eval_sets_service.create_thousands_eval(item, eval_processor.thousands_count)
 
-    return leftover_imdata_list, leftover_aug_imdata_list
+    return leftover_imdata_list
 
 
 def _save_mass_pro_images(
@@ -98,8 +96,6 @@ def _save_augmented_images(
 ) -> list[ImageData]:
     """Saves augmented images into their respective directories (Colors or Thousands sets)."""
 
-    leftover_aug_imdata_list = []
-
     for augmented_image_data in augmented_imdata_list:
         file_name = augmented_image_data.file_name
         color = augmented_image_data.defect_color.lower()
@@ -118,7 +114,3 @@ def _save_augmented_images(
                 augmented_image_data.rotated_image,
             )
             eval_processor.increment_thousands_count(size)
-        else:
-            leftover_aug_imdata_list.append(augmented_image_data)
-
-    return leftover_aug_imdata_list
