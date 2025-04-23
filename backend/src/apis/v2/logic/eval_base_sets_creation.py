@@ -49,7 +49,6 @@ def eval_base_image_sets_creation(
     label_image_data = defaultdict(list[ImageData])
     for image_data in leftover_imdata_list:
         label_image_data[image_data.label_mode].append(image_data)
-    label_image_data[ClassLabel.NG.value].extend(leftover_aug_imdata_list)
 
     base_dir = dm.images_dir / FolderNames.BASE.value / item
 
