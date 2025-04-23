@@ -36,7 +36,7 @@ def eval_base_image_sets_creation(
         data_file.file_name
         for defect_batch in defect_batch_directory.file_data_batches
         for data_file in defect_batch.data_files
-        if data_file.defect_mode == "ng"
+        if data_file.defect_mode.lower() != "temp"
     ]
 
     leftover_imdata_list = create_evaluation_sets(
