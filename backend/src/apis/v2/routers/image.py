@@ -1,4 +1,7 @@
 import json
+import os
+import shutil
+import tempfile
 from typing import Annotated
 from fastapi import APIRouter, BackgroundTasks, Path, UploadFile
 from fastapi import File, Form, Depends
@@ -45,12 +48,29 @@ def parse_form_data(
         raise ValueError(f"Invalid JSON: {str(e)}")
 
 
+def background_file_clean_up(
+    item: str,
+    lot_no: str,
+    file_name: str,
+    file_path: str,
+    defect_batch_directory: FileDataBatchDirectory,
+    db: Session,
+) -> None:
+    try:
+        eval_base_image_sets_creation(
+            item, lot_no, file_name, file_path, defect_batch_directory, db
+        )
+    finally:
+        # Clean up by deleting the temporary file
+        os.remove(file_path)
+
+
 @router.post(
     "/process_image",
     summary="Update local database with new user input",
     operation_id="SaveLocal",
 )
-def start_defect_augment(
+def start_process_image(
     data: Annotated[dict, Depends(parse_form_data)],
     file: Annotated[
         UploadFile,
@@ -64,11 +84,16 @@ def start_defect_augment(
         lot_no = data["lot_no"]
         defect_batch_directory = data["defect_batch_directory"]
 
+        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+            shutil.copyfileobj(file.file, tmp_file)
+            tmp_path = tmp_file.name  # Store the file path
+
         background_tasks.add_task(
-            eval_base_image_sets_creation,
+            background_file_clean_up,
             item,
             lot_no,
-            file,
+            file.filename,
+            tmp_path,
             defect_batch_directory,
             db,
         )
