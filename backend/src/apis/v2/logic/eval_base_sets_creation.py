@@ -1,6 +1,5 @@
 import random
 from pathlib import Path
-from fastapi import UploadFile
 from sqlalchemy.orm import Session
 from collections import defaultdict
 
@@ -23,14 +22,15 @@ from utils.image_process.image_manager import ImageManager
 def eval_base_image_sets_creation(
     item: str,
     lot_no: str,
-    file: UploadFile,
+    file_name: str,
+    file_path: str,
     defect_batch_directory: FileDataBatchDirectory,
     db: Session,
 ) -> None:
     """Main function to process base image creation."""
 
-    plate_no = Path(file.filename).stem
-    image_data_list = process_csam_image(file, item, lot_no, plate_no, db)
+    plate_no = Path(file_name).stem
+    image_data_list = process_csam_image(file_path, item, lot_no, plate_no, db)
 
     ng_data_file_names = [
         data_file.file_name
@@ -79,10 +79,10 @@ def eval_base_image_sets_creation(
 
 @timer("Process CSAM Image")
 def process_csam_image(
-    file: UploadFile, item: str, lot_no: str, plate_no: str, db: Session
+    file_path: str, item: str, lot_no: str, plate_no: str, db: Session
 ) -> list[ImageData]:
     """Processes the CSAM image, including contour extraction and defect processing."""
-    image = ImageManager.file_to_image(file)
+    image = ImageManager.path_to_image(file_path)
 
     (
         defect_processor,

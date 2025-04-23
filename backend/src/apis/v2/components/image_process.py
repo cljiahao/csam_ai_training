@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 from sqlalchemy.orm import Session
 
@@ -14,7 +15,6 @@ from db.models.image_settings import ImageSettings
 from db.services.image_settings import ImageSettingsService
 from schemas.contours import ContourList
 from utils.debug import timer
-from utils.image_process.mask_handler import MaskHandler
 
 
 @timer("Process CSAM Image")
@@ -38,17 +38,31 @@ def pre_process_image(
     )
 
     # Mask Processing
-    mask_handler = MaskHandler(border_gray)
+    _, binary_mask = cv2.threshold(border_gray, 250, 255, cv2.THRESH_BINARY_INV)
 
-    # Chip Processing
-    chip_processor = process_chip(mask_handler, border_pad, image_settings)
+    # Chip Processing instantiate
+    chip_processor = process_chip(binary_mask, border_pad, image_settings)
+
+    # Create Black chips Mask
+    black_mask = create_black_chip_mask(border_image, border_blank.copy())
 
     # Chip Threshold instantiate
     chip_threshold = ChipThreshold()
 
+    # Create contour lists
+    black_chip_contour_info_list = create_contour_list(black_mask)
+    other_chip_contour_info_list = create_contour_list(chip_processor.chip_mask)
+    contour_info_list = ContourList(
+        contours=black_chip_contour_info_list.contours
+        + other_chip_contour_info_list.contours
+    )
+
+    median_area = contour_info_list.get_median_area()
+    chip_threshold.apply_ratios(median_area)
+
     refined_contours_info_list = split_and_refine_contours(
         chip_threshold,
-        chip_processor.chip_mask,
+        contour_info_list,
         border_blank,
         image_settings.crop_size,
     )
@@ -67,32 +81,52 @@ def pre_process_image(
 
 
 def process_chip(
-    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+    binary_mask: np.ndarray, border_pad: int, image_settings: ImageSettings
 ):
     """Processes the chip data from the mask handler."""
-    chip_processor = ChipProcessor(
-        mask_handler,
-        image_settings.chip_erode,
-        image_settings.chip_close,
+    return ChipProcessor(
+        binary_mask,
         border_pad,
+        image_settings.chip_noise_erode,
+        image_settings.chip_dilate,
+        image_settings.chip_erode,
         image_settings.crop_size,
     )
-    return chip_processor
+
+
+@timer("Create Black Chip Mask")
+def create_black_chip_mask(image: np.ndarray, blank: np.ndarray) -> np.ndarray:
+    """Create Black Chip Mask"""
+    black_mask = cv2.inRange(image, (0, 0, 0), (0, 0, 0))
+    erode_mask = cv2.erode(black_mask, np.ones((3, 3), np.uint8))
+    dilate_mask = cv2.dilate(erode_mask, np.ones((5, 5), np.uint8))
+
+    contour_info_list = create_contour_list(dilate_mask)
+    if not contour_info_list:  # Avoid errors when no contours are found
+        return []
+
+    median_area = contour_info_list.get_median_area()
+    refined_contours = [
+        contour.contour
+        for contour in contour_info_list.contours
+        if contour.area > median_area
+    ]
+
+    black_mask = cv2.drawContours(
+        blank.copy(), refined_contours, -1, (255, 255, 255), -1
+    )
+
+    return cv2.erode(black_mask, np.ones((3, 3), np.uint8))
 
 
 @timer("Split and refining")
 def split_and_refine_contours(
     chip_threshold: ChipThreshold,
-    chip_mask: np.ndarray,
+    contour_info_list: ContourList,
     blank: np.ndarray,
     crop_size: int,
 ) -> ContourList:
     """Split and refine contours using BlobHandler."""
-
-    contour_info_list = create_contour_list(chip_mask)
-
-    median_area = contour_info_list.get_median_area()
-    chip_threshold.apply_ratios(median_area)
 
     split_contours = [
         split_contour
