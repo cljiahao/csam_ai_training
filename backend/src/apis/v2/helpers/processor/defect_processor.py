@@ -6,33 +6,34 @@ from apis.v2.helpers.image_process_utils import (
     extract_hsv_mask_and_area_sum,
     get_largest_info_and_mask,
 )
+from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from constants.colors import CSAMcolor
 from constants.image_thresholds import AugmentThreshold
 from constants.tf_model import ClassLabel
 from constants.chip_thresholds import ChipThreshold
-from interface.image_process import ChipProcessorInterface
 from schemas.chips_data import ImageData
 from schemas.contours import ContourInfo
+from utils.image_process.border_creator import BorderCreator
 
 
 class DefectProcessor:
     """A utility class for processing defects in images related to chips, including defect classification and batch processing.
 
     Args:
-        chip_processor (ChipProcessorInterface): The chip processor interface.
+        chip_processor (ChipProcessor): The chip processor interface.
         chip_threshold (ChipThreshold): The thresholds for chip defect classification.
 
     Attributes:
-        chip_processor (ChipProcessorInterface): The interface for chip processing.
+        chip_processor (ChipProcessor): The interface for chip processing.
         chip_threshold (ChipThreshold): The thresholds used to classify defects.
     """
 
     def __init__(
         self,
-        chip_processor: ChipProcessorInterface,
+        chip_processor: ChipProcessor,
         chip_threshold: ChipThreshold,
     ):
-        self.chip_processor: ChipProcessorInterface = chip_processor
+        self.chip_processor: ChipProcessor = chip_processor
         self.chip_threshold: ChipThreshold = chip_threshold
 
     def process_defects(
@@ -72,7 +73,7 @@ class DefectProcessor:
             return ClassLabel.OTHERS.value, None, None
 
         binary_image = create_focus_chip_mask(rotated_image)
-        _, major_binary_mask = get_largest_info_and_mask(binary_image)
+        major_binary_info, major_binary_mask = get_largest_info_and_mask(binary_image)
 
         major_binary_roi = cv2.bitwise_and(
             rotated_image, rotated_image, mask=major_binary_mask
@@ -82,14 +83,19 @@ class DefectProcessor:
         if binary_area_sum == 0:
             return ClassLabel.G.value, None, None
 
-        # TODO: change constant to dynamic? need more study
-        morph_open = cv2.morphologyEx(
-            binary_image, cv2.MORPH_OPEN, np.ones((13, 7), np.uint8)
+        width, height = major_binary_info.rect[1]
+        shortest = width if width < height else height
+        short_side = int(shortest * 0.8) // 2 * 2
+
+        body_white_mask = np.ones([short_side, short_side], np.uint8)
+        border_creator = BorderCreator(
+            body_white_mask,
+            border_padding=(rotated_image.shape[0] - short_side) // 2,
         )
 
-        major_defect_contour_info, major_defect_mask = get_largest_info_and_mask(
-            morph_open
-        )
+        chip_body_mask = border_creator.border_image
+
+        _, major_defect_mask = get_largest_info_and_mask(chip_body_mask)
         major_defect_roi = cv2.bitwise_and(
             rotated_image, rotated_image, mask=major_defect_mask
         )
@@ -100,7 +106,7 @@ class DefectProcessor:
         defect_color = self._get_defect_color(defect_image)
 
         defect_size = self._determine_size(
-            defect_area_sum, major_defect_contour_info.area
+            defect_area_sum, np.count_nonzero(chip_body_mask)
         )
 
         if defect_color is None or defect_size is None:
