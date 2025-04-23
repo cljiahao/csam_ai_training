@@ -43,12 +43,26 @@ def pre_process_image(
     # Chip Processing instantiate
     chip_processor = process_chip(binary_mask, border_pad, image_settings)
 
+    # Create Black chips Mask
+    black_mask = create_black_chip_mask(border_image, border_blank.copy())
+
     # Chip Threshold instantiate
     chip_threshold = ChipThreshold()
 
+    # Create contour lists
+    black_chip_contour_info_list = create_contour_list(black_mask)
+    other_chip_contour_info_list = create_contour_list(chip_processor.chip_mask)
+    contour_info_list = ContourList(
+        contours=black_chip_contour_info_list.contours
+        + other_chip_contour_info_list.contours
+    )
+
+    median_area = contour_info_list.get_median_area()
+    chip_threshold.apply_ratios(median_area)
+
     refined_contours_info_list = split_and_refine_contours(
         chip_threshold,
-        chip_processor.chip_mask,
+        contour_info_list,
         border_blank,
         image_settings.crop_size,
     )
@@ -75,7 +89,31 @@ def process_chip(
         border_pad,
         image_settings.crop_size,
     )
-    return chip_processor
+
+
+@timer("Create Black Chip Mask")
+def create_black_chip_mask(image: np.ndarray, blank: np.ndarray) -> np.ndarray:
+    """Create Black Chip Mask"""
+    black_mask = cv2.inRange(image, (0, 0, 0), (0, 0, 0))
+    erode_mask = cv2.erode(black_mask, np.ones((3, 3), np.uint8))
+    dilate_mask = cv2.dilate(erode_mask, np.ones((5, 5), np.uint8))
+
+    contour_info_list = create_contour_list(dilate_mask)
+    if not contour_info_list:  # Avoid errors when no contours are found
+        return []
+
+    median_area = contour_info_list.get_median_area()
+    refined_contours = [
+        contour.contour
+        for contour in contour_info_list.contours
+        if contour.area > median_area
+    ]
+
+    black_mask = cv2.drawContours(
+        blank.copy(), refined_contours, -1, (255, 255, 255), -1
+    )
+
+    return cv2.erode(black_mask, np.ones((3, 3), np.uint8))
 
 
 @timer("Split and refining")
