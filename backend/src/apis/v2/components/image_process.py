@@ -122,16 +122,11 @@ def create_black_chip_mask(image: np.ndarray, blank: np.ndarray) -> np.ndarray:
 @timer("Split and refining")
 def split_and_refine_contours(
     chip_threshold: ChipThreshold,
-    chip_mask: np.ndarray,
+    contour_info_list: ContourList,
     blank: np.ndarray,
     crop_size: int,
 ) -> ContourList:
     """Split and refine contours using BlobHandler."""
-
-    contour_info_list = create_contour_list(chip_mask)
-
-    median_area = contour_info_list.get_median_area()
-    chip_threshold.apply_ratios(median_area)
 
     split_contours = [
         split_contour
