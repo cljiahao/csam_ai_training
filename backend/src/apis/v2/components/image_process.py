@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 from sqlalchemy.orm import Session
 
@@ -14,7 +15,6 @@ from db.models.image_settings import ImageSettings
 from db.services.image_settings import ImageSettingsService
 from schemas.contours import ContourList
 from utils.debug import timer
-from utils.image_process.mask_handler import MaskHandler
 
 
 @timer("Process CSAM Image")
@@ -38,10 +38,10 @@ def pre_process_image(
     )
 
     # Mask Processing
-    mask_handler = MaskHandler(border_gray)
+    _, binary_mask = cv2.threshold(border_gray, 250, 255, cv2.THRESH_BINARY_INV)
 
-    # Chip Processing
-    chip_processor = process_chip(mask_handler, border_pad, image_settings)
+    # Chip Processing instantiate
+    chip_processor = process_chip(binary_mask, border_pad, image_settings)
 
     # Chip Threshold instantiate
     chip_threshold = ChipThreshold()
@@ -67,13 +67,11 @@ def pre_process_image(
 
 
 def process_chip(
-    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+    binary_mask: np.ndarray, border_pad: int, image_settings: ImageSettings
 ):
     """Processes the chip data from the mask handler."""
-    chip_processor = ChipProcessor(
-        mask_handler,
-        image_settings.chip_erode,
-        image_settings.chip_close,
+    return ChipProcessor(
+        binary_mask,
         border_pad,
         image_settings.crop_size,
     )
