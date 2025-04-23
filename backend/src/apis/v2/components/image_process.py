@@ -87,6 +87,9 @@ def process_chip(
     return ChipProcessor(
         binary_mask,
         border_pad,
+        image_settings.chip_noise_erode,
+        image_settings.chip_dilate,
+        image_settings.chip_erode,
         image_settings.crop_size,
     )
 
