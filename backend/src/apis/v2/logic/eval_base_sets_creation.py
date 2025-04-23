@@ -36,7 +36,7 @@ def eval_base_image_sets_creation(
         data_file.file_name
         for defect_batch in defect_batch_directory.file_data_batches
         for data_file in defect_batch.data_files
-        if data_file.defect_mode == "ng"
+        if data_file.defect_mode.lower() != "temp"
     ]
 
     leftover_imdata_list = create_evaluation_sets(
@@ -63,10 +63,11 @@ def eval_base_image_sets_creation(
     }
 
     for label, image_data_list in label_image_data.items():
-        if AugmentThreshold.MAX_FILE_COUNT.value - base_fol_count[label] != 0:
+        required_count = AugmentThreshold.MAX_FILE_COUNT.value - base_fol_count[label]
+        if required_count != 0:
             random.shuffle(image_data_list)
             logger.info(f"label: {label} has {len(image_data_list)}")
-            for image_data in image_data_list[: base_fol_count[label]]:
+            for image_data in image_data_list[:required_count]:
                 ImageManager.save_image(
                     base_dir / label / image_data.file_name, image_data.rotated_image
                 )
