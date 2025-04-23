@@ -1,19 +1,20 @@
+import cv2
 import numpy as np
 from PIL import Image
 from cv2.typing import RotatedRect
 
-from interface.image_process import ChipProcessorInterface, MaskHandlerInterface
 from utils.image_process.blob_handler import BlobHandler
 
 
-class ChipProcessor(ChipProcessorInterface):
+class ChipProcessor:
     """A utility class for processing images related to chips.
 
     Args:
-        mask_handler (MaskHandlerInterface): The mask handler for applying morphology operations.
-        chip_erode (int): The erosion size for the chip mask.
-        chip_close (int): The closing size for the chip mask.
+        mask_image (np.ndarray): The threshold mask image for the chip mask.
         border_pad (int): The padding to apply around the chip before cropping.
+        chip_noise_erode (int): The erosion size for the noise removal chip mask.
+        chip_dilate (int): The dilation size for the chip mask.
+        chip_erode (int): The erosion size for the chip mask.
         crop_size (int): The size of the crop after rotation.
 
     Attributes:
@@ -24,15 +25,38 @@ class ChipProcessor(ChipProcessorInterface):
 
     def __init__(
         self,
-        mask_handler: MaskHandlerInterface,
-        chip_erode: int,
-        chip_close: int,
+        mask_image: np.ndarray,
         border_pad: int,
+        chip_noise_erode: int,
+        chip_dilate: int,
+        chip_erode: int,
         crop_size: int,
     ) -> None:
         self.border_pad = border_pad
         self.crop_size = crop_size
-        self.chip_mask = mask_handler.apply_morphology(chip_erode, chip_close)
+        self.chip_mask = self.apply_morphology(
+            mask_image, chip_noise_erode, chip_dilate, chip_erode
+        )
+
+    @staticmethod
+    def apply_morphology(
+        mask_image: np.ndarray,
+        chip_noise_erode: int,
+        chip_dilate: int,
+        chip_erode: int,
+    ):
+        """Applies morphological operations to the binary mask."""
+        noised_removed = cv2.erode(
+            mask_image, np.ones((chip_noise_erode, chip_noise_erode), np.uint8)
+        )
+        dilated_image = cv2.dilate(
+            noised_removed, np.ones((chip_dilate, chip_dilate), np.uint8)
+        )
+        eroded_image = cv2.erode(
+            dilated_image, np.ones((chip_erode, chip_erode), np.uint8)
+        )
+
+        return eroded_image
 
     def rotate_chips(
         self,
