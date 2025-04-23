@@ -8,15 +8,16 @@ from schemas.contours import ContourInfo, ContourList
 from utils.image_process.blob_handler import BlobHandler
 from utils.image_process.border_creator import BorderCreator
 from utils.image_process.contour_handler import ContourHandler
-from utils.image_process.mask_handler import MaskHandler
 
 
 def create_border(image: np.ndarray, padding: int = 0, crop_size: int = 0):
     """Creates border images and returns relevant data."""
     border_creator = BorderCreator(image, padding, crop_size)
-    border_gray = border_creator.convert_background_white_and_grayscale()
+    border_gray = border_creator.convert_background_white_and_grayscale(
+        background_threshold=ImageThreshold.BACKGROUND_THRESHOLD.value
+    )
     border_blank = border_creator.create_blank_image()
-    border_pad = border_creator.border_pad
+    border_pad = border_creator.border_padding
 
     return border_creator.border_image, border_gray, border_blank, border_pad
 
@@ -56,7 +57,7 @@ def check_single(
         ((x_center, y_center), _, _) = contour_info.rect
         crop_image = BlobHandler.crop_roi(drawn_roi, x_center, y_center, crop_size // 2)
 
-        new_contours = BlobHandler.erode_and_find_contours(crop_image)
+        new_contours = BlobHandler.split_blobs_with_erosion(crop_image)
         if new_contours:
             return ContourHandler.filter_and_build_contour_info(new_contours)
 
@@ -71,9 +72,9 @@ def create_focus_chip_mask(image: np.ndarray) -> np.ndarray:
     ]
 
     _, border_gray, _, _ = create_border(cropped_image, padding=focus_chip_pad)
+    _, binary_image = cv2.threshold(border_gray, 250, 255, cv2.THRESH_BINARY_INV)
 
-    mask_handler = MaskHandler(border_gray)
-    return mask_handler.binary_image
+    return binary_image
 
 
 def get_largest_info_and_mask(mask_image: np.ndarray) -> tuple[ContourInfo, np.ndarray]:
