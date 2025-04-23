@@ -7,16 +7,16 @@ services:
       dockerfile: Dockerfile
       target: prod
       tags:
-        - "10.50.0.7:5001/csam_ai_train/api:latest"
-        - "10.50.0.7:5001/csam_ai_train/api:2.0.0"
+        - "10.50.0.7:5001/csam_ai_training/api:latest"
+        - "10.50.0.7:5001/csam_ai_training/api:2.0.1"
 
   frontend:
     ports: !override
-      - "80:80"
+      - "${NGINX_PORT}:80"
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: prod
       tags:
-        - "10.50.0.7:5001/csam_ai_train/app:latest"
-        - "10.50.0.7:5001/csam_ai_train/app:2.0.0"
+        - "10.50.0.7:5001/csam_ai_training/app:latest"
+        - "10.50.0.7:5001/csam_ai_training/app:2.0.1"

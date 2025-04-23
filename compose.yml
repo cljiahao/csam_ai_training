@@ -9,10 +9,11 @@ services:
     container_name: backend
     ports:
       - "${DEV_API_PORT}:${DEV_API_PORT}"
+    env_file:
+      - .env
     volumes:
       - ./backend/data:/api/data
       - ./backend/config:/api/config
-      - ./backend/log:/api/log
     networks:
       - load_balancer
 
