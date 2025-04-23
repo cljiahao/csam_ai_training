@@ -39,7 +39,7 @@ def eval_base_image_sets_creation(
         if data_file.defect_mode == "ng"
     ]
 
-    leftover_imdata_list, leftover_aug_imdata_list = create_evaluation_sets(
+    leftover_imdata_list = create_evaluation_sets(
         item, plate_no, image_data_list, ng_data_file_names, db
     )
 
