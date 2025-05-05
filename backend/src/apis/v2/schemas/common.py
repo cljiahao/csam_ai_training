@@ -1,15 +1,9 @@
-from enum import Enum
+from dataclasses import dataclass
+
+from apis.v2.constants.csam_thresholds import ChipThresholdRatio
 
 
-class ChipThresholdRatio(Enum):
-    """Enum for chip and defect area ratios."""
-
-    LOWER_CHIP_AREA_RATIO = 0.15
-    UPPER_CHIP_AREA_RATIO = 2.0
-    LOWER_DEFECT_AREA_RATIO = 0.75
-    UPPER_DEFECT_AREA_RATIO = 1.5
-
-
+@dataclass
 class ChipThreshold:
     """Class to manage chip and defect area thresholds."""
 

@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 from core.logging import logger
-from schemas.contours import ContourInfo, ContourList
+from schemas.contours import ContourInfo, ContourInfoList
 from schemas.misc import NormalizeCoordinates
 from utils.misc.calculations import normalize_coordinates
 
@@ -55,15 +55,15 @@ class ContourHandler:
     def filter_and_build_contour_info(
         contours: list[np.ndarray],
         denoise_threshold: int = 0,
-    ) -> ContourList:
-        """Remove noise from mask image and return contour info.
+    ) -> ContourInfoList:
+        """Filters contours based on area and builds a ContourInfoList.
 
         Args:
             contours: A list of NumPy arrays representing contours.
             denoise_threshold: The minimum area for a contour to be included.
 
         Returns:
-            A ContourList object containing filtered ContourInfo objects.
+            A ContourInfoList object containing filtered ContourInfo objects.
         """
         clean_contours = [
             ContourInfo(
@@ -74,22 +74,31 @@ class ContourHandler:
             for contour in contours
             if (blob_area := cv2.contourArea(contour)) > denoise_threshold
         ]
+
+        processed_contours = []
+        for contour_info in clean_contours:
+            center, (width, height), angle = contour_info.rect
+            if width > height:
+                contour_info.rect = (center, (height, width), angle)
+            processed_contours.append(contour_info)
+
         logger.debug(
-            f"Filtered {len(clean_contours)} contours based on area threshold."
+            f"Filtered {len(clean_contours)} contours based on area threshold.",
+            stacklevel=2,
         )
 
-        return ContourList(contours=clean_contours)
+        return ContourInfoList(contours=processed_contours)
 
     @staticmethod
     def extract_norm_coordinates(
-        contour_info_list: ContourList,
+        contour_info_list: ContourInfoList,
         image_size: tuple[int, int],
         rect_index: int = 0,
     ) -> list[NormalizeCoordinates]:
         """Extracts and normalizes coordinates from a specified rectangle within each contour.
 
         Args:
-            contour_info_list: A ContourList object containing contour information.
+            contour_info_list: A ContourInfoList object containing contour information.
             image_size: A tuple containing the (height, width) of the image.
             rect_index: The index of the rectangle within the contour's 'rect' list
                         to extract coordinates from (default: 0).

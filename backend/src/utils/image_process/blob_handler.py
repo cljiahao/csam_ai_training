@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+from constants.colors import BGRColors
+
 
 class BlobHandler:
     """A utility class for processing blobs (regions of interest) found from contours in images."""
@@ -41,28 +43,86 @@ class BlobHandler:
 
     @staticmethod
     def split_blobs_with_erosion(
-        image: np.ndarray, max_kernel_size: int = 50
+        crop_image: np.ndarray, image: np.ndarray
     ) -> list[np.ndarray]:
         """Applies erosion and finds contours to attempt splitting blobs.
 
         Args:
-            image: The input image.
-            max_kernel_size: The maximum kernel size for erosion.
+            crop_image: The cropped image containing the blob to split.
+            image: The original input image before crop.
 
         Returns:
             A list of contours if found, otherwise an empty list.
         """
-        copy_image = image.copy()
-        for x_coords in range(1, max_kernel_size + 1):
-            for y_coords in range(1, max_kernel_size + 1):
+        for x_coords in range(1, 50):
+            for y_coords in range(1, 50):
                 erode_kernel = np.ones((x_coords, y_coords), np.uint8)
-                eroded = cv2.erode(copy_image, erode_kernel)
-                new_contours, _ = cv2.findContours(
-                    eroded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+                eroded_image = cv2.erode(crop_image, erode_kernel)
+                crop_contours, _ = cv2.findContours(
+                    eroded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
                 )
 
-                if not new_contours:
+                if not crop_contours:
                     break
-                if len(new_contours) > 1:
-                    return new_contours
+                if len(crop_contours) > 1:
+                    crop_image[:] = eroded_image
+                    contours, _ = cv2.findContours(
+                        image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+                    )
+                    return contours
         return []
+
+    @staticmethod
+    def get_non_red_and_black_mask(image: np.ndarray) -> np.ndarray:
+        """Creates a mask excluding red and black color ranges in the HSV color space.
+
+        Args:
+            image: The input BGR image.
+
+        Returns:
+            A binary mask where non-red and non-black pixels are white.
+        """
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV_FULL)
+        return cv2.inRange(hsv, np.array([1, 0, 0]), np.array([254, 255, 255]))
+
+    @staticmethod
+    def draw_blob_mask_from_contours(
+        image: np.ndarray, contours: np.ndarray
+    ) -> np.ndarray:
+        """Draws a white filled mask on a black background based on the given contours.
+
+        Args:
+            image: The input image (used for shape).
+            contours: The contours to draw.
+
+        Returns:
+            A binary mask with the drawn contours filled with white.
+        """
+        blank_mask = np.zeros(image.shape[:2], np.uint8)
+        cv2.drawContours(
+            blank_mask,
+            [contours],
+            -1,
+            BGRColors.WHITE.value,
+            -1,
+        )
+        return blank_mask
+
+    @staticmethod
+    def extract_dark_blobs_mask(
+        image: np.ndarray, bright_bg_threshold: int
+    ) -> np.ndarray:
+        """Extracts a binary mask of dark blobs from the grayscale image.
+
+        Args:
+            image: The input BGR image.
+
+        Returns:
+            A binary mask (uint8) where dark blobs are white.
+        """
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        _, binary_image = cv2.threshold(
+            gray_image, bright_bg_threshold, 255, cv2.THRESH_BINARY_INV
+        )
+        erode_kernel = BlobHandler.create_kernel(3)
+        return cv2.erode(binary_image, erode_kernel)
