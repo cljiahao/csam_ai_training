@@ -1,0 +1,129 @@
+import math
+import cv2
+import numpy as np
+from PIL import Image
+
+from apis.v2.schemas.image_settings import ChipCoordinates
+from apis.v2.schemas.common import ChipThreshold
+from constants.colors import BGRColors
+from schemas.contours import ContourInfo, ContourInfoList
+from utils.image_process.blob_handler import BlobHandler
+from utils.image_process.contour_handler import ContourHandler
+
+
+def apply_morphology_for_chips(
+    mask_image: np.ndarray, chip_noise_erode: int, chip_dilate: int, chip_erode: int
+) -> np.ndarray:
+    """Applies morphological operations to the binary mask."""
+    noise_erode_kernel = BlobHandler.create_kernel(chip_noise_erode)
+    noised_removed = cv2.erode(mask_image, noise_erode_kernel)
+
+    dilate_kernel = BlobHandler.create_kernel(chip_dilate)
+    dilated_image = cv2.dilate(noised_removed, dilate_kernel)
+
+    erode_kernel = BlobHandler.create_kernel(chip_erode)
+    eroded_image = cv2.erode(dilated_image, erode_kernel)
+
+    return eroded_image
+
+
+def create_black_chip_mask(image: np.ndarray) -> np.ndarray:
+    """Creates a binary mask for black chips in the image."""
+    ng_black = np.array(BGRColors.BLACK.value)
+    black_mask = cv2.inRange(image, ng_black, ng_black)
+    # TODO: Consider making the kernel size a constant
+    open_kernel = BlobHandler.create_kernel(7)
+    return cv2.morphologyEx(black_mask, cv2.MORPH_OPEN, open_kernel)
+
+
+def update_chip_threshold(contour_info_list: ContourInfoList) -> ChipThreshold:
+    """Updates and returns chip threshold values based on the median contour area."""
+    chip_threshold = ChipThreshold()
+    median_area = contour_info_list.get_median_area()
+    chip_threshold.apply_ratios(median_area)
+    return chip_threshold
+
+
+def check_single(
+    contour_info: ContourInfo,
+    image: np.ndarray,
+    crop_size: int,
+    threshold: int = 0,
+) -> ContourInfoList:
+    """Analyzes a single contour, attempting to split it if its area exceeds a threshold."""
+    if contour_info.area > threshold:
+        drawn_roi = BlobHandler.draw_blob_mask_from_contours(
+            image, contour_info.contour
+        )
+        ((x_center, y_center), _, _) = contour_info.rect
+        crop_image = BlobHandler.crop_roi(drawn_roi, x_center, y_center, crop_size // 2)
+
+        new_contours = BlobHandler.split_blobs_with_erosion(crop_image, drawn_roi)
+        if new_contours:
+            return ContourHandler.filter_and_build_contour_info(new_contours)
+
+    return ContourInfoList(contours=[contour_info])
+
+
+def extract_refined_contour_info_list(
+    contour_info_list: ContourInfoList,
+    image: np.ndarray,
+    crop_size: int,
+    chip_threshold: ChipThreshold,
+) -> list[ContourInfo]:
+    """Extracts and refines a list of contours by splitting large ones and filtering by area."""
+    return [
+        split_contour_info
+        for contour_info in contour_info_list
+        for split_contour_info in check_single(
+            contour_info, image, crop_size, chip_threshold.UPPER_CHIP_AREA
+        ).contours
+        if chip_threshold.LOWER_CHIP_AREA
+        < split_contour_info.area
+        < chip_threshold.UPPER_CHIP_AREA
+    ]
+
+
+def chip_crop_finder(
+    contour_info_list: ContourInfoList, image: np.ndarray
+) -> ContourInfoList:
+    """Finds potential chip crops by refining contours based on size and attempting to split large ones."""
+    average_length = contour_info_list.get_average_length()
+    crop_size = math.ceil(average_length // 2 * 4)
+
+    chip_threshold = update_chip_threshold(contour_info_list)
+    refined_contour_info_list = extract_refined_contour_info_list(
+        contour_info_list, image, crop_size, chip_threshold
+    )
+    return ContourInfoList(contours=refined_contour_info_list)
+
+
+def rotate_and_crop_chip_image(
+    contour_info: ContourInfo, border_image: np.ndarray, padding: int, crop_size: int
+) -> np.ndarray:
+    """Rotates and crops a chip image based on its contour information."""
+    ((x_center, y_center), (width, height), theta) = contour_info.rect
+    if height < width:
+        theta -= 90
+
+    pre_crop_image = BlobHandler.crop_roi(border_image, x_center, y_center, padding)
+    pil_image = Image.fromarray(pre_crop_image)
+    rotated_image = np.asarray(pil_image.rotate(theta))
+
+    return BlobHandler.crop_roi(rotated_image, padding, padding, crop_size // 2)
+
+
+def extract_chip_coordinates(
+    contour_info_list: ContourInfoList, binary_image: np.ndarray
+) -> list[ChipCoordinates]:
+    """Extracts normalized center coordinates for each chip contour."""
+    norm_coordinates_list = ContourHandler.extract_norm_coordinates(
+        contour_info_list, binary_image.shape[:2]
+    )
+    return [
+        ChipCoordinates(
+            norm_x_center=norm_coords.norm_x,
+            norm_y_center=norm_coords.norm_y,
+        )
+        for norm_coords in norm_coordinates_list
+    ]
