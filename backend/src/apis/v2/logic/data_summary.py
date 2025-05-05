@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 
-from apis.v2.schemas.summary import (
+from apis.v2.constants.csam_thresholds import AugmentThresholdRatio
+from apis.v2.constants.datasets_thresholds import EvaluationDatasetsThresholds
+from apis.v2.schemas.data_summary import (
     BaseSetsData,
     EvalBaseKey,
     EvalBaseSets,
@@ -8,19 +10,17 @@ from apis.v2.schemas.summary import (
     EvalSetsData,
 )
 from constants.colors import CSAMcolor
-from constants.image_thresholds import (
-    AugmentThreshold,
-    EvalColorsNames,
-    EvaluationThreshold,
-)
+from constants.folder_names import ColorsFolderNames
 from core.logging import logger
 from db.services.base_sets import BaseSetsService
 from db.services.eval_sets import EvalSetsService
+from utils.debug import timer
 
 
+@timer("Get Eval and Base Datasets")
 def get_eval_base_sets_data(db: Session) -> EvalBaseSetsData:
     """Retrieves and combines evaluation and base set data."""
-    augment_multiplier = len(CSAMcolor) * AugmentThreshold.BASE_MULTIPLIER.value
+    augment_multiplier = len(CSAMcolor) * AugmentThresholdRatio.BASE_MULTIPLIER
 
     eval_set_data = get_all_eval_sets_data(db)
     base_set_data = get_all_base_sets_data(db)
@@ -35,15 +35,14 @@ def get_eval_base_sets_data(db: Session) -> EvalBaseSetsData:
         )
         eval_base_set_data.append(combined_entry)
 
+    thousands_small = EvaluationDatasetsThresholds.THOUSANDS_SMALL
+    thousands_med_big = EvaluationDatasetsThresholds.THOUSANDS_MED_AND_BIG
     return EvalBaseSetsData(
         augment_multiplier=augment_multiplier,
-        mass_pro_threshold=EvaluationThreshold.MIN_MASS_PRO_SET.value,
-        colors_threshold=EvaluationThreshold.MIN_PER_COLORS_SET.value
-        * len(EvalColorsNames),
-        thousands_threshold=(
-            EvaluationThreshold.MIN_SMALL_THOUSANDS_SET.value
-            + EvaluationThreshold.MIN_MEDIUM_BIG_THOUSANDS_SET.value * 2
-        ),
+        mass_pro_threshold=EvaluationDatasetsThresholds.MASS_PRO,
+        colors_threshold=EvaluationDatasetsThresholds.PER_COLOR
+        * len(ColorsFolderNames),
+        thousands_threshold=thousands_small + thousands_med_big * 2,
         eval_base_sets=eval_base_set_data,
     )
 
@@ -90,8 +89,7 @@ def get_all_base_sets_data(db: Session) -> dict:
 
 
 def _sum_eval_attributes(eval_objects, exclude_fields=None) -> int:
-    """
-    Utility function to sum all integer attributes of an eval object,
+    """Utility function to sum all integer attributes of an eval object,
     excluding specified metadata fields.
     """
     if exclude_fields is None:

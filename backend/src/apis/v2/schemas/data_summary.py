@@ -1,35 +1,30 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class BaseSetsData:
+class BaseSetsData(BaseModel):
     no_of_g: int = 0
     no_of_ng: int = 0
     no_of_others: int = 0
 
 
-@dataclass
-class EvalBaseKey:
+class EvalBaseKey(BaseModel):
     total_sum: int = 0
 
 
-@dataclass
-class EvalSetsData:
+class EvalSetsData(BaseModel):
     colors_count: EvalBaseKey
     thousands_count: EvalBaseKey
     mass_pro_count: EvalBaseKey
 
 
-@dataclass
-class EvalBaseSets:
+class EvalBaseSets(BaseModel):
     id: int
     item: str
     eval_data: EvalSetsData
     base_data: BaseSetsData
 
 
-@dataclass
-class EvalBaseSetsData:
+class EvalBaseSetsData(BaseModel):
     augment_multiplier: int
     mass_pro_threshold: int
     colors_threshold: int
