@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from core.exceptions import InvalidInputError
+from core.exceptions import InvalidInputError, NoResultsFound
 from db.models.image_settings import ImageSettings
 from db.repository.image_settings import ImageSettingsRepository
 
@@ -33,7 +33,17 @@ class ImageSettingsService:
             raise InvalidInputError("Item cannot be empty.")
         filter_conditions = {"item": item}
 
-        return self.repo.read_image_settings(filter_conditions)
+        return self.repo.read_image_settings(filter_conditions)[0]
+
+    def read_image_settings_not_empty(self, item: str) -> ImageSettings:
+        """Service layer method to read image settings, ensure not empty"""
+        image_settings = self.read_image_settings(item)
+
+        if image_settings is None:
+            raise NoResultsFound(
+                f"Image settings for '{item}' not found in API or database."
+            )
+        return image_settings
 
     def create_or_update_image_settings(
         self, item: str, image_settings_data: dict[str, int]
@@ -49,7 +59,7 @@ class ImageSettingsService:
         existing_settings = self.read_image_settings(item)
         if not existing_settings:
             image_settings_data.update(data_condition)
-            return self.repo.create_image_settings(image_settings_data)
+            return self.repo.create_image_settings(image_settings_data)[0]
 
         if "crop_size" in image_settings_data and existing_settings.crop_size != 0:
             del image_settings_data["crop_size"]
