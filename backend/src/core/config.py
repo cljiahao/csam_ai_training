@@ -22,7 +22,7 @@ class APISettings(BaseSettings):
     """API-specific settings."""
 
     FASTAPI_ROOT: str = Field(default="api")
-    PC_NAME: str = Field(default="locahost")
+    PC_NAME: str = Field(default="localhost")
     SERVER_API_PORT: int = Field(default=8000)
     SERVER_APP_PORT: int = Field(default=5173)
     ALLOWED_CORS: list[str] = []
