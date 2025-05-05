@@ -16,7 +16,7 @@ const useDotMarker = (mode, marks, imageSize) => {
       marksMap.set(mark.fileName, mark);
     });
 
-    return (processImageData.data_files || []).map((file, index) => {
+    return (processImageData.coordinates || []).map((file, index) => {
       const dx = Math.round(file.norm_x_center * imageSize.width * 100) / 100;
       const dy = Math.round(file.norm_y_center * imageSize.height * 100) / 100;
 

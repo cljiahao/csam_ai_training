@@ -40,6 +40,7 @@ const ImageHolder = forwardRef(
       state: { imageSize },
     } = imageState;
 
+    // TODO: BUG where if error, addMark was removed.
     return (
       <ImageHolderContext.Provider value={{ image, panZoomState, imageState }}>
         <div

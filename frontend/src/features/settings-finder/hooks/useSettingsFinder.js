@@ -30,8 +30,9 @@ const useSettingsFinder = ({ mode, setError }) => {
       { mode, item, targetCount, formData },
       {
         onSuccess: (data) => {
+          console.log(data);
           if (data) {
-            data?.data_files.map((_, index) => {
+            data?.coordinates.map((_, index) => {
               addMark(index, MARKERS.static);
             });
           }

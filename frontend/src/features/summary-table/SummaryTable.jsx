@@ -11,6 +11,7 @@ const SummaryTable = () => {
     queryKey: ["dataTable"],
     queryFn: async () => await getSummaryData(),
     enabled: true,
+    staleTime: 0,
     refetchInterval: 5000,
   });
 

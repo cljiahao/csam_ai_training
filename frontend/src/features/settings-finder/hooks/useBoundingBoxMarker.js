@@ -16,23 +16,23 @@ const useBoundingBoxMarker = (mode, marks, imageSize) => {
       marksMap.set(mark.fileName, mark);
     });
 
-    return (processImageData.data_files || []).map((file, index) => {
+    return (processImageData.coordinates || []).map((file, index) => {
       const dx =
         Math.round(
-          (file.norm_x_center - file.norm_data_width / 2) *
+          (file.norm_x_center - file.norm_batch_width / 2) *
             imageSize.width *
             100,
         ) / 100;
       const dy =
         Math.round(
-          (file.norm_y_center - file.norm_data_height / 2) *
+          (file.norm_y_center - file.norm_batch_height / 2) *
             imageSize.height *
             100,
         ) / 100;
       const d_width =
-        Math.round(file.norm_data_width * imageSize.width * 100) / 100;
+        Math.round(file.norm_batch_width * imageSize.width * 100) / 100;
       const d_height =
-        Math.round(file.norm_data_height * imageSize.height * 100) / 100;
+        Math.round(file.norm_batch_height * imageSize.height * 100) / 100;
 
       return {
         id: index,

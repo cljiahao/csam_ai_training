@@ -18,7 +18,6 @@ const CsamMT = () => {
 
   // TODO: If item or method don't exists, re-direct to CDS
   // TODO: check if item exists in backend database.
-  // TODO: if model train completed, show sweetalert
 
   const error = useBaseStore((state) => state.error);
   const { status, updateStatus } = useTrainStore(

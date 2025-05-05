@@ -57,7 +57,7 @@ const EvalOutflow = ({ disabled }) => {
                       >
                         <img
                           className="w-[60%]"
-                          src={`/api/image/${file_src}`}
+                          src={`/api/csam_image/${file_src}`}
                           alt={fileName}
                         />
                       </MediaCard>
