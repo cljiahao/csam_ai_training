@@ -16,6 +16,8 @@ scikit-learn==1.6.1				        # ML algorithm
 # Articial Intelligence
 tensorflow==2.19.0  		            # Framework for Deep Learning AI Model
 onnxruntime==1.21.0                     # High-performance engine for ONNX models
+onnx==1.17.0                            # Onnx model format
+tf2onnx==1.16.1                         # Tensorflow to Onnx Convertor
 
 # Database
 SQLAlchemy==2.0.40                      # Sql Engine (ORM)
