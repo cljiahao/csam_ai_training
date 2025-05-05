@@ -2,6 +2,7 @@ import time
 from tensorflow import keras
 from keras import callbacks as cb
 
+from constants.tensorflow_model import HyperParameters, ModelFiles, ModelStatus
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 
@@ -12,8 +13,7 @@ class EpochHistory(cb.Callback):
 
     def __init__(self) -> None:
         super().__init__()
-        # TODO: Constants
-        self.model_json_dir = dm.config_dir / "json" / "training.json"
+        self.model_json_dir = dm.json_dir / ModelFiles.TRAINING_JSON
         self.epoch_results = []
         self.start_time = 0.0
 
@@ -38,12 +38,11 @@ class EpochHistory(cb.Callback):
         end_time = time.perf_counter()
         time_taken = round(end_time - self.start_time)
 
-        # TODO: Constants
         epoch_data = {
             "time": time_taken,
             "epoch": epoch + 1,
-            "total_epoch": 10000,
-            "status": "training",
+            "total_epoch": HyperParameters.EPOCHS,
+            "status": ModelStatus.TRAINING,
         }
 
         if logs:
@@ -63,5 +62,5 @@ class EpochHistory(cb.Callback):
         if not latest_epoch_data:
             raise ValueError(f"No training data found in {self.model_json_dir}")
 
-        latest_epoch_data[-1]["status"] = "trained"
+        latest_epoch_data[-1]["status"] = ModelStatus.TRAINED
         FileManager.write_json(self.model_json_dir, latest_epoch_data)
