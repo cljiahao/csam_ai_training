@@ -3,6 +3,27 @@ import uvicorn
 from dotenv import find_dotenv, load_dotenv
 
 
+def parse_arguments() -> argparse.Namespace:
+    """Parses command-line arguments for the backend server.
+
+    Returns:
+        An argparse.Namespace object containing the parsed arguments.
+    """
+    parser = argparse.ArgumentParser(
+        description="FastAPI Backend Server",
+        allow_abbrev=False,
+    )
+    parser.add_argument(
+        "-e",
+        "--ENV",
+        help="Environment for dev, stage, prod.",
+        type=str,
+        choices=["dev", "stage", "prod"],
+        default="dev",
+    )
+    return parser.parse_args()
+
+
 def load_environment(env: str) -> None:
     """Load environment variables, prioritizing environment-specific settings.
 
@@ -23,27 +44,6 @@ def load_environment(env: str) -> None:
         print(f"Loaded environment-specific variables from: {env_specific_path}")
     else:
         print(f"Environment-specific .env file not found.")
-
-
-def parse_arguments() -> argparse.Namespace:
-    """Parses command-line arguments for the backend server.
-
-    Returns:
-        An argparse.Namespace object containing the parsed arguments.
-    """
-    parser = argparse.ArgumentParser(
-        description="FastAPI Backend Server",
-        allow_abbrev=False,
-    )
-    parser.add_argument(
-        "-e",
-        "--ENV",
-        help="Environment for dev, stage, prod.",
-        type=str,
-        choices=["dev", "stage", "prod"],
-        default="dev",
-    )
-    return parser.parse_args()
 
 
 def run_api() -> None:
