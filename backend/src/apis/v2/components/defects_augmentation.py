@@ -51,7 +51,7 @@ def augment_base_with_defects(item: str) -> None:
             )
 
     FileManager.copy_files_to_dir(train_dir / DatasetModes.NG, ng_file_paths)
-    FileManager.copy_files_to_dir(train_dir / DatasetModes.G, train_g_paths)
+    FileManager.copy_files_to_dir(train_dir / DatasetModes.GOOD, train_g_paths)
 
     TensorflowModel.train_validation_split(dataset_dir)
 
@@ -63,7 +63,7 @@ def get_base_folder_counts(base_set_dir: Path) -> tuple[int, int, int]:
         [item for item in BaseSetsFolderName if item != BaseSetsFolderName.BASE],
     )
     ng_count = base_sets_counts.get(BaseSetsFolderName.NG, 0)
-    g_count = base_sets_counts.get(BaseSetsFolderName.G, 0)
+    g_count = base_sets_counts.get(BaseSetsFolderName.GOOD, 0)
     others_count = base_sets_counts.get(BaseSetsFolderName.OTHERS, 0)
 
     augment_multiplier = len(CSAMcolor) * AugmentThresholdRatio.BASE_MULTIPLIER
@@ -87,7 +87,7 @@ def prepare_training_file_paths(
     others_count: int, train_g_count: int, augment_ng_count: int, base_set_dir: Path
 ) -> tuple[list[Path], list[Path]]:
     """Prepares file paths for training, handling image selection."""
-    g_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.G)
+    g_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.GOOD)
     others_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.OTHERS)
     ng_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.NG)
 

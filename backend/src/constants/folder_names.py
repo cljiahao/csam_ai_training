@@ -11,8 +11,8 @@ class EvaluationSetsFolderName(StrEnum):
 class MassProFolderNames(StrEnum):
     """Enum for evaluation mass pro names."""
 
-    NG = "NG"
-    TEMP = "Temp"
+    NG = "ng"
+    TEMP = "temp"
 
 
 class ColorsFolderNames(StrEnum):
@@ -49,9 +49,10 @@ class ThousandsFolderNames(StrEnum):
 
 class BaseSetsFolderName(StrEnum):
     BASE = "base"
-    NG = "NG"
-    G = "G"
-    OTHERS = "Others"
+    NG = "ng"
+    GOOD = "good"
+    OTHERS = "others"
+    DEFORM = "deform"
 
 
 class ModelDatasetFolderNames(StrEnum):

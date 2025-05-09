@@ -1,14 +1,15 @@
-from enum import Enum, IntEnum, StrEnum
+from enum import IntEnum, StrEnum
 
 
 class DatasetModes(StrEnum):
-    NG = "NG"
-    G = "G"
+    NG = "ng"
+    GOOD = "good"
 
 
 class ModelFiles(StrEnum):
     LABEL_EXT = ".txt"
-    MODEL_EXT = ".h5"
+    H5_MODEL_EXT = ".h5"
+    ONNX_MODEL_EXT = ".onnx"
     TRAINING_JSON = "training.json"
 
 

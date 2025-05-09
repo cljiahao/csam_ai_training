@@ -53,7 +53,7 @@ def save_model_and_class_txt(
 ) -> None:
     """Saves the trained model and a text file containing class names."""
     # TODO: change to use TFModel for saving
-    model_path = output_dir / f"{file_name}{ModelFiles.MODEL_EXT}"
+    model_path = output_dir / f"{file_name}{ModelFiles.H5_MODEL_EXT}"
     trained_model.save(model_path)
 
     txt_content = "\n".join(

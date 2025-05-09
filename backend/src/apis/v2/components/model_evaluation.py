@@ -45,7 +45,7 @@ def start_evaluating(
 def setup_evaluation_environment(item: str, ai_model_name: str) -> Path:
     """Sets up the necessary environments for evaluation."""
     item_model_dir = dm.model_dir / item
-    ai_model_path = item_model_dir / f"{ai_model_name}{ModelFiles.MODEL_EXT}"
+    ai_model_path = item_model_dir / f"{ai_model_name}{ModelFiles.H5_MODEL_EXT}"
     txt_path = item_model_dir / f"{ai_model_name}{ModelFiles.LABEL_EXT}"
 
     model = TensorflowModel.load_model(ai_model_path)
