@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+from pathlib import Path
 from fastapi import BackgroundTasks
 from sqlalchemy.orm import Session
 
@@ -98,3 +99,13 @@ def get_all_model_names() -> list[dict[str, str]]:
         for model_path in item_dir.iterdir()
         if model_path.is_file() and model_path.suffix != ModelFiles.LABEL_EXT
     ]
+
+
+def delete_model_selected(item: str, ai_model_file_name: str) -> None:
+    """Deletes the model file and its associated label file."""
+    ai_model_name = Path(ai_model_file_name).stem
+    model_path = dm.model_dir / item / ai_model_file_name
+    label_path = dm.model_dir / item / f"{ai_model_name}{ModelFiles.LABEL_EXT}"
+
+    for path in [model_path, label_path]:
+        path.unlink()

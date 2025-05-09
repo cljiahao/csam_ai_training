@@ -33,9 +33,16 @@ export const getAllModels = async () => {
   return await sendRequest(url, options);
 };
 
-export const installModel = async (item, file_name) => {
-  const params = new URLSearchParams({ item, file_name });
+export const installModel = async (item, ai_model_name) => {
+  const params = new URLSearchParams({ item, ai_model_name });
   const url = `/api/deep_learning/install_model?${params.toString()}`;
   const options = createRequestOptions("POST");
+  return await sendRequest(url, options);
+};
+
+export const deleteModel = async (item, ai_model_file_name) => {
+  const params = new URLSearchParams({ item, ai_model_file_name });
+  const url = `/api/deep_learning/delete_model?${params.toString()}`;
+  const options = createRequestOptions("Delete");
   return await sendRequest(url, options);
 };

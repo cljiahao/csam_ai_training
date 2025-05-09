@@ -6,6 +6,7 @@ from typing import Annotated
 from apis.v2.logic.deep_learning import (
     ai_model_evaluation,
     ai_model_training,
+    delete_model_selected,
     get_all_model_names,
     get_current_epoch,
     start_defects_augmentation,
@@ -110,14 +111,16 @@ def all_model_names() -> list[dict[str, str]]:
     "/install_model",
     summary="Install selected model remotely into Server (Production)",
     operation_id="InstallModel",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 def install_model_in_server(
     item: Annotated[
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
     ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
-) -> any:
-    return post_model_files(item, ai_model_name)
+) -> Response:
+    post_model_files(item, ai_model_name)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.delete(
@@ -130,6 +133,9 @@ def delete_model_in_training(
     item: Annotated[
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
-    ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
+    ai_model_file_name: Annotated[
+        str, Query(description="Name of the model file", embed=True)
+    ],
 ) -> Response:
+    delete_model_selected(item, ai_model_file_name)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

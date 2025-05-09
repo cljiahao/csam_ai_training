@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FaCheck } from "react-icons/fa";
+import { IoTrashBin } from "react-icons/io5";
 import { HiChevronUpDown } from "react-icons/hi2";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,7 @@ import useModelFormValidate from "../hooks/useModelFormValidate";
 import useBaseStore from "@/store/base";
 import useModelServices from "../hooks/useModelServices";
 import Swal from "sweetalert2";
+import { deleteModel } from "@/services/api_model";
 
 const ModelInstaller = () => {
   const { data: allModels = [] } = useQuery({
@@ -50,6 +52,31 @@ const ModelInstaller = () => {
       .catch((error) => updateError(error));
   }
 
+  function onModelDelete(item, file_name) {
+    Swal.fire({
+      title: `Delete ${file_name} from ${item} system?`,
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        popup: "pointer-events-auto",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteModel(item, file_name)
+          .then(() =>
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            }),
+          )
+          .catch((error) => updateError(error));
+      }
+    });
+  }
+
   const ModelButton = ({ value, ...props }) => {
     return (
       <Button
@@ -57,15 +84,17 @@ const ModelInstaller = () => {
         variant="outline"
         role="combobox"
         className={cn(
-          "w-[200px] justify-between",
+          "flex-between w-[250px] px-2",
           !value && "text-muted-foreground",
         )}
         {...props}
       >
-        {value
-          ? allModels.find((model) => model.file_name === value).file_name
-          : "Select Model to install"}
-        <HiChevronUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        <span className="overflow-hidden">
+          {value
+            ? allModels.find((model) => model.file_name === value).file_name
+            : "Select Model to install"}
+        </span>
+        <HiChevronUpDown className="h-4 w-4 opacity-50" />
       </Button>
     );
   };
@@ -77,22 +106,26 @@ const ModelInstaller = () => {
           <CommandEmpty>No Model found.</CommandEmpty>
           <CommandGroup>
             {allModels.map((model) => (
-              <CommandItem
-                value={model.file_name}
-                key={model.file_name}
-                onSelect={() => {
-                  modelForm.setValue("file_name", model.file_name);
-                  modelForm.setValue("item", model.item);
-                }}
-              >
-                {model.file_name}
-                <FaCheck
-                  className={cn(
-                    "ml-auto",
-                    model.file_name === value ? "opacity-100" : "opacity-0",
-                  )}
+              <div key={model.file_name} className="flex-center gap-2">
+                <CommandItem
+                  value={model.file_name}
+                  onSelect={() => {
+                    modelForm.setValue("file_name", model.file_name);
+                    modelForm.setValue("item", model.item);
+                  }}
+                >
+                  <FaCheck
+                    className={cn(
+                      "ml-auto",
+                      model.file_name === value ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {model.file_name}
+                </CommandItem>
+                <IoTrashBin
+                  onClick={() => onModelDelete(model.item, model.file_name)}
                 />
-              </CommandItem>
+              </div>
             ))}
           </CommandGroup>
         </CommandList>
@@ -105,7 +138,7 @@ const ModelInstaller = () => {
       <Form {...modelForm}>
         <form
           onSubmit={modelForm.handleSubmit(onSubmit)}
-          className="flex-center space-x-8 py-3"
+          className="flex-center space-x-4 py-3"
         >
           {Object.keys(modelFormInfo).map((key) => {
             return (
