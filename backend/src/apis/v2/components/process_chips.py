@@ -3,12 +3,63 @@ import cv2
 import numpy as np
 from PIL import Image
 
+from apis.v2.components.utils_image_process import create_contour_list
 from apis.v2.schemas.image_settings import ChipCoordinates
 from apis.v2.schemas.common import ChipThreshold
 from constants.colors import BGRColors
+from db.models.image_settings import ImageSettings
 from schemas.contours import ContourInfo, ContourInfoList
+from utils.debug import timer
 from utils.image_process.blob_handler import BlobHandler
 from utils.image_process.contour_handler import ContourHandler
+
+
+@timer("Find Chip Contours (Black and Non Black)")
+def create_chip_contour_info_list(
+    border_image: np.ndarray, binary_image: np.ndarray, image_settings: ImageSettings
+) -> tuple[ContourInfoList, ContourInfoList]:
+    black_contour_info_list = find_black_contours(border_image)
+    non_black_contour_info_list = find_non_black_contours(binary_image, image_settings)
+
+    chip_threshold = update_chip_threshold(non_black_contour_info_list)
+    crop_size = image_settings.crop_size
+
+    black_refined_contour_infos = extract_refined_contour_info_list(
+        black_contour_info_list, border_image, crop_size, chip_threshold
+    )
+    non_black_refined_contour_infos = extract_refined_contour_info_list(
+        non_black_contour_info_list, border_image, crop_size, chip_threshold
+    )
+
+    return black_refined_contour_infos, non_black_refined_contour_infos, chip_threshold
+
+
+def find_black_contours(image: np.ndarray) -> ContourInfoList:
+    """Finds contours of black regions in the image."""
+    black_mask_chip = create_black_chip_mask(image)
+    return create_contour_list(black_mask_chip)
+
+
+def create_black_chip_mask(image: np.ndarray) -> np.ndarray:
+    """Creates a binary mask for black chips in the image."""
+    ng_black = np.array(BGRColors.BLACK.value)
+    black_mask = cv2.inRange(image, ng_black, ng_black)
+    # TODO: Consider making the kernel size a constant
+    open_kernel = BlobHandler.create_kernel(7)
+    return cv2.morphologyEx(black_mask, cv2.MORPH_OPEN, open_kernel)
+
+
+def find_non_black_contours(
+    binary_image: np.ndarray, image_settings: ImageSettings
+) -> ContourInfoList:
+    """Finds contours of non-black regions in the image."""
+    non_black_mask_chip = apply_morphology_for_chips(
+        binary_image,
+        image_settings.chip_noise_erode,
+        image_settings.chip_dilate,
+        image_settings.chip_erode,
+    )
+    return create_contour_list(non_black_mask_chip)
 
 
 def apply_morphology_for_chips(
@@ -27,19 +78,10 @@ def apply_morphology_for_chips(
     return eroded_image
 
 
-def create_black_chip_mask(image: np.ndarray) -> np.ndarray:
-    """Creates a binary mask for black chips in the image."""
-    ng_black = np.array(BGRColors.BLACK.value)
-    black_mask = cv2.inRange(image, ng_black, ng_black)
-    # TODO: Consider making the kernel size a constant
-    open_kernel = BlobHandler.create_kernel(7)
-    return cv2.morphologyEx(black_mask, cv2.MORPH_OPEN, open_kernel)
-
-
-def update_chip_threshold(contour_info_list: ContourInfoList) -> ChipThreshold:
+def update_chip_threshold(contour_infos: ContourInfoList) -> ChipThreshold:
     """Updates and returns chip threshold values based on the median contour area."""
     chip_threshold = ChipThreshold()
-    median_area = contour_info_list.get_median_area()
+    median_area = contour_infos.get_median_area()
     chip_threshold.apply_ratios(median_area)
     return chip_threshold
 

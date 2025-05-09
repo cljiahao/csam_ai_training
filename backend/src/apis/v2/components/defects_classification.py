@@ -19,23 +19,16 @@ def classify_non_black_defect_mode(
     chip_threshold: ChipThreshold, contour_info: ContourInfo, image: np.ndarray
 ) -> DefectInfo:
     """Classifies the defect mode for non-black defects based on area and color."""
-    if not (
-        chip_threshold.LOWER_DEFECT_AREA
-        <= contour_info.area
-        <= chip_threshold.UPPER_DEFECT_AREA
-    ):
-        return DefectInfo(
-            label_mode=BaseSetsFolderName.OTHERS, defect_size=None, defect_color=None
-        )
+    deform_info = deform_chip_condition(chip_threshold, contour_info)
+    if deform_info:
+        return deform_info
+
     roi_image = focus_center_blob(image)
     major_roi_mask, largest_contour_info = get_largest_blob_mask_and_info(roi_image)
 
-    major_roi_image = cv2.bitwise_and(image, image, mask=major_roi_mask)
-    _, hsv_area_sum = get_non_red_black_mask_and_area_hsv(major_roi_image)
-    if hsv_area_sum == 0:
-        return DefectInfo(
-            label_mode=BaseSetsFolderName.G, defect_size=None, defect_color=None
-        )
+    good_info = good_chip_condition(image, major_roi_mask)
+    if good_info:
+        return good_info
 
     minor_roi_mask = focus_blob_body_mask(major_roi_mask, largest_contour_info)
     minor_roi_image = cv2.bitwise_and(image, image, mask=minor_roi_mask)
@@ -59,8 +52,14 @@ def classify_non_black_defect_mode(
     )
 
 
-def classify_black_defect_mode(image: np.ndarray) -> DefectInfo:
+def classify_black_defect_mode(
+    chip_threshold: ChipThreshold, contour_info: ContourInfo, image: np.ndarray
+) -> DefectInfo:
     """Classifies the defect mode specifically for black defects."""
+    deform_info = deform_chip_condition(chip_threshold, contour_info)
+    if deform_info:
+        return deform_info
+
     roi_image = focus_center_blob(image)
     major_roi_mask, largest_contour_info = get_largest_blob_mask_and_info(roi_image)
 
@@ -83,6 +82,31 @@ def classify_black_defect_mode(image: np.ndarray) -> DefectInfo:
         defect_size=None,
         defect_color=None,
     )
+
+
+def deform_chip_condition(
+    chip_threshold: ChipThreshold,
+    contour_info: ContourInfo,
+) -> DefectInfo | None:
+    """Condition function to check if chip is deformed."""
+    if not (
+        chip_threshold.LOWER_DEFECT_AREA
+        <= contour_info.area
+        <= chip_threshold.UPPER_DEFECT_AREA
+    ):
+        return DefectInfo(
+            label_mode=BaseSetsFolderName.DEFORM, defect_size=None, defect_color=None
+        )
+
+
+def good_chip_condition(image: np.ndarray, mask: np.ndarray) -> DefectInfo | None:
+    """Condition function to check if chip is good."""
+    roi_image = cv2.bitwise_and(image, image, mask=mask)
+    _, hsv_area_sum = get_non_red_black_mask_and_area_hsv(roi_image)
+    if hsv_area_sum == 0:
+        return DefectInfo(
+            label_mode=BaseSetsFolderName.GOOD, defect_size=None, defect_color=None
+        )
 
 
 def determine_defect_size(defect_area: float, base_area: float) -> str | None:

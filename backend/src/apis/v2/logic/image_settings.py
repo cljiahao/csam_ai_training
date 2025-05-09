@@ -1,11 +1,13 @@
-import cv2
 import math
 import numpy as np
 from dataclasses import asdict
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
-from apis.v2.components.utils_image_process import create_contour_list
+from apis.v2.components.utils_image_process import (
+    convert_white_bg_to_gray_to_binary,
+    create_contour_list,
+)
 from apis.v2.components.process_batch import (
     apply_morphology_for_batch,
     batch_contours_clean,
@@ -16,7 +18,6 @@ from apis.v2.components.process_chips import (
     chip_crop_finder,
     extract_chip_coordinates,
 )
-from apis.v2.constants.csam_thresholds import CSAMThresholdRatio
 from apis.v2.schemas.image_settings import (
     BatchSettingsData,
     ChipCoordinates,
@@ -38,13 +39,7 @@ def auto_settings_finder(
     """Finds optimal image processing settings and chip coordinates automatically."""
     image = ImageManager.file_to_image(file)
     border_image = BorderCreator.create_border_image(image)
-    border_gray = BorderCreator.convert_background_white_and_grayscale(
-        border_image, CSAMThresholdRatio.BACKGROUND_THRESHOLD
-    )
-    bright_bg_threshold = CSAMThresholdRatio.BRIGHT_BACKGROUND_THRESHOLD
-    _, binary_image = cv2.threshold(
-        border_gray, bright_bg_threshold, 255, cv2.THRESH_BINARY_INV
-    )
+    binary_image = convert_white_bg_to_gray_to_binary(border_image)
 
     if is_batch:
         settings_data, settings_coordinates = auto_batch_settings_finder(

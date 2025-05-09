@@ -21,19 +21,16 @@ def create_contour_list(
     return ContourHandler.filter_and_build_contour_info(contours, denoise_threshold)
 
 
-def get_non_red_black_mask_and_area_hsv(image: np.ndarray) -> tuple[np.ndarray, int]:
-    """Calculates the area of pixels within a specified HSV range."""
-    hsv_mask = BlobHandler.get_non_red_and_black_mask(image)
-    hsv_area_sum = np.count_nonzero(hsv_mask)
-    return hsv_mask, hsv_area_sum
-
-
-def focus_center_blob(image: np.ndarray) -> np.ndarray:
-    """Focuses on the central blob of an 3D image by changing the border color."""
-    major_border = math.floor(image.shape[0] / 4 * 0.7)
-    return BorderCreator.change_border_color(
-        image, major_border, BGRColors.BACKGROUND.value
+def convert_white_bg_to_gray_to_binary(image: np.ndarray) -> np.ndarray:
+    """Converts BGR image to white background, to grayscale and binary mask"""
+    border_gray = BorderCreator.convert_background_white_and_grayscale(
+        image, CSAMThresholdRatio.BACKGROUND_THRESHOLD
     )
+    bright_bg_threshold = CSAMThresholdRatio.BRIGHT_BACKGROUND_THRESHOLD
+    _, binary_image = cv2.threshold(
+        border_gray, bright_bg_threshold, 255, cv2.THRESH_BINARY_INV
+    )
+    return binary_image
 
 
 def focus_blob_body_mask(
@@ -44,6 +41,30 @@ def focus_blob_body_mask(
     shortest = width if width < height else height
     minor_border = int((mask_image.shape[0] - shortest * 0.8) // 2)
     return BorderCreator.change_border_color(mask_image, minor_border, 0)
+
+
+def get_base_image_mask(base_image: np.ndarray) -> np.ndarray:
+    """Gets the mask of the base image."""
+    base_roi_image = focus_center_blob(base_image)
+    base_mask, _ = get_largest_blob_mask_and_info(base_roi_image)
+    return base_mask
+
+
+def get_defect_image_mask(ng_image: np.ndarray) -> np.ndarray:
+    """Gets the defect mask of an NG image."""
+    ng_roi_image = focus_center_blob(ng_image)
+    ng_mask_image, _ = get_largest_blob_mask_and_info(ng_roi_image)
+    single_blob_ng_image = cv2.bitwise_and(ng_image, ng_image, mask=ng_mask_image)
+    defect_mask, _ = get_non_red_black_mask_and_area_hsv(single_blob_ng_image)
+    return defect_mask
+
+
+def focus_center_blob(image: np.ndarray) -> np.ndarray:
+    """Focuses on the central blob of an 3D image by changing the border color."""
+    major_border = math.floor(image.shape[0] / 4 * 0.7)
+    return BorderCreator.change_border_color(
+        image, major_border, BGRColors.BACKGROUND.value
+    )
 
 
 def get_largest_blob_mask_and_info(image: np.ndarray) -> tuple[np.ndarray, ContourInfo]:
@@ -62,17 +83,8 @@ def get_largest_blob_mask_and_info(image: np.ndarray) -> tuple[np.ndarray, Conto
     return largest_blob_mask, largest_contour_info
 
 
-def get_base_image_mask(base_image: np.ndarray) -> np.ndarray:
-    """Gets the mask of the base image."""
-    base_roi_image = focus_center_blob(base_image)
-    base_mask, _ = get_largest_blob_mask_and_info(base_roi_image)
-    return base_mask
-
-
-def get_defect_image_mask(ng_image: np.ndarray) -> np.ndarray:
-    """Gets the defect mask of an NG image."""
-    ng_roi_image = focus_center_blob(ng_image)
-    ng_mask_image, _ = get_largest_blob_mask_and_info(ng_roi_image)
-    single_blob_ng_image = cv2.bitwise_and(ng_image, ng_image, mask=ng_mask_image)
-    defect_mask, _ = get_non_red_black_mask_and_area_hsv(single_blob_ng_image)
-    return defect_mask
+def get_non_red_black_mask_and_area_hsv(image: np.ndarray) -> tuple[np.ndarray, int]:
+    """Calculates the area of pixels within a specified HSV range."""
+    hsv_mask = BlobHandler.get_non_red_and_black_mask(image)
+    hsv_area_sum = np.count_nonzero(hsv_mask)
+    return hsv_mask, hsv_area_sum
