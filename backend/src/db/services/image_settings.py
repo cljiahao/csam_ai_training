@@ -47,7 +47,7 @@ class ImageSettingsService:
 
     def create_or_update_image_settings(
         self, item: str, image_settings_data: dict[str, int]
-    ) -> ImageSettings:
+    ) -> ImageSettings | int:
         """Service layer method to create new or update image settings"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
@@ -57,13 +57,16 @@ class ImageSettingsService:
         data_condition = {"item": item}
 
         existing_settings = self.read_image_settings(item)
-        if not existing_settings:
-            image_settings_data.update(data_condition)
-            return self.repo.create_image_settings(image_settings_data)[0]
+        if existing_settings:
+            if "crop_size" in image_settings_data and existing_settings.crop_size != 0:
+                del image_settings_data["crop_size"]
 
-        if "crop_size" in image_settings_data and existing_settings.crop_size != 0:
-            del image_settings_data["crop_size"]
+            return self.repo.update_image_settings(
+                {
+                    "filter_conditions": data_condition,
+                    "update_data": image_settings_data,
+                }
+            )
 
-        return self.repo.update_image_settings(
-            {"filter_conditions": data_condition, "update_data": image_settings_data}
-        )
+        image_settings_data.update(data_condition)
+        return self.repo.create_image_settings(image_settings_data)[0]

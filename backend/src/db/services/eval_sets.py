@@ -20,6 +20,16 @@ class EvalSetsService:
         self.mass_pro_repo = MassProEvalRepository(db)
         self.thousands_repo = ThousandsEvalRepository(db)
 
+    def _validate_eval_data_keys(
+        self, data: dict, valid_keys: set, eval_type: str
+    ) -> None:
+        """Validate the keys in eval data."""
+        invalid_keys = set(data) - valid_keys
+        if invalid_keys:
+            raise InvalidInputError(
+                f"Unknown keys in {eval_type} data: {', '.join(invalid_keys)}"
+            )
+
     def read_all_eval_sets(self) -> list[EvalSets]:
         """Service layer method to read eval sets"""
 
@@ -41,17 +51,9 @@ class EvalSetsService:
 
         return eval_sets
 
-    def _validate_eval_data_keys(
-        self, data: dict, valid_keys: set, eval_type: str
-    ) -> None:
-        """Validate the keys in eval data."""
-        invalid_keys = set(data) - valid_keys
-        if invalid_keys:
-            raise InvalidInputError(
-                f"Unknown keys in {eval_type} data: {', '.join(invalid_keys)}"
-            )
-
-    def create_colors_eval(self, item: str, color_eval_data: dict) -> ColorsEval:
+    def create_or_update_colors_eval(
+        self, item: str, color_eval_data: dict[str, int]
+    ) -> ColorsEval | int:
         """Service layer method to create new or update colors eval."""
         self._validate_eval_data_keys(
             color_eval_data, {item for item in ColorsFolderNames}, "Colors"
@@ -60,7 +62,8 @@ class EvalSetsService:
         eval_sets = self._read_or_create_eval_sets(item)
         data_condition = {"eval_sets_id": eval_sets.id}
 
-        if self.colors_repo.read_colors(data_condition)[0]:
+        existing_colors = self.colors_repo.read_colors(data_condition)[0]
+        if existing_colors:
             return self.colors_repo.update_colors(
                 {"filter_conditions": data_condition, "update_data": color_eval_data}
             )
@@ -68,9 +71,9 @@ class EvalSetsService:
         color_eval_data.update(data_condition)
         return self.colors_repo.create_colors(color_eval_data)[0]
 
-    def create_mass_pro_eval(
-        self, item: str, plate_no: str, mass_pro_eval_data: dict
-    ) -> MassProEval:
+    def create_or_update_mass_pro_eval(
+        self, item: str, plate_no: str, mass_pro_eval_data: dict[str, int]
+    ) -> MassProEval | int:
         """Service layer method to create new or update mass pro eval."""
         self._validate_eval_data_keys(
             mass_pro_eval_data, {"no_of_chips", "no_of_ng"}, "Mass Pro"
@@ -78,7 +81,9 @@ class EvalSetsService:
 
         eval_sets = self._read_or_create_eval_sets(item)
         data_condition = {"eval_sets_id": eval_sets.id, "plate_no": plate_no}
-        if self.mass_pro_repo.read_mass_pro(data_condition)[0]:
+
+        existing_mass_pro = self.mass_pro_repo.read_mass_pro(data_condition)[0]
+        if existing_mass_pro:
             return self.mass_pro_repo.update_mass_pro(
                 {"filter_conditions": data_condition, "update_data": mass_pro_eval_data}
             )
@@ -86,9 +91,9 @@ class EvalSetsService:
         mass_pro_eval_data.update(data_condition)
         return self.mass_pro_repo.create_mass_pro(mass_pro_eval_data)[0]
 
-    def create_thousands_eval(
-        self, item: str, thousands_eval_data: dict
-    ) -> ThousandsEval:
+    def create_or_update_thousands_eval(
+        self, item: str, thousands_eval_data: dict[str, int]
+    ) -> ThousandsEval | int:
         """Service layer method to create new or update thousands eval."""
         self._validate_eval_data_keys(
             thousands_eval_data, {item for item in ThousandsFolderNames}, "Thousands"
@@ -97,7 +102,8 @@ class EvalSetsService:
         eval_sets = self._read_or_create_eval_sets(item)
         data_condition = {"eval_sets_id": eval_sets.id}
 
-        if self.thousands_repo.read_thousands(data_condition)[0]:
+        existing_thousands = self.thousands_repo.read_thousands(data_condition)[0]
+        if existing_thousands:
             return self.thousands_repo.update_thousands(
                 {
                     "filter_conditions": data_condition,

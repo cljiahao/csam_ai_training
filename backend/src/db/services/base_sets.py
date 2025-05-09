@@ -34,7 +34,7 @@ class BaseSetsService:
 
     def create_or_update_base_sets(
         self, item: str, base_sets_data: dict[str, int]
-    ) -> BaseSets:
+    ) -> BaseSets | int:
         """Service layer method to create new or update base sets"""
         if not item:
             raise InvalidInputError("Filter conditions: Item cannot be empty.")
@@ -47,10 +47,10 @@ class BaseSetsService:
         }
 
         existing_base_sets = self.read_base_sets(item)
-        if not existing_base_sets:
-            new_base_sets_data.update(data_condition)
-            return self.repo.create_base_sets(new_base_sets_data)[0]
+        if existing_base_sets:
+            return self.repo.update_base_sets(
+                {"filter_conditions": data_condition, "update_data": new_base_sets_data}
+            )
 
-        return self.repo.update_base_sets(
-            {"filter_conditions": data_condition, "update_data": new_base_sets_data}
-        )
+        new_base_sets_data.update(data_condition)
+        return self.repo.create_base_sets(new_base_sets_data)[0]
