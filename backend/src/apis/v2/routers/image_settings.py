@@ -27,7 +27,14 @@ def get_image_settings(
 ) -> dict[str, int]:
     image_settings_service = ImageSettingsService(db)
     image_settings = image_settings_service.read_image_settings(item)
-    return image_settings
+    return {
+        "batch_erode": image_settings["batch_erode"],
+        "batch_close": image_settings["batch_close"],
+        "chip_noise_erode": image_settings["chip_noise_erode"],
+        "chip_dilate": image_settings["chip_dilate"],
+        "chip_erode": image_settings["chip_erode"],
+        "crop_size": image_settings["crop_size"],
+    }
 
 
 @router.post(
