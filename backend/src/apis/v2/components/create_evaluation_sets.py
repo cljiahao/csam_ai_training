@@ -7,7 +7,6 @@ from apis.v2.components.utils_image_process import (
     get_base_image_mask,
     get_defect_image_mask,
 )
-from apis.v2.constants.csam_thresholds import AugmentThresholdRatio
 from apis.v2.constants.datasets_thresholds import EvaluationDatasetsThresholds
 from apis.v2.schemas.csam_image import LabeledImageData
 from constants.folder_names import (
@@ -70,7 +69,7 @@ def populate_mass_production_sets(
         mass_pro_dir / plate_no, image_data_list, defect_file_list
     )
     eval_sets_service = EvalSetsService(db)
-    eval_sets_service.create_mass_pro_eval(
+    eval_sets_service.create_or_update_mass_pro_eval(
         item,
         plate_no,
         {"no_of_chips": len(image_data_list), "no_of_ng": len(defect_file_list)},
@@ -138,8 +137,8 @@ def populate_colors_thousands_sets(
         remaining_eval_set.append(image_data)
 
     eval_sets_service = EvalSetsService(db)
-    eval_sets_service.create_colors_eval(item, colors_counts)
-    eval_sets_service.create_thousands_eval(item, thousands_counts)
+    eval_sets_service.create_or_update_colors_eval(item, colors_counts)
+    eval_sets_service.create_or_update_thousands_eval(item, thousands_counts)
 
     return remaining_eval_set
 
