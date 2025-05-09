@@ -2,8 +2,8 @@ import json
 import os
 import shutil
 import tempfile
-from fastapi import APIRouter, BackgroundTasks, File, Form, Path, UploadFile
-from fastapi import Depends
+from fastapi import APIRouter, BackgroundTasks, Response, status, UploadFile
+from fastapi import Depends, File, Form, Path
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import Annotated
@@ -75,6 +75,7 @@ def background_file_clean_up(
     "/process_image",
     summary="Process User Judgement and Save Locally",
     operation_id="SaveUserJudgement",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 def start_process_image(
     data: Annotated[dict, Depends(parse_form_data)],
@@ -84,7 +85,7 @@ def start_process_image(
     ],
     db: Annotated[Session, Depends(get_db)],
     background_tasks: BackgroundTasks,
-):
+) -> Response:
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
         shutil.copyfileobj(file.file, tmp_file)
         tmp_path = tmp_file.name  # Store the file path
@@ -98,7 +99,7 @@ def start_process_image(
         data["defect_file_list"],
         db,
     )
-    return True
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get(
@@ -114,7 +115,7 @@ def get_image(
             pattern=".*\.(png|jpg)$",
         ),
     ],
-):
+) -> FileResponse:
     file_path = dm.images_dir / src
     if not file_path.exists():
         raise FileNotFoundError(f"Image file not found: {src}")

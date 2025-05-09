@@ -1,7 +1,7 @@
-from typing import Annotated
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Response, status
 from fastapi import Body, Depends, Query
 from sqlalchemy.orm import Session
+from typing import Annotated
 
 from apis.v2.logic.deep_learning import (
     ai_model_evaluation,
@@ -116,20 +116,20 @@ def install_model_in_server(
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
     ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
-):
+) -> any:
     return post_model_files(item, ai_model_name)
 
 
-# TODO: Delete model
-@router.post(
+@router.delete(
     "/delete_model",
     summary="Delete selected model from Training folder",
     operation_id="DeleteModel",
+    status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_model_in_training(
     item: Annotated[
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
     ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
-):
-    return
+) -> Response:
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -18,5 +18,5 @@ router = APIRouter()
 )
 def eval_base_sets_count(
     db: Annotated[Session, Depends(get_db)],
-):
+) -> EvalBaseSetsData:
     return get_eval_base_sets_data(db)

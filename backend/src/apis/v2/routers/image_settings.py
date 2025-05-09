@@ -15,6 +15,7 @@ router = APIRouter()
 
 @router.get(
     "/",
+    response_model=dict[str, int],
     summary="Return image settings found in database",
     operation_id="ImageSettings",
 )
@@ -23,7 +24,7 @@ def get_image_settings(
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
     db: Annotated[Session, Depends(get_db)],
-):
+) -> dict[str, int]:
     image_settings_service = ImageSettingsService(db)
     image_settings = image_settings_service.read_image_settings(item)
     return image_settings
