@@ -1,3 +1,4 @@
+import json
 import requests
 from pathlib import Path
 from contextlib import ExitStack
@@ -30,6 +31,8 @@ class APIClient:
             return response.json()
         except requests.RequestException as e:
             raise requests.RequestException(f"GET request to {url} failed: {e}")
+        except json.JSONDecodeError as e:
+            return response.status_code
 
     def post(
         self, endpoint: str, data: dict[str, any] = None, headers: dict[str, str] = None
@@ -45,6 +48,8 @@ class APIClient:
             return response.json()
         except requests.RequestException as e:
             raise requests.RequestException(f"POST request to {url} failed: {e}")
+        except json.JSONDecodeError as e:
+            return response.status_code
 
     def post_files(
         self,
@@ -75,3 +80,5 @@ class APIClient:
                 return response.json()
         except requests.RequestException as e:
             raise requests.RequestException(f"POST file request to {url} failed: {e}")
+        except json.JSONDecodeError as e:
+            return response.status_code
