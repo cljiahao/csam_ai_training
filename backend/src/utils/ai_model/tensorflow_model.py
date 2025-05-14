@@ -4,9 +4,7 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
 import math
 import numpy as np
-import onnx
 import random
-import tf2onnx
 from pathlib import Path
 from tensorflow import data, keras
 from keras import layers, losses, models, optimizers, utils, callbacks as cb
@@ -82,25 +80,6 @@ class TensorflowModel:
         epoch_history = EpochHistory()
 
         return [early_stopping, reduce_lr, epoch_history]
-
-    @staticmethod
-    def save_onnx_model(model: models.Sequential, ai_model_path: Path) -> bool:
-        """Converts and saves a Keras Sequential model to ONNX format.
-
-        Args:
-            model: The Keras Sequential model to save.
-            ai_model_path: The path where the ONNX model will be saved.
-
-        Returns:
-            True if the model was saved successfully.
-        """
-        try:
-            onnx_model, _ = tf2onnx.convert.from_keras(model)
-            onnx.save_model(onnx_model, ai_model_path)
-            return True
-        except Exception as e:
-            print(f"Error saving ONNX model: {e}")
-            return False
 
     @staticmethod
     def load_model(ai_model_path: Path) -> models.Sequential:

@@ -7,7 +7,7 @@ pydantic-settings                       # Settings Management
 python-multipart==0.0.20			    # Form Data Usage
 
 # Image/Video Manipulation
-opencv-python-headless			        # Computer Vision (Without GUI)
+opencv-python-headless==4.11.0.86       # Computer Vision (Without GUI)
 pillow==11.2.1                          # Processing Image
 
 # Data Science / Machine Learning
@@ -15,9 +15,6 @@ scikit-learn==1.6.1				        # ML algorithm
 
 # Articial Intelligence
 tensorflow==2.19.0  		            # Framework for Deep Learning AI Model
-onnxruntime==1.21.0                     # High-performance engine for ONNX models
-onnx==1.17.0                            # Onnx model format
-tf2onnx==1.16.1                         # Tensorflow to Onnx Convertor
 
 # Database
 SQLAlchemy==2.0.40                      # Sql Engine (ORM)
