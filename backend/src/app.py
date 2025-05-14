@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from apis.routes import router
 from core.config import common_settings, api_settings
 from db.base import create_tables
-from error_handler import configure_exceptions
+from http_error_handler import configure_exceptions
 
 
 def configure_cors(app: FastAPI) -> None:

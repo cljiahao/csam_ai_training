@@ -4,6 +4,7 @@ from core.exceptions import ImageProcessError, InvalidInputError, NoResultsFound
 
 
 # TODO: pytest
+# TODO: Add more error checks
 def configure_exceptions(app: FastAPI):
     """
     Configures custom exception handlers for the FastAPI application.
