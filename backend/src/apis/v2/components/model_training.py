@@ -30,7 +30,7 @@ def start_training(item: str, input_size: int, file_name: str) -> None:
         callbacks=callbacks,
     )
 
-    save_model_and_class_txt(model, list(DatasetModes), item_model_dir, file_name)
+    save_model_and_class_txt(model, item_model_dir, file_name)
 
 
 def setup_training_environment(item: str) -> tuple[Path, Path]:
@@ -46,18 +46,13 @@ def setup_training_environment(item: str) -> tuple[Path, Path]:
 
 
 def save_model_and_class_txt(
-    trained_model: models.Sequential,
-    dataset_class_names: list[str],
+    model: models.Sequential,
     output_dir: Path,
     file_name: str,
 ) -> None:
     """Saves the trained model and a text file containing class names."""
-    # TODO: change to use TFModel for saving
     model_path = output_dir / f"{file_name}{ModelFiles.KERAS_MODEL_EXT}"
-    trained_model.save(model_path)
-
-    txt_content = "\n".join(
-        f"{i} {label}" for i, label in enumerate(dataset_class_names)
-    )
     txt_path = output_dir / f"{file_name}{ModelFiles.LABEL_EXT}"
-    FileManager.write_txt(txt_path, txt_content)
+
+    TensorflowModel.save_model(model, model_path)
+    TensorflowModel.save_class_txt(list(DatasetModes), txt_path)

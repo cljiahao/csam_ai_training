@@ -7,8 +7,6 @@ from keras import models
 from apis.v2.schemas.deep_learning import ConfusionMatrixResults, EvaluationResult
 from constants.tensorflow_model import ModelFiles
 from core.directory_manager import directory_manager as dm
-from core.exceptions import NoResultsFound
-from core.file_manager import FileManager
 from utils.ai_model.tensorflow_model import TensorflowModel
 
 
@@ -49,31 +47,9 @@ def setup_evaluation_environment(item: str, ai_model_name: str) -> Path:
     txt_path = item_model_dir / f"{ai_model_name}{ModelFiles.LABEL_EXT}"
 
     model = TensorflowModel.load_model(ai_model_path)
-    class_names = read_model_class_txt(txt_path)
+    class_names = TensorflowModel.read_class_txt(txt_path)
 
     return model, class_names
-
-
-def read_model_class_txt(txt_path: Path) -> dict[str, str]:
-    """Reads the model class labels from a text file."""
-    read_data = FileManager.readlines_txt(txt_path)
-    if not read_data:
-        raise NoResultsFound(
-            f"Labels File : {txt_path.name} is empty or is missing dataset keys."
-        )
-
-    labels = {}
-    for line in read_data:
-        strip_txt = line.strip()
-        try:
-            key, value = strip_txt.split(" ")
-            labels[int(key)] = value
-        except ValueError as e:
-            raise ValueError(
-                f"Labels File: {txt_path.name} has an invalid format at line: {strip_txt}."
-            ) from e
-
-    return labels
 
 
 def run_model_evaluation(
