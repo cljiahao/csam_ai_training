@@ -1,4 +1,3 @@
-import requests
 from pathlib import Path
 
 from core.config import service_settings
@@ -12,7 +11,7 @@ API_INSTALL_MODEL_ENDPOINT = "/api/v2/upload/install_model"
 
 
 @error_handler()
-def post_model_files(item: str, ai_model_name: str) -> any:
+def post_model_files(item: str, ai_model_name: str) -> int:
     """Posts model files (label and model) to the AI server for installation."""
     file_name = Path(ai_model_name).stem
     label_file_path = dm.model_dir / item / f"{file_name}.txt"
