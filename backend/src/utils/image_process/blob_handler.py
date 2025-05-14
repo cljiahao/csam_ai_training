@@ -2,11 +2,13 @@ import cv2
 import numpy as np
 
 from constants.colors import BGRColors
+from utils.debug import error_handler
 
 
 class BlobHandler:
     """A utility class for processing blobs (regions of interest) found from contours in images."""
 
+    @error_handler()
     @staticmethod
     def create_kernel(kernel_size: int) -> np.ndarray:
         """Creates a square kernel of ones for morphological operations.
@@ -19,6 +21,7 @@ class BlobHandler:
         """
         return np.ones((kernel_size, kernel_size), dtype=np.uint8)
 
+    @error_handler()
     @staticmethod
     def crop_roi(
         image: np.ndarray, x_center: float, y_center: float, padding: int
@@ -41,6 +44,7 @@ class BlobHandler:
 
         return image[y_min:y_max, x_min:x_max]
 
+    @error_handler()
     @staticmethod
     def split_blobs_with_erosion(
         crop_image: np.ndarray, image: np.ndarray
@@ -72,6 +76,7 @@ class BlobHandler:
                     return contours
         return []
 
+    @error_handler()
     @staticmethod
     def get_non_red_and_black_mask(image: np.ndarray) -> np.ndarray:
         """Creates a mask excluding red and black color ranges in the HSV color space.
@@ -85,6 +90,7 @@ class BlobHandler:
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV_FULL)
         return cv2.inRange(hsv, np.array([1, 0, 0]), np.array([254, 255, 255]))
 
+    @error_handler()
     @staticmethod
     def draw_blob_mask_from_contours(
         image: np.ndarray, contours: np.ndarray
@@ -108,6 +114,7 @@ class BlobHandler:
         )
         return blank_mask
 
+    @error_handler()
     @staticmethod
     def extract_dark_blobs_mask(
         image: np.ndarray, bright_bg_threshold: int

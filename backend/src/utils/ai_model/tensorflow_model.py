@@ -14,12 +14,14 @@ from constants.tensorflow_model import DatasetModes, HyperParameters
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 from utils.ai_model.epoch_history_callbacks import EpochHistory
+from utils.debug import error_handler
 
 
 # TODO: pytest
 class TensorflowModel:
     """A utility class for building, loading, and preparing TensorFlow models and datasets."""
 
+    @error_handler()
     @staticmethod
     def build_static_model(input_size: int, output_size: int) -> models.Sequential:
         """Builds a static convolutional neural network model.
@@ -64,6 +66,7 @@ class TensorflowModel:
 
         return model
 
+    @error_handler()
     @staticmethod
     def create_callbacks() -> list[cb.Callback]:
         """Creates a list of training callbacks.
@@ -81,6 +84,7 @@ class TensorflowModel:
 
         return [early_stopping, reduce_lr, epoch_history]
 
+    @error_handler()
     @staticmethod
     def load_model(ai_model_path: Path) -> models.Sequential:
         """Loads a Keras Sequential model from a given path.
@@ -102,6 +106,7 @@ class TensorflowModel:
 
         return models.load_model(ai_model_path)
 
+    @error_handler()
     @staticmethod
     def prepare_dataset(
         dataset_dir: Path,
@@ -150,6 +155,7 @@ class TensorflowModel:
 
         return prefetched_dataset, np.array(dataset.file_paths)
 
+    @error_handler()
     @staticmethod
     def train_validation_split(dataset_dir: Path) -> None:
         """Splits a dataset directory into training and validation sets.

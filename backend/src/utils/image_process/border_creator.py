@@ -2,11 +2,13 @@ import cv2
 import numpy as np
 
 from constants.colors import BGRColors
+from utils.debug import error_handler
 
 
 class BorderCreator:
     """A utility class for creating and managing borders around an image."""
 
+    @error_handler()
     @staticmethod
     def create_border_image(image: np.ndarray, border_padding: int = 0) -> np.ndarray:
         """Creates an image with a constant color border.
@@ -28,6 +30,7 @@ class BorderCreator:
             value=BGRColors.BACKGROUND.value,
         )
 
+    @error_handler()
     @staticmethod
     def convert_background_white(
         image: np.ndarray, background_threshold: int = 0
@@ -49,6 +52,7 @@ class BorderCreator:
         border_image_copy[background] = BGRColors.WHITE.value
         return border_image_copy
 
+    @error_handler()
     @staticmethod
     def convert_grayscale(image: np.ndarray) -> np.ndarray:
         """Converts a BGR image to grayscale.
@@ -61,6 +65,7 @@ class BorderCreator:
         """
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+    @error_handler()
     @staticmethod
     def convert_background_white_and_grayscale(
         image: np.ndarray, background_threshold: int = 0
@@ -80,6 +85,7 @@ class BorderCreator:
         )
         return cv2.cvtColor(border_white_bg_image, cv2.COLOR_BGR2GRAY)
 
+    @error_handler()
     @staticmethod
     def change_border_color(
         image: np.ndarray, border_width: int, border_color: tuple[int, int, int]

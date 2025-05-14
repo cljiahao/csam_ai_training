@@ -5,12 +5,14 @@ import numpy as np
 from core.logging import logger
 from schemas.contours import ContourInfo, ContourInfoList
 from schemas.misc import NormalizeCoordinates
+from utils.debug import error_handler
 from utils.misc.calculations import normalize_coordinates
 
 
 class ContourHandler:
     """A utility class for processing and analyzing image contours."""
 
+    @error_handler()
     @staticmethod
     def chunking(contours: list[ContourInfo]) -> list[list[ContourInfo]]:
         """Divide contours into chunks based on CPU core count for multiprocessing.
@@ -30,6 +32,7 @@ class ContourHandler:
 
         return chunk_contours
 
+    @error_handler()
     @staticmethod
     def get_median_area(contours: list[np.ndarray]) -> float:
         """Calculate the median area of the contours in the list.
@@ -51,6 +54,7 @@ class ContourHandler:
 
         return average_area
 
+    @error_handler()
     @staticmethod
     def filter_and_build_contour_info(
         contours: list[np.ndarray],
@@ -89,6 +93,7 @@ class ContourHandler:
 
         return ContourInfoList(contours=processed_contours)
 
+    @error_handler()
     @staticmethod
     def extract_norm_coordinates(
         contour_info_list: ContourInfoList,

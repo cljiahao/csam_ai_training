@@ -1,6 +1,8 @@
 from schemas.misc import NormalizeCoordinates
+from utils.debug import error_handler
 
 
+@error_handler()
 def normalize_coordinates(
     coordinates: list[int, int], image_size: list[int, int], padding: int = 0
 ) -> NormalizeCoordinates:
@@ -23,6 +25,7 @@ def normalize_coordinates(
     return NormalizeCoordinates(norm_x=norm_x, norm_y=norm_y)
 
 
+@error_handler()
 def calculate_border_padding(crop_size: int) -> int:
     """Calculates the padding size for the border based on the crop size.
 
