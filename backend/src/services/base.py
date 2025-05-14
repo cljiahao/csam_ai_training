@@ -3,6 +3,8 @@ import requests
 from pathlib import Path
 from contextlib import ExitStack
 
+from utils.debug import error_handler
+
 
 class APIClient:
     """Lightweight API client to handle requests."""
@@ -14,6 +16,7 @@ class APIClient:
         self.file_headers = {"Accept": "application/json"}
         self.session = requests.Session()
 
+    @error_handler()
     def get(
         self,
         endpoint: str,
@@ -34,6 +37,7 @@ class APIClient:
         except json.JSONDecodeError as e:
             return response.status_code
 
+    @error_handler()
     def post(
         self, endpoint: str, data: dict[str, any] = None, headers: dict[str, str] = None
     ) -> any:
@@ -51,6 +55,7 @@ class APIClient:
         except json.JSONDecodeError as e:
             return response.status_code
 
+    @error_handler()
     def post_files(
         self,
         endpoint: str,
