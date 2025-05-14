@@ -9,6 +9,7 @@ class DatasetModes(StrEnum):
 class ModelFiles(StrEnum):
     LABEL_EXT = ".txt"
     H5_MODEL_EXT = ".h5"
+    KERAS_MODEL_EXT = ".keras"
     ONNX_MODEL_EXT = ".onnx"
     TRAINING_JSON = "training.json"
 
