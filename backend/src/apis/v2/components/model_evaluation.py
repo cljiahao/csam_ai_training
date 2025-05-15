@@ -40,7 +40,9 @@ def start_evaluating(
     )
 
 
-def setup_evaluation_environment(item: str, ai_model_name: str) -> Path:
+def setup_evaluation_environment(
+    item: str, ai_model_name: str
+) -> tuple[models.Sequential, dict[str, str]]:
     """Sets up the necessary environments for evaluation."""
     item_model_dir = dm.model_dir / item
     ai_model_path = item_model_dir / f"{ai_model_name}{ModelFiles.KERAS_MODEL_EXT}"
