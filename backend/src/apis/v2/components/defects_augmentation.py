@@ -15,6 +15,7 @@ from constants.tensorflow_model import DatasetModes
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 from utils.ai_model.tensorflow_model import TensorflowModel
+from utils.debug import timer
 from utils.image_process.image_manager import ImageManager
 
 
@@ -56,6 +57,7 @@ def augment_base_with_defects(item: str) -> None:
     TensorflowModel.train_validation_split(dataset_dir)
 
 
+@timer("Get Base Folder Count")
 def get_base_folder_counts(base_set_dir: Path) -> tuple[int, int, int]:
     """Retrieves and calculates base folder counts for augmentation."""
     base_sets_counts = dm.count_files_in_subdirectories(
@@ -83,6 +85,7 @@ def get_base_folder_counts(base_set_dir: Path) -> tuple[int, int, int]:
     return others_count, train_g_count, augment_ng_count
 
 
+@timer("Prepare training files")
 def prepare_training_file_paths(
     others_count: int, train_g_count: int, augment_ng_count: int, base_set_dir: Path
 ) -> tuple[list[Path], list[Path]]:
