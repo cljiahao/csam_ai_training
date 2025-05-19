@@ -121,7 +121,7 @@ const SummaryTable = () => {
         const isBaseThresHoldMet =
           2 * dataTable.augment_multiplier * base_data.no_of_ng -
             base_data.no_of_others <=
-          base_data.no_of_g;
+            base_data.no_of_g && base_data.no_of_ng != 0;
 
         const handleClick = () => {
           if (isEvalThresHoldMet && isBaseThresHoldMet) {
