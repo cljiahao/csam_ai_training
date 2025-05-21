@@ -1,13 +1,12 @@
 from datetime import datetime as dt
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column
-from uuid import uuid4, UUID
 
 from db.base import Base
 
 
 class BaseSets(Base):
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
     item: Mapped[str] = mapped_column(unique=True, index=True)
