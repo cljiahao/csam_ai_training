@@ -22,9 +22,11 @@ from utils.image_process.image_manager import ImageManager
 def augment_base_with_defects(item: str) -> None:
     """Augments base images with defects and prepares them for training."""
     base_set_dir = dm.images_dir / BaseSetsFolderName.BASE / item
-    others_count, train_g_count, augment_ng_count = get_base_folder_counts(base_set_dir)
-    base_file_paths, train_g_paths, ng_file_paths = prepare_training_file_paths(
-        others_count, train_g_count, augment_ng_count, base_set_dir
+    total_ng_count, train_g_count, others_count = get_base_folder_counts(base_set_dir)
+    base_file_paths, train_g_paths, ng_file_paths, deform_file_paths = (
+        prepare_training_file_paths(
+            total_ng_count, train_g_count, others_count, base_set_dir
+        )
     )
 
     dataset_dir = dm.images_dir / ModelDatasetFolderNames.DATASET / item
@@ -52,6 +54,7 @@ def augment_base_with_defects(item: str) -> None:
             )
 
     FileManager.copy_files_to_dir(train_dir / DatasetModes.NG, ng_file_paths)
+    FileManager.copy_files_to_dir(train_dir / DatasetModes.NG, deform_file_paths)
     FileManager.copy_files_to_dir(train_dir / DatasetModes.GOOD, train_g_paths)
 
     TensorflowModel.train_validation_split(dataset_dir)
@@ -67,42 +70,44 @@ def get_base_folder_counts(base_set_dir: Path) -> tuple[int, int, int]:
     ng_count = base_sets_counts.get(BaseSetsFolderName.NG, 0)
     g_count = base_sets_counts.get(BaseSetsFolderName.GOOD, 0)
     others_count = base_sets_counts.get(BaseSetsFolderName.OTHERS, 0)
+    deform_count = base_sets_counts.get(BaseSetsFolderName.DEFORM, 0)
 
     augment_multiplier = len(CSAMcolor) * AugmentThresholdRatio.BASE_MULTIPLIER
-    augment_ng_count = augment_multiplier * ng_count
+    total_ng_count = (augment_multiplier + 1) * ng_count + deform_count
 
-    if g_count < augment_ng_count:
+    if g_count < total_ng_count:
         raise ValueError("Not enough G images for augmentation")
-    if g_count + others_count < 2 * augment_ng_count:
+    if g_count + others_count < 2 * total_ng_count:
         raise ValueError("Not Enough G or Others image for augmentation")
 
     train_g_count = (
-        int(random.randrange(900, 1100) / 1000 * augment_ng_count)
-        if augment_ng_count * 1.1 < g_count
+        int(random.randrange(900, 1100) / 1000 * total_ng_count)
+        if total_ng_count * 1.1 < g_count
         else g_count
     )
 
-    return others_count, train_g_count, augment_ng_count
+    return total_ng_count, train_g_count, others_count
 
 
 @timer("Prepare training files")
 def prepare_training_file_paths(
-    others_count: int, train_g_count: int, augment_ng_count: int, base_set_dir: Path
-) -> tuple[list[Path], list[Path]]:
+    total_ng_count: int, train_g_count: int, others_count: int, base_set_dir: Path
+) -> tuple[list[Path], list[Path], list[Path], list[Path]]:
     """Prepares file paths for training, handling image selection."""
+    ng_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.NG)
     g_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.GOOD)
     others_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.OTHERS)
-    ng_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.NG)
+    deform_file_paths = dm.list_png_paths(base_set_dir / BaseSetsFolderName.DEFORM)
 
-    if augment_ng_count < others_count:
-        base_file_paths = random.sample(others_file_paths, augment_ng_count)
+    if total_ng_count < others_count:
+        base_file_paths = random.sample(others_file_paths, total_ng_count)
         train_g_paths = random.sample(g_file_paths, train_g_count)
     else:
-        remainder = augment_ng_count - others_count
+        remainder = total_ng_count - others_count
         random.shuffle(g_file_paths)
         base_file_paths = random.sample(
-            others_file_paths + g_file_paths[:remainder], augment_ng_count
+            others_file_paths + g_file_paths[:remainder], total_ng_count
         )
         train_g_paths = random.sample(g_file_paths[remainder:], train_g_count)
 
-    return base_file_paths, train_g_paths, ng_file_paths
+    return base_file_paths, train_g_paths, ng_file_paths, deform_file_paths
