@@ -35,7 +35,8 @@ export const DataTable = ({ className, columns, data }) => {
   return (
     <Table
       className={cn(
-        `w-full rounded-xl ${table.getRowModel().rows?.length ? "" : "h-full"}`,
+        "w-full rounded-xl",
+        table.getRowModel().rows?.length ? "" : "h-full",
         className,
       )}
     >
