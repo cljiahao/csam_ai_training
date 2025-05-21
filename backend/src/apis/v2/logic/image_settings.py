@@ -32,7 +32,6 @@ from utils.image_process.border_creator import BorderCreator
 from utils.image_process.image_manager import ImageManager
 
 
-@timer("Auto Settings Finder")
 def auto_settings_finder(
     item: str, target_count: int, file: UploadFile, db: Session, is_batch: bool
 ) -> list[ChipCoordinates]:
