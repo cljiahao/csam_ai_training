@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import { useSearchParams } from "react-router-dom";
+import { useShallow } from "zustand/react/shallow";
 
 import BaseLayout from "@/components/layouts/BaseLayout";
 import DescriptiveHeader from "@/components/static/descriptive-header";
@@ -7,9 +8,9 @@ import { Separator } from "@/components/ui/separator";
 import ModelBar from "@/features/model-bar/ModelBar";
 import ModelTrainer from "@/features/model-trainer/ModelTrainer";
 import EvaluationResults from "@/features/evaluation-results/EvaluationResults";
+import { cn } from "@/lib/utils";
 import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
-import { useShallow } from "zustand/react/shallow";
 
 const CsamMT = () => {
   const [searchParams] = useSearchParams();
@@ -45,7 +46,10 @@ const CsamMT = () => {
 
   return (
     <BaseLayout
-      className={`flex flex-col ${method === "train" ? "bg-yellow-100" : "bg-lime-100"}`}
+      className={cn(
+        "flex flex-col",
+        method === "train" ? "bg-yellow-100" : "bg-sky-100",
+      )}
     >
       <div className="flex py-2">
         <DescriptiveHeader
