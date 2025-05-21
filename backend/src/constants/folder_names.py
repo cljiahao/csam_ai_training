@@ -55,6 +55,13 @@ class BaseSetsFolderName(StrEnum):
     DEFORM = "deform"
 
 
+class ReTrainFolderName(StrEnum):
+    RETRAIN = "retrain"
+    NG = "ng"
+    GOOD = "good"
+    OTHERS = "others"
+
+
 class ModelDatasetFolderNames(StrEnum):
     DATASET = "dataset"
     TRAIN = "train"

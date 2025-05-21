@@ -1,4 +1,9 @@
-from enum import IntEnum
+from enum import IntEnum, StrEnum
+
+
+class AIModelMode(StrEnum):
+    TRAIN = "train"
+    RETRAIN = "retrain"
 
 
 class EvaluationDatasetsThresholds(IntEnum):
