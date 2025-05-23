@@ -1,6 +1,12 @@
 from dataclasses import dataclass
+from enum import StrEnum
 
 from apis.v2.constants.csam_thresholds import ChipThresholdRatio
+
+
+class ServerMode(StrEnum):
+    CAI = "CAI"
+    CDC = "CDC"
 
 
 @dataclass

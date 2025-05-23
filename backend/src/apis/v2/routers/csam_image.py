@@ -8,7 +8,11 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import Annotated
 
-from apis.v2.logic.csam_image import prepare_datasets_for_model
+from apis.v2.logic.csam_image import (
+    prepare_datasets_for_retraining,
+    prepare_datasets_for_training,
+)
+from apis.v2.schemas.common import ServerMode
 from apis.v2.schemas.csam_image import FileDataBatchDirectory
 from core.config import service_settings
 from core.directory_manager import directory_manager as dm
@@ -60,24 +64,30 @@ def background_file_clean_up(
     file_name: str,
     file_path: str,
     defect_batch_directory: FileDataBatchDirectory,
+    is_ai: bool,
     db: Session,
 ) -> None:
     try:
-        prepare_datasets_for_model(
-            item, lot_no, file_name, file_path, defect_batch_directory, db
-        )
+        if is_ai:
+            prepare_datasets_for_retraining(
+                item, lot_no, file_name, file_path, defect_batch_directory, db
+            )
+        else:
+            prepare_datasets_for_training(
+                item, lot_no, file_name, file_path, defect_batch_directory, db
+            )
     finally:
         os.remove(file_path)  # Clean up by deleting the temporary file
 
 
-# TODO: add method to differentiate between saving data from CDC or CAI
 @router.post(
-    "/process_image",
+    "/process_image/{server_mode}",
     summary="Process User Judgement and Save Locally",
     operation_id="SaveUserJudgement",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def start_process_image(
+    server_mode: Annotated[ServerMode, Path(description="Server Mode (CAI or CDC)")],
     data: Annotated[dict, Depends(parse_form_data)],
     file: Annotated[
         UploadFile,
@@ -90,6 +100,7 @@ def start_process_image(
         shutil.copyfileobj(file.file, tmp_file)
         tmp_path = tmp_file.name  # Store the file path
 
+    is_ai = server_mode == ServerMode.CAI
     background_tasks.add_task(
         background_file_clean_up,
         data["item"],
@@ -97,6 +108,7 @@ def start_process_image(
         file.filename,
         tmp_path,
         data["defect_file_list"],
+        is_ai,
         db,
     )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
