@@ -59,7 +59,6 @@ class ReTrainFolderName(StrEnum):
     RETRAIN = "retrain"
     NG = "ng"
     GOOD = "good"
-    OTHERS = "others"
 
 
 class ModelDatasetFolderNames(StrEnum):

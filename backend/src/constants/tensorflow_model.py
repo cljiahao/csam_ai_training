@@ -12,6 +12,7 @@ class ModelFiles(StrEnum):
     KERAS_MODEL_EXT = ".keras"
     ONNX_MODEL_EXT = ".onnx"
     TRAINING_JSON = "training.json"
+    RETRAINING_JSON = "retraining.json"
 
 
 class ModelStatus(StrEnum):
