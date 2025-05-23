@@ -3,12 +3,12 @@ from typing import Callable
 from pathlib import Path
 from sqlalchemy.orm import Session
 
-from apis.v2.components.create_base_sets import populate_base_folders
 from apis.v2.components.create_evaluation_sets import (
     augment_eval_sets,
     populate_colors_thousands_sets,
     populate_mass_production_sets,
 )
+from apis.v2.components.create_training_sets import populate_base_folders
 from apis.v2.components.defects_classification import (
     classify_black_defect_mode,
     classify_non_black_defect_mode,
@@ -21,7 +21,7 @@ from apis.v2.components.process_chips import (
 from apis.v2.constants.csam_thresholds import AugmentThresholdRatio
 from apis.v2.schemas.common import ChipThreshold
 from apis.v2.schemas.csam_image import DefectInfo, LabeledImageData
-from constants.folder_names import BaseSetsFolderName
+from constants.folder_names import BaseSetsFolderName, ReTrainFolderName
 from db.models.image_settings import ImageSettings
 from db.services.image_settings import ImageSettingsService
 from schemas.contours import ContourInfo, ContourInfoList
@@ -31,8 +31,8 @@ from utils.image_process.image_manager import ImageManager
 from utils.misc.calculations import calculate_border_padding
 
 
-@timer("Preparing Datasets for Model")
-def prepare_datasets_for_model(
+@timer("Preparing Datasets for Training Model")
+def prepare_datasets_for_training(
     item: str,
     lot_no: str,
     file_name: str,
@@ -52,33 +52,67 @@ def prepare_datasets_for_model(
         image_data
         for image_data in image_datas
         if image_data.file_name in defect_file_list
-        or image_data.label_mode == BaseSetsFolderName.NG
     ]
-    remnant_others_image_datas = [
-        image_data
-        for image_data in image_datas
-        if image_data.label_mode == BaseSetsFolderName.OTHERS
-    ]
+    ng_image_datas = filter_by_label_mode(image_datas, BaseSetsFolderName.NG)
+    others_image_datas = filter_by_label_mode(image_datas, BaseSetsFolderName.OTHERS)
+    all_defect_image_datas = defect_image_datas + ng_image_datas
 
     base_multiplier = AugmentThresholdRatio.BASE_MULTIPLIER
-    to_augment_image_limit = base_multiplier * len(defect_image_datas)
-    to_augment_image_datas = remnant_others_image_datas[:to_augment_image_limit]
+    to_augment_image_limit = base_multiplier * len(all_defect_image_datas)
+    images_to_augment = others_image_datas[:to_augment_image_limit]
 
-    augment_image_datas = augment_eval_sets(to_augment_image_datas, defect_image_datas)
-    remnant_augment_image_datas = populate_colors_thousands_sets(
-        item, augment_image_datas, db
-    )
-    if remnant_augment_image_datas:
-        good_image_datas = [
-            image_data
-            for image_data in image_datas
-            if image_data.label_mode == BaseSetsFolderName.GOOD
-        ]
-        remnant_others_image_datas = remnant_others_image_datas[to_augment_image_limit:]
-        base_image_datas = (
-            good_image_datas + remnant_others_image_datas + remnant_augment_image_datas
-        )
+    augment_image_datas = augment_eval_sets(images_to_augment, all_defect_image_datas)
+    remainder_ng_images = populate_colors_thousands_sets(item, augment_image_datas, db)
+    if remainder_ng_images:
+        deform_images = filter_by_label_mode(image_datas, BaseSetsFolderName.DEFORM)
+        base_ng_image_datas = remainder_ng_images + deform_images
+        base_image_datas = {
+            BaseSetsFolderName.NG: base_ng_image_datas,
+            BaseSetsFolderName.GOOD: filter_by_label_mode(
+                image_datas, BaseSetsFolderName.GOOD
+            ),
+            BaseSetsFolderName.OTHERS: others_image_datas[to_augment_image_limit:],
+        }
         populate_base_folders(item, base_image_datas, db)
+
+
+@timer("Preparing Datasets for Re-training Model")
+def prepare_datasets_for_retraining(
+    item: str,
+    lot_no: str,
+    file_name: str,
+    file_path: str,
+    defect_file_list: list[str],
+    db: Session,
+) -> None:
+    """Prepares datasets for model training by processing a CSAM image and organizing chips."""
+    plate_no = Path(file_name).stem
+    image = ImageManager.path_to_image(file_path)
+    image_datas = process_csam_image(item, lot_no, plate_no, image, db)
+
+    defect_image_datas = [
+        image_data
+        for image_data in image_datas
+        if image_data.file_name in defect_file_list
+    ]
+    non_defect_image_datas = [
+        image_data
+        for image_data in image_datas
+        if image_data.file_name not in defect_file_list
+    ]
+    retrain_image_datas = {
+        ReTrainFolderName.NG: defect_image_datas,
+        ReTrainFolderName.GOOD: non_defect_image_datas,
+    }
+
+
+def filter_by_label_mode(
+    image_datas: list[LabeledImageData], label_mode: str
+) -> list[LabeledImageData]:
+    """Filters a list of LabeledImageData objects by label_mode"""
+    return [
+        image_data for image_data in image_datas if image_data.label_mode == label_mode
+    ]
 
 
 @timer("Processing CSAM Image")

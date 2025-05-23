@@ -19,15 +19,12 @@ from utils.image_process.image_manager import ImageManager
 
 @timer("Populating Base Folders")
 def populate_base_folders(
-    item: str, image_data_list: list[LabeledImageData], db: Session
+    item: str, label_image_dict: dict[str, list[LabeledImageData]], db: Session
 ) -> None:
     """Populates base folders with images based on labels."""
-
-    label_image_dict = group_image_data_by_label(image_data_list)
-    base_dir = setup_folder_environment(item, label_image_dict)
-    label_folder_counts = dm.count_files_in_subdirectories(
-        base_dir, label_image_dict.keys()
-    )
+    base_dir = setup_folder_environment(BaseSetsFolderName.BASE, item, label_image_dict)
+    labels = label_image_dict.keys()
+    label_folder_counts = dm.count_files_in_subdirectories(base_dir, labels)
 
     for label, image_data_list in label_image_dict.items():
         max_file_count = DatasetSummaryThresholds.MAX_DATASET
@@ -36,7 +33,6 @@ def populate_base_folders(
             max_file_count = math.floor(max_file_count / augment_multiplier)
 
         required_count = max_file_count - label_folder_counts[label]
-
         if required_count == 0:
             logger.info(
                 f"Label: {label} already has the required {max_file_count} files."
@@ -60,18 +56,17 @@ def populate_base_folders(
 
 @timer("Populating Re-Train Folders")
 def populate_retrain_folders(
-    item: str, image_data_list: list[LabeledImageData], db: Session
+    item: str, label_image_dict: dict[str, list[LabeledImageData]], db: Session
 ) -> None:
     """Populates re-train folders with images based on labels."""
-    label_image_dict = group_image_data_by_label(image_data_list)
-    base_dir = setup_folder_environment(item, label_image_dict)
-    label_folder_counts = dm.count_files_in_subdirectories(
-        base_dir, label_image_dict.keys()
+    base_dir = setup_folder_environment(
+        ReTrainFolderName.RETRAIN, item, label_image_dict
     )
+    labels = label_image_dict.keys()
+    label_folder_counts = dm.count_files_in_subdirectories(base_dir, labels)
 
     for label, image_data_list in label_image_dict.items():
         max_file_count = DatasetSummaryThresholds.MAX_DATASET
-
         required_count = max_file_count - label_folder_counts[label]
         if required_count == 0:
             logger.info(
@@ -79,13 +74,14 @@ def populate_retrain_folders(
             )
             continue
 
-        random.shuffle(image_data_list)
+        if required_count < len(image_data_list):
+            random.shuffle(image_data_list)
+
         images_to_save = image_data_list[:required_count]
         for image_data in images_to_save:
             ImageManager.save_image(
                 base_dir / label / image_data.file_name, image_data.image_data
             )
-
         label_folder_counts[label] += len(images_to_save)
         logger.info(f"label: {label} has {label_folder_counts[label]} files.")
 
@@ -96,17 +92,7 @@ def populate_retrain_folders(
 def setup_folder_environment(
     base_folder: str, item: str, label_image_dict: dict[str, list[LabeledImageData]]
 ) -> Path:
-    """Sets up the re-train sets directory environment."""
-    retrain_dir = dm.images_dir / base_folder / item
-    dm.create_subdirectories(retrain_dir, label_image_dict.keys())
-    return retrain_dir
-
-
-def group_image_data_by_label(
-    image_data_list: list[LabeledImageData],
-) -> dict[str, list[LabeledImageData]]:
-    """Groups a list of LabeledImageData objects by their label mode."""
-    label_image_dict = defaultdict(list[LabeledImageData])
-    for image_data in image_data_list:
-        label_image_dict[image_data.label_mode].append(image_data)
-    return label_image_dict
+    """Sets up the training sets directory environment."""
+    train_dir = dm.images_dir / base_folder / item
+    dm.create_subdirectories(train_dir, label_image_dict.keys())
+    return train_dir
