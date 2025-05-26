@@ -35,6 +35,9 @@ from utils.image_process.image_manager import ImageManager
 from utils.misc.calculations import calculate_border_padding
 
 
+# TODO: future to stop processing csam image if threshold of files are met
+
+
 @timer("Preparing Datasets for Training Model")
 def prepare_datasets_for_training(
     item: str,
