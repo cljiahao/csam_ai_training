@@ -14,7 +14,7 @@ from utils.image_process.blob_handler import BlobHandler
 from utils.image_process.contour_handler import ContourHandler
 
 
-@timer("Find Chip Contours (Black and Non Black)")
+@timer("Find Combined Chip Contours (Black and Non Black)")
 def create_chip_contour_info_list(
     border_image: np.ndarray, binary_image: np.ndarray, image_settings: ImageSettings
 ) -> tuple[ContourInfoList, ContourInfoList]:
@@ -24,14 +24,14 @@ def create_chip_contour_info_list(
     chip_threshold = update_chip_threshold(non_black_contour_info_list)
     crop_size = image_settings.crop_size
 
-    black_refined_contour_infos = extract_refined_contour_info_list(
-        black_contour_info_list, border_image, crop_size, chip_threshold
+    combined_contours_infos = (
+        black_contour_info_list.contours + non_black_contour_info_list.contours
     )
-    non_black_refined_contour_infos = extract_refined_contour_info_list(
-        non_black_contour_info_list, border_image, crop_size, chip_threshold
+    refined_contour_info_list = extract_refined_contour_info_list(
+        combined_contours_infos, border_image, crop_size, chip_threshold
     )
 
-    return black_refined_contour_infos, non_black_refined_contour_infos, chip_threshold
+    return refined_contour_info_list, chip_threshold
 
 
 def find_black_contours(image: np.ndarray) -> ContourInfoList:
@@ -127,7 +127,9 @@ def extract_refined_contour_info_list(
 
 
 def chip_crop_finder(
-    contour_info_list: ContourInfoList, image: np.ndarray
+    contour_info_list: ContourInfoList,
+    black_contour_info_list: ContourInfoList,
+    image: np.ndarray,
 ) -> ContourInfoList:
     """Finds potential chip crops by refining contours based on size and attempting to split large ones."""
     average_length = contour_info_list.get_average_length()
@@ -137,7 +139,9 @@ def chip_crop_finder(
     refined_contour_info_list = extract_refined_contour_info_list(
         contour_info_list, image, crop_size, chip_threshold
     )
-    return ContourInfoList(contours=refined_contour_info_list)
+    return ContourInfoList(
+        contours=refined_contour_info_list + black_contour_info_list.contours
+    )
 
 
 def rotate_and_crop_chip_image(
