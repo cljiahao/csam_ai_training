@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from typing import Callable
 from pathlib import Path
@@ -8,7 +9,10 @@ from apis.v2.components.create_evaluation_sets import (
     populate_colors_thousands_sets,
     populate_mass_production_sets,
 )
-from apis.v2.components.create_training_sets import populate_base_folders
+from apis.v2.components.create_training_sets import (
+    populate_base_folders,
+    populate_retrain_folders,
+)
 from apis.v2.components.defects_classification import (
     classify_black_defect_mode,
     classify_non_black_defect_mode,
@@ -95,15 +99,17 @@ def prepare_datasets_for_retraining(
         for image_data in image_datas
         if image_data.file_name in defect_file_list
     ]
-    non_defect_image_datas = [
-        image_data
-        for image_data in image_datas
-        if image_data.file_name not in defect_file_list
-    ]
+    good_image_datas = filter_by_label_mode(image_datas, BaseSetsFolderName.GOOD)
+    others_image_datas = filter_by_label_mode(image_datas, BaseSetsFolderName.OTHERS)
+    random_good_image_datas = random.sample(good_image_datas, 100)
+    random_others_image_datas = random.sample(others_image_datas, 5)
+    non_defect_image_datas = random_good_image_datas + random_others_image_datas
+
     retrain_image_datas = {
         ReTrainFolderName.NG: defect_image_datas,
         ReTrainFolderName.GOOD: non_defect_image_datas,
     }
+    populate_retrain_folders(item, retrain_image_datas, db)
 
 
 def filter_by_label_mode(
