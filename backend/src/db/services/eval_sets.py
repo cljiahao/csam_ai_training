@@ -64,9 +64,10 @@ class EvalSetsService:
 
         existing_colors = self.colors_repo.read_colors(data_condition)[0]
         if existing_colors:
-            return self.colors_repo.update_colors(
+            self.colors_repo.update_colors(
                 {"filter_conditions": data_condition, "update_data": color_eval_data}
             )
+            return self.colors_repo.read_colors(data_condition)
 
         color_eval_data.update(data_condition)
         return self.colors_repo.create_colors(color_eval_data)[0]
@@ -84,9 +85,10 @@ class EvalSetsService:
 
         existing_mass_pro = self.mass_pro_repo.read_mass_pro(data_condition)[0]
         if existing_mass_pro:
-            return self.mass_pro_repo.update_mass_pro(
+            self.mass_pro_repo.update_mass_pro(
                 {"filter_conditions": data_condition, "update_data": mass_pro_eval_data}
             )
+            return self.mass_pro_repo.read_mass_pro(data_condition)
 
         mass_pro_eval_data.update(data_condition)
         return self.mass_pro_repo.create_mass_pro(mass_pro_eval_data)[0]
@@ -104,12 +106,13 @@ class EvalSetsService:
 
         existing_thousands = self.thousands_repo.read_thousands(data_condition)[0]
         if existing_thousands:
-            return self.thousands_repo.update_thousands(
+            self.thousands_repo.update_thousands(
                 {
                     "filter_conditions": data_condition,
                     "update_data": thousands_eval_data,
                 }
             )
+            return self.thousands_repo.read_thousands(data_condition)
 
         thousands_eval_data.update(data_condition)
         return self.thousands_repo.create_thousands(thousands_eval_data)[0]

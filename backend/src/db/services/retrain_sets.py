@@ -48,12 +48,13 @@ class ReTrainSetsService:
 
         existing_retrain_sets = self.read_retrain_sets(item)
         if existing_retrain_sets:
-            return self.repo.update_retrain_sets(
+            self.repo.update_retrain_sets(
                 {
                     "filter_conditions": data_condition,
                     "update_data": new_retrain_sets_data,
                 }
             )
+            return self.read_retrain_sets(item)
 
         new_retrain_sets_data.update(data_condition)
         return self.repo.create_retrain_sets(new_retrain_sets_data)[0]

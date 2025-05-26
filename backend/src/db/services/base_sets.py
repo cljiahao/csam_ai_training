@@ -48,9 +48,10 @@ class BaseSetsService:
 
         existing_base_sets = self.read_base_sets(item)
         if existing_base_sets:
-            return self.repo.update_base_sets(
+            self.repo.update_base_sets(
                 {"filter_conditions": data_condition, "update_data": new_base_sets_data}
             )
+            return self.read_base_sets(item)
 
         new_base_sets_data.update(data_condition)
         return self.repo.create_base_sets(new_base_sets_data)[0]
