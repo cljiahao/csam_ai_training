@@ -17,6 +17,7 @@ from apis.v2.components.process_chips import (
     apply_morphology_for_chips,
     chip_crop_finder,
     extract_chip_coordinates,
+    find_black_contours,
 )
 from apis.v2.schemas.image_settings import (
     BatchSettingsData,
@@ -94,6 +95,7 @@ def auto_chips_settings_finder(
     binary_image: np.ndarray, image: np.ndarray, target_count: int
 ) -> tuple[ChipSettingsData, list[ChipCoordinates]]:
     """Finds optimal chip processing settings."""
+    black_contour_info_list = find_black_contours(image)
     for noise_erode_value in range(1, 20):
         for dilate_value in range(1, 20):
             for erode_value in range(1, 20):
@@ -102,7 +104,9 @@ def auto_chips_settings_finder(
                 )
 
                 contour_info_list = create_contour_list(mask_chip)
-                refined_contour_list = chip_crop_finder(contour_info_list, image)
+                refined_contour_list = chip_crop_finder(
+                    contour_info_list, black_contour_info_list, image
+                )
 
                 count_diff = tabulate_count(refined_contour_list, target_count)
                 if count_diff > 0:
