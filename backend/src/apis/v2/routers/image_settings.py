@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
+    "",
     response_model=dict[str, int],
     summary="Return image settings found in database",
     operation_id="ImageSettings",
