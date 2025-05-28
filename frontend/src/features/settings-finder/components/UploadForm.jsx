@@ -27,6 +27,7 @@ const UploadForm = ({ className, mode }) => {
 
   const onFileChange = (e) => {
     e.preventDefault();
+    setError("");
 
     const file = e.target.files[0];
     if (file) {
