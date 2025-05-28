@@ -106,7 +106,7 @@ def get_all_base_sets_data(db: Session) -> dict[str, BaseSetsData]:
 
     return {
         base_set.item: BaseSetsData(
-            no_of_g=base_set.no_of_g,
+            no_of_good=base_set.no_of_good,
             no_of_ng=base_set.no_of_ng,
             no_of_others=base_set.no_of_others,
         )
@@ -121,7 +121,7 @@ def get_all_retrain_sets_data(db: Session) -> dict[str, ReTrainSetsData]:
 
     return {
         retrain_sets.item: ReTrainSetsData(
-            no_of_g=retrain_sets.no_of_g,
+            no_of_good=retrain_sets.no_of_good,
             no_of_ng=retrain_sets.no_of_ng,
         )
         for retrain_sets in retrain_sets_data_list
