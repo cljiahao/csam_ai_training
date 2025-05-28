@@ -116,10 +116,13 @@ def extract_refined_contour_info_list(
         for split_contour_info in check_single(
             contour_info, image, crop_size, chip_threshold.UPPER_CHIP_AREA
         ).contours
-        if chip_threshold.LOWER_CHIP_AREA
-        < split_contour_info.area
-        < chip_threshold.UPPER_CHIP_AREA
+        if chip_out_of_spec(chip_threshold, split_contour_info)
     ]
+
+
+def chip_out_of_spec(threshold: ChipThreshold, contours: ContourInfo) -> bool:
+    """Condition to check if contour is within threshold set for chips."""
+    return threshold.LOWER_CHIP_AREA < contours.area < threshold.UPPER_CHIP_AREA
 
 
 def chip_crop_finder(
