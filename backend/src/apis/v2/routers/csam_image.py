@@ -46,7 +46,7 @@ def parse_form_data(
         defect_file_list = {
             data_file.file_name
             for defect_batch in defect_batch_directory_model.file_data_batches
-            for data_file in defect_batch.data_files
+            for data_file in defect_batch.defect_records
             if data_file.defect_mode.lower() != "temp"
         }
         return {
