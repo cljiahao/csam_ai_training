@@ -68,14 +68,15 @@ def prepare_datasets_for_training(
     augment_image_datas = augment_eval_sets(images_to_augment, all_defect_image_datas)
     remainder_ng_images = populate_colors_thousands_sets(item, augment_image_datas, db)
     if remainder_ng_images:
-        deform_images = filter_by_label_mode(image_datas, BaseSetsFolderName.DEFORM)
-        base_ng_image_datas = remainder_ng_images + deform_images
         base_image_datas = {
-            BaseSetsFolderName.NG: base_ng_image_datas,
+            BaseSetsFolderName.NG: remainder_ng_images,
             BaseSetsFolderName.GOOD: filter_by_label_mode(
                 image_datas, BaseSetsFolderName.GOOD
             ),
             BaseSetsFolderName.OTHERS: others_image_datas[to_augment_image_limit:],
+            BaseSetsFolderName.DEFORM: filter_by_label_mode(
+                image_datas, BaseSetsFolderName.DEFORM
+            ),
         }
         populate_base_folders(item, base_image_datas, db)
 
