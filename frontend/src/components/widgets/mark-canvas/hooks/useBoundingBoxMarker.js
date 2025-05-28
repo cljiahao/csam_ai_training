@@ -1,22 +1,17 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 
 import { MARKERS } from "@/core/constants";
 
-const useBoundingBoxMarker = (mode, marks, imageSize) => {
-  const { data: processImageData } = useQuery({
-    queryKey: ["processedSettings", mode],
-  });
-
+const useBoundingBoxMarker = (imageSize, marks, coordinates) => {
   const generateRectangles = useMemo(() => {
-    if (!imageSize || !processImageData) return [];
+    if (!imageSize || !coordinates) return [];
 
     const marksMap = new Map();
     marks.forEach((mark) => {
       marksMap.set(mark.fileName, mark);
     });
 
-    return (processImageData.coordinates || []).map((file, index) => {
+    return (coordinates || []).map((file, index) => {
       const dx =
         Math.round(
           (file.norm_x_center - file.norm_batch_width / 2) *
@@ -44,7 +39,7 @@ const useBoundingBoxMarker = (mode, marks, imageSize) => {
         color: MARKERS.static.color,
       };
     });
-  }, [processImageData, marks, imageSize]);
+  }, [coordinates, marks, imageSize]);
 
   return { state: { generateRectangles } };
 };

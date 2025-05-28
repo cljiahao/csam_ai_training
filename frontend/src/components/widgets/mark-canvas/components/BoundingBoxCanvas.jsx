@@ -1,9 +1,9 @@
 import useBoundingBoxMarker from "../hooks/useBoundingBoxMarker";
 
-const BoundingBoxCanvas = ({ mode, marks, imageSize }) => {
+const BoundingBoxCanvas = ({ imageSize, marks, coordinates }) => {
   const {
     state: { generateRectangles },
-  } = useBoundingBoxMarker(mode, marks, imageSize);
+  } = useBoundingBoxMarker(imageSize, marks, coordinates);
 
   return (
     <>
