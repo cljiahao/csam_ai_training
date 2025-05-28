@@ -176,6 +176,7 @@ def rotate_and_classify_contours(
     chip_threshold: ChipThreshold,
     base_file_name: str,
 ) -> list[LabeledImageData]:
+    """Rotate, crop and classify the contours."""
     image_data_list = []
     for i, contour_info in enumerate(contour_infos, start=prev_count + 1):
         rotated_image = rotate_and_crop_chip_image(
