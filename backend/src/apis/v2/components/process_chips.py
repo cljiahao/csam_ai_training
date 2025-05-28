@@ -125,6 +125,19 @@ def chip_out_of_spec(threshold: ChipThreshold, contours: ContourInfo) -> bool:
     return threshold.LOWER_CHIP_AREA < contours.area < threshold.UPPER_CHIP_AREA
 
 
+def rotate_and_crop_chip_image(
+    contour_info: ContourInfo, border_image: np.ndarray, padding: int, crop_size: int
+) -> np.ndarray:
+    """Rotates and crops a chip image based on its contour information."""
+    (x_center, y_center), _, theta = contour_info.rect
+
+    pre_crop_image = BlobHandler.crop_roi(border_image, x_center, y_center, padding)
+    pil_image = Image.fromarray(pre_crop_image)
+    rotated_image = np.asarray(pil_image.rotate(theta))
+
+    return BlobHandler.crop_roi(rotated_image, padding, padding, crop_size // 2)
+
+
 def chip_crop_finder(
     contour_info_list: ContourInfoList,
     black_contour_info_list: ContourInfoList,
@@ -141,21 +154,6 @@ def chip_crop_finder(
     return ContourInfoList(
         contours=refined_contour_info_list + black_contour_info_list.contours
     )
-
-
-def rotate_and_crop_chip_image(
-    contour_info: ContourInfo, border_image: np.ndarray, padding: int, crop_size: int
-) -> np.ndarray:
-    """Rotates and crops a chip image based on its contour information."""
-    ((x_center, y_center), (width, height), theta) = contour_info.rect
-    if height < width:
-        theta -= 90
-
-    pre_crop_image = BlobHandler.crop_roi(border_image, x_center, y_center, padding)
-    pil_image = Image.fromarray(pre_crop_image)
-    rotated_image = np.asarray(pil_image.rotate(theta))
-
-    return BlobHandler.crop_roi(rotated_image, padding, padding, crop_size // 2)
 
 
 def extract_chip_coordinates(
