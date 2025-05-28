@@ -138,3 +138,17 @@ def tabulate_count(contour_info_list: ContourInfoList, target_count: int) -> int
     logger.debug(f"Current Count - {current_count} / {target_count}")
     count_diff = target_count - current_count
     return count_diff
+
+
+def get_image_settings_by_item(item: str, db: Session) -> dict[str, str]:
+    """Retrieve image settings from database and return in a dict."""
+    image_settings_service = ImageSettingsService(db)
+    image_settings = image_settings_service.read_image_settings_not_empty(item)
+    return {
+        "batch_erode": image_settings.batch_erode,
+        "batch_close": image_settings.batch_close,
+        "chip_noise_erode": image_settings.chip_noise_erode,
+        "chip_dilate": image_settings.chip_dilate,
+        "chip_erode": image_settings.chip_erode,
+        "crop_size": image_settings.crop_size,
+    }
