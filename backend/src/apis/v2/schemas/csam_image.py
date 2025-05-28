@@ -35,7 +35,7 @@ class DefectData(CoordsData):
 
 class FileDataBatch(BaseModel):
     batch_no: str
-    data_files: list[DefectData]
+    defect_records: list[DefectData]
 
 
 class FileDataBatchDirectory(BaseModel):
