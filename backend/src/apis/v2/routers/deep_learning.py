@@ -117,7 +117,7 @@ def install_model_in_server(
     item: Annotated[
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
-    ai_model_name: Annotated[str, Body(description="Name of the model", embed=True)],
+    ai_model_name: Annotated[str, Query(description="Name of the model", embed=True)],
 ) -> Response:
     post_model_files(item, ai_model_name)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
