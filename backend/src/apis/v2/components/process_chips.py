@@ -97,9 +97,10 @@ def check_single(
 
         new_contours = BlobHandler.split_blobs_with_erosion(crop_image, drawn_roi)
         if new_contours:
-            return ContourHandler.filter_and_build_contour_info(new_contours)
+            clean_contours = ContourHandler.filter_and_build_contour_info(new_contours)
+            return ContourHandler.rotate_contour_upright(clean_contours)
 
-    return ContourInfoList(contours=[contour_info])
+    return ContourInfoList(contours=[contours])
 
 
 def extract_refined_contour_info_list(
