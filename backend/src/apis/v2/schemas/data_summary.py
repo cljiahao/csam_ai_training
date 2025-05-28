@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class CSAMSetsData(BaseModel):
-    no_of_g: int = 0
+    no_of_good: int = 0
     no_of_ng: int = 0
 
 
