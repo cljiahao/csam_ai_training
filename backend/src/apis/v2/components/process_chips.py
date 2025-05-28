@@ -87,17 +87,12 @@ def update_chip_threshold(contour_infos: ContourInfoList) -> ChipThreshold:
 
 
 def check_single(
-    contour_info: ContourInfo,
-    image: np.ndarray,
-    crop_size: int,
-    threshold: int = 0,
+    contours: ContourInfo, image: np.ndarray, crop_size: int, threshold: int = 0
 ) -> ContourInfoList:
     """Analyzes a single contour, attempting to split it if its area exceeds a threshold."""
-    if contour_info.area > threshold:
-        drawn_roi = BlobHandler.draw_blob_mask_from_contours(
-            image, contour_info.contour
-        )
-        ((x_center, y_center), _, _) = contour_info.rect
+    if contours.area > threshold:
+        drawn_roi = BlobHandler.draw_blob_mask_from_contours(image, contours.contour)
+        ((x_center, y_center), _, _) = contours.rect
         crop_image = BlobHandler.crop_roi(drawn_roi, x_center, y_center, crop_size // 2)
 
         new_contours = BlobHandler.split_blobs_with_erosion(crop_image, drawn_roi)
