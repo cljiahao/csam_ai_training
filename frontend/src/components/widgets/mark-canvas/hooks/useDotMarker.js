@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { MARKERS } from "@/core/constants";
 
-const useDotMarker = (imageSize, coordinates, marks) => {
+const useDotMarker = (imageSize, marks, coordinates) => {
   const generateCircles = useMemo(() => {
     if (!imageSize || !coordinates) return [];
 
