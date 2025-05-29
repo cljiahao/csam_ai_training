@@ -4,11 +4,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import BaseLayout from "@/components/layouts/BaseLayout";
 import { Separator } from "@/components/ui/separator";
 import DescriptiveHeader from "@/components/static/descriptive-header";
+import LabelSwitch from "@/components/widgets/label-switch/LabelSwitch";
 import UtilityPanel from "@/features/settings-bar/components/UtilityPanel";
 import SummaryTable from "@/features/summary-table/SummaryTable";
 import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 const CsamDS = () => {
   const [isChecked, setChecked] = useState(false);
@@ -45,18 +44,14 @@ const CsamDS = () => {
           description="Overall dataset summary for CSAM Model Training."
         />
         <Separator orientation="vertical" className="bg-slate-400" />
-        <div className="flex w-1/3 gap-12">
-          <UtilityPanel className="w-1/6" />
-          <div className="flex w-5/6 items-center gap-6">
-            <Switch
-              id="model-method"
-              checked={isChecked}
-              onCheckedChange={onCheckChange}
-            />
-            <Label htmlFor="model-method" className="text-2xl capitalize">
-              {method}
-            </Label>
-          </div>
+        <div className="flex w-1/3">
+          <UtilityPanel className="" />
+          <LabelSwitch
+            labelClassName="text-2xl"
+            label={method}
+            checked={isChecked}
+            onCheckedChange={onCheckChange}
+          />
         </div>
       </div>
       <Separator className="px-4" />
