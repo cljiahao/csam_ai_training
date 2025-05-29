@@ -1,3 +1,5 @@
+import Loading from "@/components/static/loading";
+import Error from "@/components/static/error";
 import ImageHolder from "@/components/widgets/image-holder/ImageHolder";
 import MarkCanvas from "@/components/widgets/mark-canvas/MarkCanvas";
 import SettingsFinderContext from "./context/SettingsFinderContext";
@@ -6,7 +8,7 @@ import UploadForm from "./subfeatures/upload-form/UploadForm";
 
 const SettingsFinder = ({ mode }) => {
   const {
-    state: { markRef, image, error, coordinates },
+    state: { markRef, image, error, coordinates, isLoading },
     action: { setImage, setError },
   } = useSettingsFinder({ mode });
 
@@ -15,17 +17,18 @@ const SettingsFinder = ({ mode }) => {
   return (
     <SettingsFinderContext.Provider value={{ setImage, setError }}>
       <div className="hw-full">
-        <ImageHolder
-          className="h-5/6"
-          image={image}
-          error={error}
-          placeholder_text={mode}
-        >
-          <MarkCanvas
-            ref={markRef}
-            canvasType={canvasType}
-            coordinates={coordinates}
-          />
+        <ImageHolder className="h-5/6" image={image} placeholder_text={mode}>
+          {error ? (
+            <Error message={error} />
+          ) : isLoading ? (
+            <Loading />
+          ) : (
+            <MarkCanvas
+              ref={markRef}
+              canvasType={canvasType}
+              coordinates={coordinates}
+            />
+          )}
         </ImageHolder>
         <UploadForm className="h-1/6" mode={mode} />
       </div>
