@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { MARKERS } from "@/core/constants";
+import { MARKERS } from "../constants/markers";
 
 const useBoundingBoxMarker = (imageSize, marks, coordinates) => {
   const generateRectangles = useMemo(() => {
@@ -9,6 +9,7 @@ const useBoundingBoxMarker = (imageSize, marks, coordinates) => {
     const marksMap = new Map();
     marks.forEach((mark) => {
       marksMap.set(mark.fileName, mark);
+      marksMap.set(mark.file_name + MARKERS.zoom.name);
     });
 
     return (coordinates || []).map((file, index) => {
@@ -29,14 +30,18 @@ const useBoundingBoxMarker = (imageSize, marks, coordinates) => {
       const d_height =
         Math.round(file.norm_batch_height * imageSize.height * 100) / 100;
 
+      const stored_mark =
+        marksMap.get(file.file_name) ||
+        marksMap.get(file.file_name + MARKERS.zoom.name);
+
       return {
         id: index,
         x_start: dx,
         y_start: dy,
         width: d_width,
         height: d_height,
-        r: MARKERS.temp.radius,
-        color: MARKERS.static.color,
+        thickness: stored_mark?.marker.radius || MARKERS.static.radius,
+        color: stored_mark?.marker.color || MARKERS.static.color,
       };
     });
   }, [coordinates, marks, imageSize]);

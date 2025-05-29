@@ -1,5 +1,6 @@
-import { MARKERS } from "@/core/constants";
 import { useCallback, useState } from "react";
+
+import { MARKERS } from "../constants/markers";
 
 const useMarkCanvas = () => {
   const [marks, setMarks] = useState([]);

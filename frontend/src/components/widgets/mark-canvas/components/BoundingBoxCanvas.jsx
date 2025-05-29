@@ -16,10 +16,8 @@ const BoundingBoxCanvas = ({ imageSize, marks, coordinates }) => {
             y={rectangle.y_start}
             width={rectangle.width}
             height={rectangle.height}
-            rx={rectangle.r}
-            ry={rectangle.r}
             stroke={rectangle.color}
-            strokeWidth="2"
+            strokeWidth={rectangle.thickness}
             fill="none"
           />
         );
