@@ -1,8 +1,7 @@
 import { useSettingsMutation } from "../api/settings_finder";
 
-const useSettingsFinder = ({ mode, setError }) => {
+const useSettingsFinder = ({ setError }) => {
   const { mutateAsync: processImage } = useSettingsMutation({
-    mode,
     setError,
   });
 
