@@ -18,7 +18,7 @@ const UploadForm = ({ className, mode }) => {
 
   const {
     action: { handleImageProcess },
-  } = useSettingsFinder({ mode, setError });
+  } = useSettingsFinder({ setError });
 
   const {
     state: { ref, uploadFormInfo },
