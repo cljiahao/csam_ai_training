@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 import { DataTable } from "@/components/widgets/data-table/DataTable";
-import { getSummaryData } from "@/services/api_summary";
+import { getSummaryData } from "@/services/api-data-summary";
 import {
   BaseColumnCells,
   EvalColumnCells,

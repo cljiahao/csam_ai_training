@@ -3,7 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import useTrainStore from "@/store/train";
-import { getEpoch, startTrain } from "@/services/api_model";
+import { getEpoch, startTrain } from "@/services/api-ai-model";
 
 const useTrainDataMutation = ({ updateError }) => {
   const queryClient = useQueryClient();

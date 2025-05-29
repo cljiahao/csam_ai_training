@@ -19,7 +19,7 @@ import useModelFormValidate from "../hooks/useModelFormValidate";
 import useBaseStore from "@/store/base";
 import useModelServices from "../hooks/useModelServices";
 import Swal from "sweetalert2";
-import { deleteModel } from "@/services/api_model";
+import { deleteModel } from "@/services/api-ai-model";
 
 const ModelInstaller = () => {
   const { data: allModels = [] } = useQuery({

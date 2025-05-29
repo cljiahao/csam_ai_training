@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
 import useTrainStore from "@/store/train";
-import { startEvaluation } from "@/services/api_model";
+import { startEvaluation } from "@/services/api-ai-model";
 
 const useEvaluationResults = ({ updateError }) => {
   const queryClient = useQueryClient();

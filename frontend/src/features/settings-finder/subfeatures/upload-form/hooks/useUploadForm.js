@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 
-import { useSettingsMutation } from "@/features/settings-finder/api/settings_finder";
+import { useSettingsMutation } from "@/features/settings-finder/api/settings-finder";
 import { useSettingsFinderContext } from "@/features/settings-finder/context/SettingsFinderContext";
 import useSettingsStore from "@/store/settings";
 import showUploadToast from "../components/showUploadToast";

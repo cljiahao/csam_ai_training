@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllModels, installModel } from "@/services/api_model";
+import { getAllModels, installModel } from "@/services/api-ai-model";
 
 const useGetModelsMutation = ({ updateError }) => {
   const queryClient = useQueryClient();

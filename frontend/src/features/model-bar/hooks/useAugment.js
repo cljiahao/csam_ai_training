@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
-import { createAugment } from "@/services/api_model";
+import { createAugment } from "@/services/api-ai-model";
 import useTrainStore from "@/store/train";
 
 const useAugmentMutation = ({ updateError }) => {
