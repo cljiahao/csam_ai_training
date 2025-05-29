@@ -1,6 +1,6 @@
-import { useSettingsMutation } from "../api/settings_finder";
+import { useSettingsMutation } from "@/features/settings-finder/api/settings_finder";
 
-const useSettingsFinder = ({ setError }) => {
+const useUploadForm = ({ setError }) => {
   const { mutateAsync: processImage } = useSettingsMutation({
     setError,
   });
@@ -24,4 +24,4 @@ const useSettingsFinder = ({ setError }) => {
   };
 };
 
-export default useSettingsFinder;
+export default useUploadForm;
