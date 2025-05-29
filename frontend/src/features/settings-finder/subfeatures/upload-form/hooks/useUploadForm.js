@@ -5,12 +5,13 @@ import { useSettingsFinderContext } from "@/features/settings-finder/context/Set
 import useSettingsStore from "@/store/settings";
 import showUploadToast from "../components/showUploadToast";
 
-const useUploadForm = () => {
+const useUploadForm = ({ mode }) => {
   const { item } = useSettingsStore();
   const { setImage, setError } = useSettingsFinderContext();
 
   const queryClient = useQueryClient();
   const { mutateAsync: processImage } = useSettingsMutation({
+    mode,
     setError,
   });
 

@@ -10,7 +10,7 @@ const UploadForm = ({ className, mode }) => {
   const {
     state: { item },
     action: { onFileChange },
-  } = useUploadForm();
+  } = useUploadForm({ mode });
 
   const {
     state: { ref, uploadFormInfo },
