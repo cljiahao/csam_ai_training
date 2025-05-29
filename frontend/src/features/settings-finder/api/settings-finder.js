@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { uploadImage } from "@/services/api-image-settings";
-import { SETTINGS_API } from "../constants/query-keys";
+import { SETTINGS_API } from "@/constants/api-keys";
 
 export const useSettingsMutation = ({ mode, setError }) => {
   const queryClient = useQueryClient();

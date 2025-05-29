@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { useIsMutating, useQuery } from "@tanstack/react-query";
-
-import { SETTINGS_API } from "../constants/query-keys";
+import { SETTINGS_API } from "@/constants/api-keys";
 
 const useSettingsFinder = ({ mode }) => {
   const markRef = useRef(null);

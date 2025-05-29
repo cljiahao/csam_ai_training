@@ -1,6 +1,6 @@
 import NavSheet from "@/components/widgets/nav-sheet/NavSheet";
 
-import { navigation_info } from "@/core/navigation";
+import { navigation_info } from "@/constants/navigation";
 
 const UtilityPanel = ({ children }) => {
   return (

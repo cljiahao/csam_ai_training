@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { IconContext } from "react-icons";
 
-import { navigation_info } from "@/core/navigation";
+import { navigation_info } from "@/constants/navigation";
 import MediaCard from "@/components/widgets/media-card/MediaCard";
 
 const Home = () => {
