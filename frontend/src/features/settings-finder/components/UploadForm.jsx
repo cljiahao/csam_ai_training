@@ -25,7 +25,7 @@ const UploadForm = ({ className, mode }) => {
     action: { onSubmit, uploadForm },
   } = useUploadFormValidate();
 
-  const onFileChange = (e) => {
+  const onFileChange = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -50,13 +50,7 @@ const UploadForm = ({ className, mode }) => {
         duration: 2000,
       });
 
-      handleImageProcess(
-        mode,
-        item,
-        targetCount,
-        file,
-        markRef?.current?.addMark,
-      );
+      await handleImageProcess(mode, item, targetCount, file);
 
       e.target.value = null;
     }
