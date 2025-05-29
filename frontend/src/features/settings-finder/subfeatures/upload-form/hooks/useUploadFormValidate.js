@@ -17,6 +17,7 @@ const useUploadFormValidate = () => {
       Object.entries(uploadFormInfo).map(([key, { schema }]) => [key, schema]),
     ),
   );
+
   const uploadForm = useForm({
     resolver: zodResolver(uploadSchema),
     defaultValues: Object.keys(uploadFormInfo).reduce((acc, key) => {

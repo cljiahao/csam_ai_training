@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import ImageHolder from "@/components/widgets/image-holder/ImageHolder";
 import MarkCanvas from "@/components/widgets/mark-canvas/MarkCanvas";
-import UploadForm from "./components/UploadForm";
+import UploadForm from "./subfeatures/upload-form/UploadForm";
 import SettingsFinderContext from "./contexts/SettingsFinderContext";
 import { useQuery } from "@tanstack/react-query";
 

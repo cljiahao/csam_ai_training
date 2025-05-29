@@ -1,4 +1,3 @@
-import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Form } from "@/components/ui/form";
@@ -7,14 +6,15 @@ import CustomFormField from "@/components/widgets/custom-form-field/CustomFormFi
 import HoverButton from "@/components/widgets/hover-button/HoverButton";
 import { cn } from "@/lib/utils";
 import useSettingsStore from "@/store/settings";
-import useUploadFormValidate from "../hooks/useUploadFormValidate";
-import useSettingsFinder from "../hooks/useSettingsFinder";
-import { useSettingsFinderContext } from "../contexts/SettingsFinderContext";
+import useUploadFormValidate from "./hooks/useUploadFormValidate";
+import useSettingsFinder from "../../hooks/useSettingsFinder";
+import { useSettingsFinderContext } from "../../contexts/SettingsFinderContext";
+import showUploadToast from "./components/showUploadToast";
 
 const UploadForm = ({ className, mode }) => {
   const queryClient = useQueryClient();
   const { item } = useSettingsStore();
-  const { setError, setImage, markRef } = useSettingsFinderContext();
+  const { setError, setImage } = useSettingsFinderContext();
 
   const {
     action: { handleImageProcess },
@@ -38,17 +38,7 @@ const UploadForm = ({ className, mode }) => {
 
       setImage(URL.createObjectURL(file));
 
-      toast({
-        title: `You submitted the following values for ${mode}:`,
-        description: (
-          <pre className="mt-2 flex w-[340px] flex-col rounded-md bg-slate-950 p-4">
-            <kbd className="text-white">Item Type: {item}</kbd>
-            <kbd className="text-white">File Name: {fileName}</kbd>
-            <kbd className="text-white">Target Count: {targetCount}</kbd>
-          </pre>
-        ),
-        duration: 2000,
-      });
+      showUploadToast({ mode, item, fileName, targetCount });
 
       await handleImageProcess(mode, item, targetCount, file);
 
