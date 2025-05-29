@@ -1,5 +1,6 @@
-import { uploadImage } from "@/services/api_settings";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { uploadImage } from "@/services/api_settings";
 
 export const useSettingsMutation = ({ setError }) => {
   const queryClient = useQueryClient();

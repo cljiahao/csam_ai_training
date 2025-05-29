@@ -1,26 +1,48 @@
-import { useSettingsMutation } from "@/features/settings-finder/api/settings_finder";
+import { useQueryClient } from "@tanstack/react-query";
 
-const useUploadForm = ({ setError }) => {
+import { useSettingsMutation } from "@/features/settings-finder/api/settings_finder";
+import { useSettingsFinderContext } from "@/features/settings-finder/context/SettingsFinderContext";
+import useSettingsStore from "@/store/settings";
+import showUploadToast from "../components/showUploadToast";
+
+const useUploadForm = () => {
+  const { item } = useSettingsStore();
+  const { setImage, setError } = useSettingsFinderContext();
+
+  const queryClient = useQueryClient();
   const { mutateAsync: processImage } = useSettingsMutation({
     setError,
   });
 
-  const handleImageProcess = async (mode, item, targetCount, file) => {
-    const formData = new FormData();
-    formData.append("file", file);
+  const onFileChange = async (e, mode, targetCount) => {
+    e.preventDefault();
+    setError("");
 
-    const settingsFound = await processImage({
-      mode,
-      item,
-      targetCount,
-      formData,
-    });
-    return settingsFound;
+    const file = e.target.files[0];
+    if (file) {
+      queryClient.removeQueries();
+
+      const fileName = file.name;
+      showUploadToast({ mode, item, fileName, targetCount });
+
+      setImage(URL.createObjectURL(file));
+
+      const formData = new FormData();
+      formData.append("file", file);
+      await processImage({
+        mode,
+        item,
+        targetCount,
+        formData,
+      });
+
+      e.target.value = null;
+    }
   };
 
   return {
-    state: {},
-    action: { handleImageProcess },
+    state: { item },
+    action: { onFileChange },
   };
 };
 
