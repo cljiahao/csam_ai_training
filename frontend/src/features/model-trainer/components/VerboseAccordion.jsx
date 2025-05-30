@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { STATUS } from "@/constants/common";
 
 const VerboseAccordion = ({ epoch_data, status }) => {
   const accordionData =
@@ -33,7 +34,7 @@ const VerboseAccordion = ({ epoch_data, status }) => {
     >
       <AccordionItem className="bg-white px-4" value="item-1">
         <AccordionTrigger>
-          {status === "idle"
+          {status === STATUS.IDLE
             ? "Press the Train button to start"
             : status === "processing"
               ? "Augmenting in progress..."
