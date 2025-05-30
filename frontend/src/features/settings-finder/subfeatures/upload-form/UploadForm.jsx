@@ -2,11 +2,10 @@ import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CustomFormField from "@/components/widgets/custom-form-field/CustomFormField";
 import HoverButton from "@/components/widgets/hover-button/HoverButton";
-import { cn } from "@/lib/utils";
 import useUploadFormValidate from "./hooks/useUploadFormValidate";
 import useUploadForm from "./hooks/useUploadForm";
 
-const UploadForm = ({ className, mode }) => {
+const UploadForm = ({ mode }) => {
   const {
     state: { item },
     action: { onFileChange },
@@ -18,16 +17,17 @@ const UploadForm = ({ className, mode }) => {
   } = useUploadFormValidate();
 
   return (
-    <div className={cn("h-full w-full", className)}>
+    <div className="hw-full flex-center">
       <Form {...uploadForm}>
         <form
           onSubmit={uploadForm.handleSubmit(onSubmit)}
-          className="flex-center hw-full space-x-8 px-4"
+          className="flex-center hw-full gap-4"
         >
           {Object.keys(uploadFormInfo).map((key) => {
             const { label, placeholder } = uploadFormInfo[key];
             return (
               <CustomFormField
+                className="w-fit"
                 control={uploadForm.control}
                 key={key}
                 name={key}
@@ -38,7 +38,7 @@ const UploadForm = ({ className, mode }) => {
             );
           })}
           <HoverButton
-            className="w-18 h-4/5"
+            className="w-18"
             type="submit"
             hoverText="Upload"
             disabled={!item}

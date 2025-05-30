@@ -17,7 +17,7 @@ const SettingsFinder = ({ mode }) => {
 
   return (
     <SettingsFinderContext.Provider value={{ setImage, setError }}>
-      <div className="hw-full">
+      <div className="h-full">
         <ImageHolder className="h-5/6" image={image} placeholder_text={mode}>
           {error ? (
             <Error message={error} />
@@ -31,7 +31,9 @@ const SettingsFinder = ({ mode }) => {
             />
           )}
         </ImageHolder>
-        <UploadForm className="h-1/6" mode={mode} />
+        <div className="h-1/6">
+          <UploadForm mode={mode} />
+        </div>
       </div>
     </SettingsFinderContext.Provider>
   );
