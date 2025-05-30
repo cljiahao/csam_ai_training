@@ -1,34 +1,15 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import BaseLayout from "@/components/layouts/BaseLayout";
 import { Separator } from "@/components/ui/separator";
 import DescriptiveHeader from "@/components/static/descriptive-header";
-import LabelSwitch from "@/components/widgets/label-switch/LabelSwitch";
-import UtilityPanel from "@/features/settings-bar/components/UtilityPanel";
+import SummaryBar from "@/features/summary-bar/SummaryBar";
 import SummaryTable from "@/features/summary-table/SummaryTable";
 import { cn } from "@/lib/utils";
 
 const CsamDS = () => {
-  const [isChecked, setChecked] = useState(false);
   const [searchParams] = useSearchParams();
   const method = searchParams.get("method");
-
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!method || method != "retrain") {
-      setChecked(false);
-      navigate(`/CDS?method=train`);
-    } else {
-      setChecked(true);
-    }
-  }, [method, navigate]);
-
-  const onCheckChange = (checkState) => {
-    if (checkState) navigate(`/CDS?method=retrain`);
-    else navigate(`/CDS?method=train`);
-    setChecked(checkState);
-  };
 
   return (
     <BaseLayout
@@ -45,13 +26,7 @@ const CsamDS = () => {
         />
         <Separator orientation="vertical" className="bg-slate-400" />
         <div className="flex w-1/3">
-          <UtilityPanel className="" />
-          <LabelSwitch
-            labelClassName="text-2xl"
-            label={method}
-            checked={isChecked}
-            onCheckedChange={onCheckChange}
-          />
+          <SummaryBar method={method} />
         </div>
       </div>
       <Separator className="px-4" />
