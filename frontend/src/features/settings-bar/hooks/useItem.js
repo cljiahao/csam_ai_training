@@ -1,7 +1,7 @@
 import useSettingsStore from "@/store/settings";
 
 const useItem = () => {
-  const { updateItem } = useSettingsStore();
+  const updateItem = useSettingsStore((state) => state.updateItem);
 
   const handleOnChange = (e) => {
     updateItem(e.target.value);
