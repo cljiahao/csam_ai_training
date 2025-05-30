@@ -5,6 +5,7 @@ import MarkCanvas from "@/components/widgets/mark-canvas/MarkCanvas";
 import SettingsFinderContext from "./context/SettingsFinderContext";
 import useSettingsFinder from "./hook/useSettingsFinder";
 import UploadForm from "./subfeatures/upload-form/UploadForm";
+import { MODE_PARAMS } from "@/constants/url-params";
 
 const SettingsFinder = ({ mode }) => {
   const {
@@ -12,7 +13,7 @@ const SettingsFinder = ({ mode }) => {
     action: { setImage, setError },
   } = useSettingsFinder({ mode });
 
-  const canvasType = mode.toLowerCase() === "batch" ? "rect" : "dot";
+  const canvasType = mode.toLowerCase() === MODE_PARAMS.BATCH ? "rect" : "dot";
 
   return (
     <SettingsFinderContext.Provider value={{ setImage, setError }}>
