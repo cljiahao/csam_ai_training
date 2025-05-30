@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { LuArrowUpDown } from "react-icons/lu";
+
+import { Button } from "@/components/ui/button";
+import { METHOD_PARAMS } from "@/constants/url-params";
 
 const toCommaNumbers = (value) => {
   return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
@@ -139,7 +141,11 @@ export const TrainButtonColumn = (dataTable, navigate) => {
 
       const handleClick = () => {
         if (isConditionMet) {
-          navigate(`/CMT?method=train&item=${item}`);
+          const params = new URLSearchParams({
+            item,
+            method: METHOD_PARAMS.TRAIN,
+          });
+          navigate(`/CMT?${params}`);
         }
       };
 
@@ -176,7 +182,11 @@ export const ReTrainButtonColumn = (dataTable, navigate) => {
 
       const handleClick = () => {
         if (isConditionMet) {
-          navigate(`/CMT?method=retrain&item=${item}`);
+          const params = new URLSearchParams({
+            item,
+            method: METHOD_PARAMS.RETRAIN,
+          });
+          navigate(`/CMT?${params}`);
         }
       };
 
