@@ -2,10 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import { getSummaryData } from "@/services/api-data-summary";
+import { QUERY_KEYS } from "@/constants/api-keys";
 
 const useSummaryTable = (mode) => {
   const { data: dataTable } = useQuery({
-    queryKey: ["dataTable", mode],
+    queryKey: [QUERY_KEYS.API_DATATABLE, mode],
     queryFn: async () => await getSummaryData(mode),
     enabled: true,
     staleTime: 0,

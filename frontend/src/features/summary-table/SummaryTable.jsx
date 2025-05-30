@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/widgets/data-table/DataTable";
+import { METHOD_PARAMS } from "@/constants/url-params";
 import {
   BaseColumnCells,
   EvalColumnCells,
@@ -33,7 +34,7 @@ const SummaryTable = ({ method }) => {
     <div className="flex flex-1 overflow-auto p-4">
       <DataTable
         className="bg-white bg-opacity-80"
-        columns={method === "train" ? trainColumns : reTrainColumns}
+        columns={method === METHOD_PARAMS.TRAIN ? trainColumns : reTrainColumns}
         data={dataTable?.train_sets_list ?? []}
       />
     </div>
