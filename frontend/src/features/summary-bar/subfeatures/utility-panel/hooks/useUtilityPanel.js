@@ -1,24 +1,31 @@
-import { useEffect } from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { METHOD_PARAMS } from "@/constants/url-params";
 
 const useUtilityPanel = ({ method }) => {
   const [isChecked, setChecked] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation(); // use current path /CDS
 
   useEffect(() => {
-    if (!method || method != "retrain") {
+    if (!method || method != METHOD_PARAMS.RETRAIN) {
+      const params = new URLSearchParams({
+        method: METHOD_PARAMS.TRAIN,
+      });
+      navigate(`${location.pathname}?${params}`);
       setChecked(false);
-      navigate(`/CDS?method=train`);
     } else {
       setChecked(true);
     }
-  }, [method, navigate]);
+  }, [method, navigate, location]);
 
   const onCheckChange = (checkState) => {
-    if (checkState) navigate(`/CDS?method=retrain`);
-    else navigate(`/CDS?method=train`);
+    const params = new URLSearchParams({
+      method: checkState ? METHOD_PARAMS.RETRAIN : METHOD_PARAMS.TRAIN,
+    });
+    navigate(`${location.pathname}?${params}`);
     setChecked(checkState);
   };
 
