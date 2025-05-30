@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
+import Loading from "@/components/static/loading";
+import { STATUS } from "@/constants/common";
+import useBaseStore from "@/store/base";
 import ConfusionMatrix from "./components/ConfusionMatrix";
 import useEvaluate from "./hooks/useEvaluate";
-import useBaseStore from "@/store/base";
-import Loading from "@/components/static/loading";
 
 const EvaluationResults = ({ className, item }) => {
   const updateError = useBaseStore((state) => state.updateError);
@@ -11,7 +12,7 @@ const EvaluationResults = ({ className, item }) => {
     state: { status, evalResults },
   } = useEvaluate({ updateError, item });
 
-  if (status != "idle" && status != "evaluated")
+  if (status != STATUS.IDLE && status != STATUS.EVALUATED)
     return <Loading className={className} />;
 
   return (
