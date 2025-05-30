@@ -96,9 +96,9 @@ def auto_chips_settings_finder(
 ) -> tuple[ChipSettingsData, list[ChipCoordinates]]:
     """Finds optimal chip processing settings."""
     black_contour_info_list = find_black_contours(image)
-    for noise_erode_value in range(1, 20):
-        for dilate_value in range(1, 20):
-            for erode_value in range(1, 20):
+    for noise_erode_value in range(1, 10):
+        for dilate_value in range(1, 10):
+            for erode_value in range(1, 10):
                 mask_chip = apply_morphology_for_chips(
                     binary_image, noise_erode_value, dilate_value, erode_value
                 )
