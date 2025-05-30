@@ -1,8 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-
 import { DataTable } from "@/components/widgets/data-table/DataTable";
-import { getSummaryData } from "@/services/api-data-summary";
 import {
   BaseColumnCells,
   EvalColumnCells,
@@ -11,17 +7,13 @@ import {
   ReTrainColumnCells,
   TrainButtonColumn,
 } from "./components/ColumnCells";
+import useSummaryTable from "./hooks/useSummaryTable";
 
 const SummaryTable = ({ method }) => {
-  const { data: dataTable } = useQuery({
-    queryKey: ["dataTable", method],
-    queryFn: async () => await getSummaryData(method),
-    enabled: true,
-    staleTime: 0,
-    refetchInterval: 10000,
-  });
-
-  const navigate = useNavigate();
+  const {
+    state: { dataTable },
+    action: { navigate },
+  } = useSummaryTable(method);
 
   const trainColumns = [
     InfoColumnCells(),
