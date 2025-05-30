@@ -9,7 +9,6 @@ const LabelSwitch = ({
   checked,
   onCheckedChange,
 }) => {
-  console.log(checked);
   return (
     <div className={cn("flex-center hw-full gap-6", className)}>
       <Switch id={label} checked={checked} onCheckedChange={onCheckedChange} />
