@@ -4,10 +4,12 @@ import { useShallow } from "zustand/react/shallow";
 
 import { QUERY_KEYS } from "@/constants/api-keys";
 import { STATUS } from "@/constants/common";
+import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
 import { useEvaluationResults } from "../api/evaluation-results";
 
-const useEvaluate = ({ updateError, item }) => {
+const useEvaluate = ({ item }) => {
+  const updateError = useBaseStore((state) => state.updateError);
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,

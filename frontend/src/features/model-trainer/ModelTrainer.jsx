@@ -1,15 +1,12 @@
 import { cn } from "@/lib/utils";
-import useBaseStore from "@/store/base";
 import ModelChart from "./components/ModelChart";
 import VerboseAccordion from "./components/VerboseAccordion";
 import useGetEpoch from "./hooks/useGetEpoch";
 
 const ModelTrainer = ({ className, item }) => {
-  const updateError = useBaseStore((state) => state.updateError);
-
   const {
     state: { epochs, status },
-  } = useGetEpoch({ updateError, item });
+  } = useGetEpoch({ item });
 
   return (
     <div className={cn("flex h-full w-full flex-col px-4", className)}>

@@ -2,13 +2,15 @@ import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useQuery } from "@tanstack/react-query";
 
-import useTrainStore from "@/store/train";
 import { getEpoch } from "@/services/api-ai-model";
 import { useTrainDataMutation } from "../api/model-trainer";
 import { QUERY_KEYS } from "@/constants/api-keys";
 import { STATUS } from "@/constants/common";
+import useBaseStore from "@/store/base";
+import useTrainStore from "@/store/train";
 
-const useGetEpoch = ({ updateError, item }) => {
+const useGetEpoch = ({ item }) => {
+  const updateError = useBaseStore((state) => state.updateError);
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
