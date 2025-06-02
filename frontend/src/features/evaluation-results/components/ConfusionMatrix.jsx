@@ -13,6 +13,8 @@ const ConfusionMatrix = ({ evalResult = {} }) => {
 
   const { mode, total_count, cm_results } = evalResult;
 
+  console.log(total_count);
+
   return (
     <Card className="flex-center h-full w-full">
       <CardContent className="grid h-full w-full grid-cols-12 grid-rows-6 gap-2 p-2">
@@ -47,7 +49,7 @@ const ConfusionMatrix = ({ evalResult = {} }) => {
               className={cn(
                 "flex-center hw-full rounded-xl border-2 border-gray-200 text-lg",
                 key.includes("false_neg")
-                  ? total_count
+                  ? value
                     ? "bg-red-500 hover:bg-red-400"
                     : "bg-green-500 backdrop:hover:bg-green-400"
                   : "",
