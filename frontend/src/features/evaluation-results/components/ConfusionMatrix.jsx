@@ -13,8 +13,6 @@ const ConfusionMatrix = ({ evalResult = {} }) => {
 
   const { mode, total_count, cm_results } = evalResult;
 
-  console.log(total_count);
-
   return (
     <Card className="flex-center h-full w-full">
       <CardContent className="grid h-full w-full grid-cols-12 grid-rows-6 gap-2 p-2">
