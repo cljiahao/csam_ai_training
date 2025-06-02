@@ -8,7 +8,7 @@ const ItemSettings = () => {
   return (
     <div className="hw-full flex-center">
       {item ? (
-        <div>Settings for Image</div>
+        <div>Image Settings for {item}</div>
       ) : (
         <div>Item not found in Database</div>
       )}
