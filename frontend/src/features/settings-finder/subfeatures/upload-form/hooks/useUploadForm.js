@@ -6,7 +6,7 @@ import useSettingsStore from "@/store/settings";
 import showUploadToast from "../components/showUploadToast";
 
 const useUploadForm = ({ mode }) => {
-  const { item } = useSettingsStore();
+  const item = useSettingsStore((state) => state.item);
   const { setImage, setError } = useSettingsFinderContext();
 
   const queryClient = useQueryClient();
