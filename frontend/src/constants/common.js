@@ -1,5 +1,5 @@
 export const STATUS = {
-  AUGMENT: "augment",
+  AUGMENTING: "augmenting",
   AUGMENTED: "augmented",
   EVALUATING: "evaluating",
   EVALUATED: "evaluated",
