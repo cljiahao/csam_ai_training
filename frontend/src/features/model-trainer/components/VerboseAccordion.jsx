@@ -1,9 +1,4 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import CustomAccordion from "@/components/widgets/custom-accordion/CustomAccordion";
 import { STATUS } from "@/constants/common";
 
 const VerboseAccordion = ({ epoch_data, status }) => {
@@ -25,28 +20,23 @@ const VerboseAccordion = ({ epoch_data, status }) => {
       ) ?? [];
 
   const [mainContent, ...remainderContent] = accordionData;
+  const label =
+    status === STATUS.IDLE
+      ? "Press the Train button to start"
+      : status === "processing"
+        ? "Augmenting in progress..."
+        : (mainContent ?? "Training in progress...");
 
   return (
-    <Accordion
-      className="no-scrollbar hw-full overflow-y-auto rounded-xl"
-      type="single"
-      collapsible
-    >
-      <AccordionItem className="bg-white px-4" value="item-1">
-        <AccordionTrigger>
-          {status === STATUS.IDLE
-            ? "Press the Train button to start"
-            : status === "processing"
-              ? "Augmenting in progress..."
-              : (mainContent ?? "Training in progress...")}
-        </AccordionTrigger>
-        <AccordionContent className="flex flex-col">
+    <div className="hw-full no-scrollbar overflow-y-auto rounded-xl bg-white px-4">
+      <CustomAccordion label={label} itemValue="item-1">
+        <div className="flex flex-col">
           {remainderContent.map((data, index) => {
             return <span key={index}>{data}</span>;
           })}
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        </div>
+      </CustomAccordion>
+    </div>
   );
 };
 
