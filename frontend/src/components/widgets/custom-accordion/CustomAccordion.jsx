@@ -12,7 +12,9 @@ const CustomAccordion = ({ children, label, itemValue, heightFactor }) => {
         <AccordionTrigger>{label}</AccordionTrigger>
         <AccordionContent
           style={{
-            height: `${window.innerHeight / heightFactor}px`,
+            height: heightFactor
+              ? `${window.innerHeight / heightFactor}px`
+              : "auto",
             overflowY: "auto",
           }}
           className="hw-full"
