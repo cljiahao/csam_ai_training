@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { FaCheck } from "react-icons/fa";
 import { IoTrashBin } from "react-icons/io5";
 import { HiChevronUpDown } from "react-icons/hi2";
+
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import {
   Command,
   CommandEmpty,
@@ -11,71 +12,22 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Form } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
 import CustomFormField from "@/components/widgets/custom-form-field/CustomFormField";
 import HoverButton from "@/components/widgets/hover-button/HoverButton";
+import { cn } from "@/lib/utils";
 import useModelFormValidate from "../hooks/useModelFormValidate";
-import useBaseStore from "@/store/base";
-import useModelServices from "../hooks/useModelServices";
-import Swal from "sweetalert2";
-import { deleteModel } from "@/services/api-ai-model";
+import useModelInstaller from "../hooks/useModelInstaller";
 
 const ModelInstaller = () => {
-  const { data: allModels = [] } = useQuery({
-    queryKey: ["allModels"],
-  });
-
-  const updateError = useBaseStore((state) => state.updateError);
-
   const {
-    action: { installModel },
-  } = useModelServices({ updateError });
+    state: { allModels },
+    action: { onSubmit, onModelDelete },
+  } = useModelInstaller();
 
   const {
     state: { modelFormInfo },
     action: { modelForm },
   } = useModelFormValidate();
-
-  function onSubmit(data) {
-    const itemModel = allModels.find(
-      (model) => model.file_name === data.file_name,
-    );
-    installModel({ ...itemModel })
-      .then(() =>
-        Swal.fire({
-          title: "Model Sent!",
-          text: "Model Successful Installed into Server.",
-          icon: "success",
-        }),
-      )
-      .catch((error) => updateError(error));
-  }
-
-  function onModelDelete(item, file_name) {
-    Swal.fire({
-      title: `Delete ${file_name} from ${item} system?`,
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      customClass: {
-        popup: "pointer-events-auto",
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteModel(item, file_name)
-          .then(() =>
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your file has been deleted.",
-              icon: "success",
-            }),
-          )
-          .catch((error) => updateError(error));
-      }
-    });
-  }
 
   const ModelButton = ({ value, ...props }) => {
     return (
@@ -98,6 +50,7 @@ const ModelInstaller = () => {
       </Button>
     );
   };
+
   const ModelSelector = ({ value }) => {
     return (
       <Command>
@@ -123,6 +76,7 @@ const ModelInstaller = () => {
                   {model.file_name}
                 </CommandItem>
                 <IoTrashBin
+                  className="cursor-pointer"
                   onClick={() => onModelDelete(model.item, model.file_name)}
                 />
               </div>

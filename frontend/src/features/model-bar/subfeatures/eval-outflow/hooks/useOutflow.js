@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+import { QUERY_KEYS } from "@/constants/api-keys";
+
 const useOutflow = () => {
   const [isDialogOpen, setDialogOpen] = useState();
 
   const { data: evalResults } = useQuery({
-    queryKey: ["evaluatedModel"],
+    queryKey: [QUERY_KEYS.API_EVALUATE],
   });
 
   const handleDialogOpen = () => {

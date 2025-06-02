@@ -1,19 +1,13 @@
-import { useState } from "react";
-
 import { navigation_info } from "@/constants/navigation";
 import NavSheet from "@/components/widgets/nav-sheet/NavSheet";
-import ModelInstaller from "./ModelInstaller";
-import useModelServices from "../hooks/useModelServices";
-import useBaseStore from "@/store/base";
+import ModelInstaller from "./components/ModelInstaller";
+import useUtilityPanel from "./hooks/useUtilityPanel";
 
 const UtilityPanel = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const setError = useBaseStore((state) => state.setError);
-
   const {
-    action: { getModels },
-  } = useModelServices({ setError });
+    state: { isOpen },
+    action: { onOpenChange },
+  } = useUtilityPanel();
 
   return (
     <div className="flex-center h-full px-2">
@@ -22,10 +16,7 @@ const UtilityPanel = () => {
           (nav) => nav.name.toLowerCase() != "cmt",
         )}
         open={isOpen}
-        onOpenChange={() => {
-          getModels();
-          setIsOpen(!isOpen);
-        }}
+        onOpenChange={onOpenChange}
       >
         <ModelInstaller />
       </NavSheet>
