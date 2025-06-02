@@ -7,7 +7,7 @@ const useUtilityPanel = ({ method }) => {
   const [isChecked, setChecked] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation(); // use current path /CDS
+  const location = useLocation(); // use current path /CDS where summary-bar lives
 
   useEffect(() => {
     if (!method || method != METHOD_PARAMS.RETRAIN) {
