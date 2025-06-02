@@ -1,15 +1,14 @@
 import { useRef, useState } from "react";
-import { useIsMutating, useQuery } from "@tanstack/react-query";
-import { MUTATION_KEYS, QUERY_KEYS } from "@/constants/api-keys";
+import { useIsMutating } from "@tanstack/react-query";
+import { MUTATION_KEYS } from "@/constants/api-keys";
+import { useQueryImageData } from "../api/settings-finder";
 
 const useSettingsFinder = ({ mode }) => {
   const markRef = useRef(null);
   const [image, setImage] = useState(null);
   const [error, setError] = useState("");
 
-  const { data: processImageData } = useQuery({
-    queryKey: [QUERY_KEYS.API_SETTINGS, mode],
-  });
+  const imageData = useQueryImageData(mode);
 
   const isMutating = useIsMutating({
     mutationKey: [MUTATION_KEYS.API_SETTINGS, mode],
@@ -20,7 +19,7 @@ const useSettingsFinder = ({ mode }) => {
       markRef,
       image,
       error,
-      coordinates: processImageData?.coordinates,
+      coordinates: imageData?.coordinates,
       isLoading: isMutating > 0,
     },
     action: { setImage, setError },

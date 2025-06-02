@@ -1,13 +1,12 @@
 import { useState } from "react";
-
-import useBaseStore from "@/store/base";
-import { useGetModelsMutation } from "@/features/model-bar/api/model-bar";
+import useModelInstaller from "./useModelInstaller";
 
 const useUtilityPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const updateError = useBaseStore((state) => state.updateError);
 
-  const { mutateAsync: getModels } = useGetModelsMutation({ updateError });
+  const {
+    action: { getModels },
+  } = useModelInstaller();
 
   const onOpenChange = () => {
     getModels();

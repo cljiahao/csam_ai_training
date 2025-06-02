@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { uploadImage } from "@/services/api-image-settings";
 import { QUERY_KEYS, MUTATION_KEYS } from "@/constants/api-keys";
@@ -17,4 +17,11 @@ export const useSettingsMutation = ({ mode, setError }) => {
       queryClient.removeQueries([QUERY_KEYS.API_SETTINGS, variables.mode]); // Clear cache on error
     },
   });
+};
+
+export const useQueryImageData = (mode) => {
+  const { data: imageData } = useQuery({
+    queryKey: [QUERY_KEYS.API_SETTINGS, mode],
+  });
+  return imageData;
 };

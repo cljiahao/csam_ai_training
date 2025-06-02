@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { STATUS } from "@/constants/common";
 import { QUERY_KEYS } from "@/constants/api-keys";
@@ -40,4 +40,18 @@ export const useInstallModelMutation = ({ updateError }) => {
       updateError(error.message);
     },
   });
+};
+
+export const useQueryEvalResults = () => {
+  const { data: evalResults } = useQuery({
+    queryKey: [QUERY_KEYS.API_EVALUATE],
+  });
+  return evalResults;
+};
+
+export const useQueryAllModels = () => {
+  const { data: allModels = [] } = useQuery({
+    queryKey: [QUERY_KEYS.API_MODELS],
+  });
+  return allModels;
 };

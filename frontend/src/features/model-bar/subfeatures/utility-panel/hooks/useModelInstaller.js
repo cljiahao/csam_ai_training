@@ -1,20 +1,22 @@
 import Swal from "sweetalert2";
-import { useQuery } from "@tanstack/react-query";
 
-import { useInstallModelMutation } from "@/features/model-bar/api/model-bar";
-import useBaseStore from "@/store/base";
-import { QUERY_KEYS } from "@/constants/api-keys";
+import {
+  useGetModelsMutation,
+  useInstallModelMutation,
+  useQueryAllModels,
+} from "@/features/model-bar/api/model-bar";
 import { deleteModel } from "@/services/api-ai-model";
+import useBaseStore from "@/store/base";
 
 const useModelInstaller = () => {
   const updateError = useBaseStore((state) => state.updateError);
+
+  const { mutateAsync: getModels } = useGetModelsMutation({ updateError });
   const { mutateAsync: installModel } = useInstallModelMutation({
     updateError,
   });
 
-  const { data: allModels = [] } = useQuery({
-    queryKey: [QUERY_KEYS.API_MODELS],
-  });
+  const allModels = useQueryAllModels();
 
   function onSubmit(data) {
     const itemModel = allModels.find(
@@ -52,7 +54,10 @@ const useModelInstaller = () => {
     });
   }
 
-  return { state: { allModels }, action: { onSubmit, onModelDelete } };
+  return {
+    state: { allModels },
+    action: { getModels, onSubmit, onModelDelete },
+  };
 };
 
 export default useModelInstaller;

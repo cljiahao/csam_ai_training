@@ -1,12 +1,13 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
-import { QUERY_KEYS } from "@/constants/api-keys";
 import { STATUS } from "@/constants/common";
 import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
-import { useEvaluationResults } from "../api/evaluation-results";
+import {
+  useEvaluationResults,
+  useQueryTrainModel,
+} from "../api/evaluation-results";
 
 const useEvaluate = ({ item }) => {
   const updateError = useBaseStore((state) => state.updateError);
@@ -17,9 +18,7 @@ const useEvaluate = ({ item }) => {
     })),
   );
 
-  const { data: trainModel } = useQuery({
-    queryKey: [QUERY_KEYS.API_TRAIN],
-  });
+  const trainModel = useQueryTrainModel();
 
   const { mutateAsync: evaluateModel, data: evalResults } =
     useEvaluationResults({ updateError });

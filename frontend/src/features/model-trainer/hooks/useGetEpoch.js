@@ -1,13 +1,10 @@
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useQuery } from "@tanstack/react-query";
 
-import { getEpoch } from "@/services/api-ai-model";
-import { useTrainDataMutation } from "../api/model-trainer";
-import { QUERY_KEYS } from "@/constants/api-keys";
 import { STATUS } from "@/constants/common";
 import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
+import { useQueryEpochs, useTrainDataMutation } from "../api/model-trainer";
 
 const useGetEpoch = ({ item }) => {
   const updateError = useBaseStore((state) => state.updateError);
@@ -20,13 +17,7 @@ const useGetEpoch = ({ item }) => {
 
   const { mutateAsync: trainData } = useTrainDataMutation({ updateError });
 
-  const { data: epochs } = useQuery({
-    queryKey: [QUERY_KEYS.API_EPOCH],
-    queryFn: async () => await getEpoch(item),
-    enabled: status === STATUS.TRAINING,
-    staleTime: 0,
-    refetchInterval: status === STATUS.TRAINING ? 5000 : false,
-  });
+  const epochs = useQueryEpochs(item, status === STATUS.TRAINING);
 
   useEffect(() => {
     if (status === STATUS.AUGMENTED) {

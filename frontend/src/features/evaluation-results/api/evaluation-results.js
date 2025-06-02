@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { MUTATION_KEYS, QUERY_KEYS } from "@/constants/api-keys";
 import { startEvaluation } from "@/services/api-ai-model";
@@ -17,4 +17,11 @@ export const useEvaluationResults = ({ updateError }) => {
       queryClient.removeQueries([QUERY_KEYS.API_EVALUATE]); // Clear cache on error
     },
   });
+};
+
+export const useQueryTrainModel = () => {
+  const { data: trainModel } = useQuery({
+    queryKey: [QUERY_KEYS.API_TRAIN],
+  });
+  return trainModel;
 };
