@@ -16,11 +16,11 @@ const useSettingsFinder = ({ mode }) => {
 
   return {
     state: {
-      markRef,
-      image,
-      error,
       coordinates: imageData?.coordinates,
+      error,
+      image,
       isLoading: isMutating > 0,
+      markRef,
     },
     action: { setImage, setError },
   };
