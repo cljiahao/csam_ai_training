@@ -28,8 +28,8 @@ const CustomFormField = ({
       name={name}
       control={control}
       render={({ field }) => (
-        <FormItem className={cn("flex-center w-full flex-col", className)}>
-          <div className="flex-center space-x-3">
+        <FormItem className="flex-center hw-full flex-col p-2">
+          <div className={cn("flex-center w-full", className)}>
             <FormLabel className="w-1/4">{label}</FormLabel>
             {popoverTrigger ? (
               <Popover>

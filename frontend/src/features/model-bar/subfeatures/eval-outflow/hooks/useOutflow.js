@@ -8,7 +8,7 @@ const useOutflow = () => {
   const evalResults = useQueryEvalResults();
 
   const handleDialogOpen = () => {
-    setDialogOpen((prevState) => !prevState);
+    setDialogOpen((state) => !state);
   };
 
   return { state: { isDialogOpen, evalResults }, action: { handleDialogOpen } };
