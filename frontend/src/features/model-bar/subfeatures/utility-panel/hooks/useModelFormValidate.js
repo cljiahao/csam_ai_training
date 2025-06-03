@@ -24,12 +24,7 @@ const useModelFormValidate = () => {
     }, {}),
   });
 
-  return {
-    state: { modelFormInfo },
-    action: {
-      modelForm,
-    },
-  };
+  return { state: { modelFormInfo }, action: { modelForm } };
 };
 
 export default useModelFormValidate;
