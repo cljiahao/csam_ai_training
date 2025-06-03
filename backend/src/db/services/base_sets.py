@@ -21,7 +21,6 @@ class BaseSetsService:
 
     def read_all_base_sets(self) -> list[BaseSets]:
         """Service layer method to read base sets"""
-
         return self.repo.read_all_base_sets({})
 
     def read_base_sets(self, item: str) -> BaseSets:

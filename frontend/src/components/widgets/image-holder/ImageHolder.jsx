@@ -5,20 +5,15 @@ import {
   isValidElement,
   useImperativeHandle,
 } from "react";
-import { useIsMutating } from "@tanstack/react-query";
 
-import Error from "@/components/static/error";
 import PanAndZoom from "./components/PanAndZoom";
 import Placeholder from "./components/PlaceHolder";
 import ImageHolderContext from "./context/ImageHolderContext";
 import { usePanZoom } from "./hooks/usePanZoom";
 import useImageInfo from "./hooks/useImageInfo";
-import Loading from "@/components/static/loading";
 
 const ImageHolder = forwardRef(
-  ({ className, children, image, error, placeholder_text, mode }, ref) => {
-    const isMutating = useIsMutating({ mutationKey: ["imageProcess", mode] }); // For useMutation
-
+  ({ className, children, image, placeholder_text }, ref) => {
     useImperativeHandle(ref, () => ({
       get moveActive() {
         return moveActive; // Always gets latest value
@@ -40,32 +35,23 @@ const ImageHolder = forwardRef(
       state: { imageSize },
     } = imageState;
 
-    // TODO: BUG where if error, addMark was removed.
     return (
       <ImageHolderContext.Provider value={{ image, panZoomState, imageState }}>
         <div
           className={cn("flex-center h-full w-full overflow-hidden", className)}
           ref={displayRef}
         >
-          {error ? (
-            <Error message={error} />
-          ) : isMutating > 0 ? (
-            <Loading />
-          ) : (
-            <>
-              <Placeholder
-                className={image ? "hidden" : ""}
-                text={placeholder_text}
-              />
-              <PanAndZoom className={image ? "" : "hidden"}>
-                {children && isValidElement(children)
-                  ? cloneElement(children, {
-                      imageSize,
-                    })
-                  : null}
-              </PanAndZoom>
-            </>
-          )}
+          <Placeholder
+            className={image ? "hidden" : ""}
+            text={placeholder_text}
+          />
+          <PanAndZoom className={image ? "" : "hidden"}>
+            {children && isValidElement(children)
+              ? cloneElement(children, {
+                  imageSize,
+                })
+              : null}
+          </PanAndZoom>
         </div>
       </ImageHolderContext.Provider>
     );

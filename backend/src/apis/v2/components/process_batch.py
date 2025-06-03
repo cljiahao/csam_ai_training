@@ -28,7 +28,7 @@ def batch_contours_clean(
     same_size_contours = [
         contour_info
         for contour_info in contour_info_list
-        if avg_contour_area * 0.5 < contour_info.area
+        if avg_contour_area * 0.9 < contour_info.area
     ]
     return ContourInfoList(contours=same_size_contours)
 

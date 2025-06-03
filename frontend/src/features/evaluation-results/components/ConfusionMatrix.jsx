@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import HoverButton from "@/components/widgets/hover-button/HoverButton";
+import { cn } from "@/lib/utils";
 
 const ConfusionMatrix = ({ evalResult = {} }) => {
   const capitalize = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
@@ -43,7 +44,14 @@ const ConfusionMatrix = ({ evalResult = {} }) => {
           {Object.entries(cm_results).map(([key, value]) => (
             <HoverButton
               key={key}
-              className={`flex-center hw-full rounded-xl border-2 border-gray-200 text-lg ${key.includes("false_neg") ? (total_count ? "bg-red-500 hover:bg-red-400" : "bg-green-500hover:bg-green-400") : ""}`}
+              className={cn(
+                "flex-center hw-full rounded-xl border-2 border-gray-200 text-lg",
+                key.includes("false_neg")
+                  ? value
+                    ? "bg-red-500 hover:bg-red-400"
+                    : "bg-green-500 backdrop:hover:bg-green-400"
+                  : "",
+              )}
               text={percentage(value, total_count)}
               hoverText={value}
             />

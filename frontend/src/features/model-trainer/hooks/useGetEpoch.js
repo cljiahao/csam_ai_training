@@ -1,27 +1,13 @@
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { STATUS } from "@/constants/common";
+import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
-import { getEpoch, startTrain } from "@/services/api_model";
+import { useQueryEpochs, useTrainDataMutation } from "../api/model-trainer";
 
-const useTrainDataMutation = ({ updateError }) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["trainData"],
-    mutationFn: async ({ item }) => await startTrain(item),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["trainedModel"], data);
-    },
-    onError: (error) => {
-      console.log(error.message);
-      updateError(error.message);
-      queryClient.removeQueries(["trainedModel"]); // Clear cache on error
-    },
-  });
-};
-
-const useGetEpoch = ({ updateError, item }) => {
+const useGetEpoch = ({ item }) => {
+  const updateError = useBaseStore((state) => state.updateError);
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
@@ -30,16 +16,11 @@ const useGetEpoch = ({ updateError, item }) => {
   );
 
   const { mutateAsync: trainData } = useTrainDataMutation({ updateError });
-  const { data: epochs } = useQuery({
-    queryKey: ["getEpoch"],
-    queryFn: async () => await getEpoch(item),
-    enabled: status === "training",
-    staleTime: 0,
-    refetchInterval: status === "training" ? 5000 : false,
-  });
+
+  const epochs = useQueryEpochs(item, status === STATUS.TRAINING);
 
   useEffect(() => {
-    if (status === "augmented") {
+    if (status === STATUS.AUGMENTED) {
       trainData({ item }).then((data) => {
         updateStatus(data?.status);
       });

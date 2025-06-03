@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { LuArrowUpDown } from "react-icons/lu";
+
+import { Button } from "@/components/ui/button";
+import { METHOD_PARAMS } from "@/constants/url-params";
 
 const toCommaNumbers = (value) => {
   return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
@@ -72,10 +74,10 @@ export const BaseColumnCells = () => {
     header: "Augment BaseSets",
     columns: [
       {
-        accessorKey: "train_data.no_of_g",
+        accessorKey: "train_data.no_of_good",
         header: "G",
         cell: ({ row }) => {
-          return toCommaNumbers(row.original.train_data.no_of_g);
+          return toCommaNumbers(row.original.train_data.no_of_good);
         },
       },
       {
@@ -101,10 +103,10 @@ export const ReTrainColumnCells = () => {
     header: "Re-Train Sets",
     columns: [
       {
-        accessorKey: "train_data.no_of_g",
+        accessorKey: "train_data.no_of_good",
         header: "G",
         cell: ({ row }) => {
-          return toCommaNumbers(row.original.train_data.no_of_g);
+          return toCommaNumbers(row.original.train_data.no_of_good);
         },
       },
       {
@@ -133,13 +135,17 @@ export const TrainButtonColumn = (dataTable, navigate) => {
       const isBaseThresHoldMet =
         2 * dataTable.augment_multiplier * train_data.no_of_ng -
           train_data.no_of_others <=
-          train_data.no_of_g && train_data.no_of_ng != 0;
+          train_data.no_of_good && train_data.no_of_ng != 0;
 
       const isConditionMet = isEvalThresHoldMet && isBaseThresHoldMet;
 
       const handleClick = () => {
         if (isConditionMet) {
-          navigate(`/CMT?method=train&item=${item}`);
+          const params = new URLSearchParams({
+            item,
+            method: METHOD_PARAMS.TRAIN,
+          });
+          navigate(`/CMT?${params}`);
         }
       };
 
@@ -170,13 +176,17 @@ export const ReTrainButtonColumn = (dataTable, navigate) => {
         eval_data.mass_pro_count.total_sum >= dataTable.mass_pro_threshold;
 
       const isReTrainThresHoldMet =
-        train_data.no_of_g > 0 && train_data.no_of_ng > 0;
+        train_data.ood > 0 && train_data.no_of_ng > 0;
 
       const isConditionMet = isEvalThresHoldMet && isReTrainThresHoldMet;
 
       const handleClick = () => {
         if (isConditionMet) {
-          navigate(`/CMT?method=retrain&item=${item}`);
+          const params = new URLSearchParams({
+            item,
+            method: METHOD_PARAMS.RETRAIN,
+          });
+          navigate(`/CMT?${params}`);
         }
       };
 

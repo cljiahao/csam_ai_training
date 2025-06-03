@@ -1,8 +1,12 @@
-const Error = ({ message }) => {
+import { cn } from "@/lib/utils";
+
+const Error = ({ className, message }) => {
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-red-50 text-xl">
+    <div
+      className={cn("flex-center h-full w-full bg-red-50 text-xl", className)}
+    >
       <div
-        className="relative rounded border border-red-200 bg-red-100 px-4 py-3 text-red-800"
+        className="rounded-lg border border-red-200 bg-red-100 px-4 py-3 text-red-800"
         role="alert"
       >
         <strong className="font-bold">Error: </strong>

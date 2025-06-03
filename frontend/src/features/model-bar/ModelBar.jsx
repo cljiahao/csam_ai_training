@@ -1,24 +1,43 @@
+import { LiaChalkboardTeacherSolid } from "react-icons/lia";
+import { MdCompare } from "react-icons/md";
+
+import HoverButton from "@/components/widgets/hover-button/HoverButton";
+import { STATUS } from "@/constants/common";
 import { cn } from "@/lib/utils";
-import UtilityPanel from "./components/UtilityPanel";
-import ModelButtons from "./components/ModelButtons";
 import useAugment from "./hooks/useAugment";
-import useBaseStore from "@/store/base";
+import EvalOutflow from "./subfeatures/eval-outflow/EvalOutflow";
+import UtilityPanel from "./subfeatures/utility-panel/UtilityPanel";
 
 const ModelBar = ({ className, item }) => {
-  const updateError = useBaseStore((state) => state.updateError);
-
   const {
     state: { status },
     action: { handleStartTrain },
-  } = useAugment({ updateError, item });
+  } = useAugment({ item });
+
+  const disableButton = status != STATUS.IDLE && status != STATUS.EVALUATED;
 
   return (
     <div className={cn("flex h-full w-full items-center space-x-4", className)}>
       <UtilityPanel />
-      <ModelButtons
-        onTrain={handleStartTrain}
-        disabled={status !== "idle" && status !== "evaluated"}
-      />
+      <div className="hw-full flex-between pl-6 pr-12">
+        <HoverButton
+          className="w-24 text-lg"
+          icon={LiaChalkboardTeacherSolid}
+          hoverText="Train"
+          onClick={handleStartTrain}
+          disabled={disableButton}
+        />
+        <EvalOutflow
+          triggerChildren={
+            <HoverButton
+              className="w-24 text-lg"
+              icon={MdCompare}
+              hoverText="Outflows"
+              disabled={disableButton}
+            />
+          }
+        />
+      </div>
     </div>
   );
 };

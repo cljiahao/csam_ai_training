@@ -6,7 +6,7 @@ import SettingsFinder from "@/features/settings-finder/SettingsFinder";
 
 const Settings = () => {
   return (
-    <BaseLayout className="flex flex-col bg-yellow-100">
+    <BaseLayout className="flex flex-col overflow-auto bg-yellow-100">
       <div className="flex py-2">
         <DescriptiveHeader
           className="w-2/3"
@@ -19,11 +19,11 @@ const Settings = () => {
       <div className="px-4">
         <Separator />
       </div>
-      <div className="flex min-h-0 flex-1">
-        <div className="w-2/3">
+      <div className="hw-full flex min-h-0 flex-1">
+        <div className="h-full w-2/3">
           <SettingsFinder mode="Batch" />
         </div>
-        <div className="w-1/3">
+        <div className="h-full w-1/3">
           <SettingsFinder mode="Chip" />
         </div>
       </div>

@@ -8,11 +8,11 @@ const ItemForm = () => {
   } = useItem();
 
   return (
-    <div className="hw-full flex items-center px-4">
-      <Label className="w-1/3">Item Type</Label>
+    <div className="hw-full flex items-center px-2">
+      <Label className="w-1/4">Item Type:</Label>
       <Input
-        className="w-2/3"
-        placeholder="GCM32E106"
+        className="w-3/4"
+        placeholder={import.meta.env.VITE_TEST_ITEM}
         onChange={handleOnChange}
       />
     </div>

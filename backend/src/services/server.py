@@ -1,3 +1,4 @@
+import urllib.parse
 from pathlib import Path
 
 from core.config import service_settings
@@ -7,7 +8,7 @@ from services.base import APIClient
 from utils.debug import error_handler
 
 
-API_INSTALL_MODEL_ENDPOINT = "/api/v2/upload/install_model"
+API_INSTALL_MODEL_ENDPOINT = "/api/v2/ai_model/install_model"
 
 
 @error_handler()
@@ -27,7 +28,8 @@ def post_model_files(item: str, ai_model_name: str) -> int:
         "file_model": model_file_path,
     }
 
-    url = f"{API_INSTALL_MODEL_ENDPOINT}?item={item}"
+    search_params = urllib.parse.urlencode({"item": item})
+    url = f"{API_INSTALL_MODEL_ENDPOINT}?{search_params}"
     api_client = APIClient(service_settings.AI_SERVER_URL)
     result = api_client.post_files(url, file_path_list=file_path_list)
 

@@ -1,7 +1,9 @@
 import { create } from "zustand";
 
+import { STATUS } from "@/constants/common";
+
 const initTrain = {
-  status: "idle",
+  status: STATUS.IDLE,
 };
 
 const useTrainStore = create((set) => ({

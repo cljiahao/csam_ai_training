@@ -6,7 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import { navigation_info } from "@/core/navigation";
+import { navigation_info } from "@/constants/navigation";
 import Loading from "./components/static/loading";
 import SeoHead from "./components/layouts/SeoHead";
 import { resetStore } from "./store/resetStore";

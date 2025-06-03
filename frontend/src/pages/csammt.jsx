@@ -21,6 +21,7 @@ const CsamMT = () => {
   // TODO: check if item exists in backend database.
 
   const error = useBaseStore((state) => state.error);
+  const resetError = useBaseStore((state) => state.resetError);
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
@@ -34,6 +35,10 @@ const CsamMT = () => {
       icon: "error",
       title: "Oops...",
       text: error,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        resetError();
+      }
     });
   }
 

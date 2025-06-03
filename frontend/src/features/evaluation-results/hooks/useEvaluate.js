@@ -1,28 +1,16 @@
 import { useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
+import { STATUS } from "@/constants/common";
+import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
-import { startEvaluation } from "@/services/api_model";
+import {
+  useEvaluationResults,
+  useQueryTrainModel,
+} from "../api/evaluation-results";
 
-const useEvaluationResults = ({ updateError }) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["evaluateModel"],
-    mutationFn: async ({ item, ai_model_name }) =>
-      await startEvaluation(item, { ai_model_name }),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["evaluatedModel"], data);
-    },
-    onError: (error) => {
-      console.log(error.message);
-      updateError(error.message);
-      queryClient.removeQueries(["evaluatedModel"]); // Clear cache on error
-    },
-  });
-};
-
-const useEvaluate = ({ updateError, item }) => {
+const useEvaluate = ({ item }) => {
+  const updateError = useBaseStore((state) => state.updateError);
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
       status: state.status,
@@ -30,15 +18,13 @@ const useEvaluate = ({ updateError, item }) => {
     })),
   );
 
-  const { data: trainModel } = useQuery({
-    queryKey: ["trainedModel"],
-  });
+  const trainModel = useQueryTrainModel();
 
   const { mutateAsync: evaluateModel, data: evalResults } =
     useEvaluationResults({ updateError });
 
   useEffect(() => {
-    if (status === "trained") {
+    if (status === STATUS.TRAINED) {
       evaluateModel({ item, ai_model_name: trainModel?.ai_model_name }).then(
         (data) => updateStatus(data?.status),
       );

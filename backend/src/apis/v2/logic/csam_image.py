@@ -71,14 +71,15 @@ def prepare_datasets_for_training(
     augment_image_datas = augment_eval_sets(images_to_augment, all_defect_image_datas)
     remainder_ng_images = populate_colors_thousands_sets(item, augment_image_datas, db)
     if remainder_ng_images:
-        deform_images = filter_by_label_mode(image_datas, BaseSetsFolderName.DEFORM)
-        base_ng_image_datas = remainder_ng_images + deform_images
         base_image_datas = {
-            BaseSetsFolderName.NG: base_ng_image_datas,
+            BaseSetsFolderName.NG: remainder_ng_images,
             BaseSetsFolderName.GOOD: filter_by_label_mode(
                 image_datas, BaseSetsFolderName.GOOD
             ),
             BaseSetsFolderName.OTHERS: others_image_datas[to_augment_image_limit:],
+            BaseSetsFolderName.DEFORM: filter_by_label_mode(
+                image_datas, BaseSetsFolderName.DEFORM
+            ),
         }
         populate_base_folders(item, base_image_datas, db)
 
@@ -178,6 +179,7 @@ def rotate_and_classify_contours(
     chip_threshold: ChipThreshold,
     base_file_name: str,
 ) -> list[LabeledImageData]:
+    """Rotate, crop and classify the contours."""
     image_data_list = []
     for i, contour_info in enumerate(contour_infos, start=prev_count + 1):
         rotated_image = rotate_and_crop_chip_image(

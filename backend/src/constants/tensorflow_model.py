@@ -17,11 +17,10 @@ class ModelFiles(StrEnum):
 
 class ModelStatus(StrEnum):
     AUGMENTED = "augmented"
-    TRAINING = "training"
-    TRAINED = "trained"
     EVALUATING = "evaluating"
     EVALUATED = "evaluated"
-    COMPLETED = "completed"
+    TRAINING = "training"
+    TRAINED = "trained"
 
 
 class HyperParameters(IntEnum):

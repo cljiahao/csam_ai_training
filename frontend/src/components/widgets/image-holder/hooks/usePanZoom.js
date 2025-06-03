@@ -1,6 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-
-import { ZOOM_SCALE } from "@/core/constants";
+import { ZOOM_SCALE } from "../constants/zoom-scale";
 
 export const usePanZoom = () => {
   const [coords, setCoords] = useState({ x: 0, y: 0 });
