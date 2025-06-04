@@ -13,6 +13,7 @@ class BaseSets(Base):
     no_of_good: Mapped[int] = mapped_column(default=0)
     no_of_ng: Mapped[int] = mapped_column(default=0)
     no_of_others: Mapped[int] = mapped_column(default=0)
+    no_of_deform: Mapped[int] = mapped_column(default=0)
 
     def __repr__(self):
         return f"<BaseSets(id={self.id}, item='{self.item}')>"
