@@ -26,7 +26,7 @@ def populate_base_folders(
     label_folder_counts = dm.count_files_in_subdirectories(base_dir, labels)
 
     for label, image_data_list in label_image_dict.items():
-        max_file_count = DatasetSummaryThresholds.MAX_DATASET
+        max_file_count = DatasetSummaryThresholds.MAX_DATASET * 2
         if label == BaseSetsFolderName.NG:
             augment_multiplier = len(CSAMcolor) * AugmentThresholdRatio.BASE_MULTIPLIER
             max_file_count = math.floor(max_file_count / augment_multiplier)
