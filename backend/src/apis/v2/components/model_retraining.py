@@ -51,7 +51,7 @@ def save_model_and_class_txt(
     file_name: str,
 ) -> None:
     """Saves the trained model and a text file containing class names."""
-    model_path = output_dir / f"{file_name}{ModelFiles.KERAS_MODEL_EXT}"
+    model_path = output_dir / f"{file_name}{ModelFiles.H5_MODEL_EXT}"
     txt_path = output_dir / f"{file_name}{ModelFiles.LABEL_EXT}"
 
     TensorflowModel.save_model(model, model_path)
