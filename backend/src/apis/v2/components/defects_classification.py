@@ -72,15 +72,13 @@ def classify_black_defect_mode(
     )
 
     if defect_size == "big":
-        return DefectInfo(
-            label_mode=BaseSetsFolderName.NG,
-            defect_size=defect_size,
-            defect_color=CSAMcolor.BLACK.get_name(),
+        label_mode = (
+            BaseSetsFolderName.NG if defect_size == "big" else BaseSetsFolderName.OTHERS
         )
     return DefectInfo(
-        label_mode=BaseSetsFolderName.OTHERS,
-        defect_size=None,
-        defect_color=None,
+        label_mode=label_mode,
+        defect_size=defect_size,
+        defect_color=CSAMcolor.BLACK.get_name(),
     )
 
 
