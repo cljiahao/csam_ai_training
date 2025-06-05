@@ -7,6 +7,7 @@ from apis.v2.components.utils_image_process import (
     get_base_image_mask,
     get_defect_image_mask,
 )
+from apis.v2.constants.csam_thresholds import DefectSizeType
 from apis.v2.constants.datasets_thresholds import EvaluationDatasetsThresholds
 from apis.v2.schemas.csam_image import LabeledImageData
 from constants.folder_names import (
@@ -115,7 +116,11 @@ def populate_colors_thousands_sets(
     remaining_eval_set = []
     for image_data in non_g_image_data_list:
         color = image_data.defect_color.lower()
-        size = image_data.defect_size.lower()
+        size = (
+            DefectSizeType.SMALL
+            if image_data.defect_size is None
+            else image_data.defect_size.lower()
+        )
         color_size = f"{color}_{size}"
         random_value = random.random()
 
