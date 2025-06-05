@@ -19,7 +19,6 @@ class TrainingEpochProgress(Status):
     loss: float
     val_accuracy: float
     val_loss: float
-    learning_rate: float
 
 
 class ConfusionMatrixResults(BaseModel):
