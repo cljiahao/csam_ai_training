@@ -11,11 +11,13 @@ const useUtilityPanel = ({ method }) => {
 
   useEffect(() => {
     if (!method || method != METHOD_PARAMS.RETRAIN) {
-      const params = new URLSearchParams({
-        method: METHOD_PARAMS.TRAIN,
-      });
-      navigate(`${location.pathname}?${params}`);
-      setChecked(false);
+      if (method != METHOD_PARAMS.TRAIN) {
+        const params = new URLSearchParams({
+          method: METHOD_PARAMS.TRAIN,
+        });
+        navigate(`${location.pathname}?${params}`);
+        setChecked(false);
+      }
     } else {
       setChecked(true);
     }
