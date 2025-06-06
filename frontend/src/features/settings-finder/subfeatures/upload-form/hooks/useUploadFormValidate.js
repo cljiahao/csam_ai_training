@@ -26,13 +26,13 @@ const useUploadFormValidate = () => {
     }, {}),
   });
 
-  const ref = useRef(null);
+  const formRef = useRef(null);
   function onSubmit() {
-    ref?.current.click();
+    formRef?.current.click();
   }
 
   return {
-    state: { ref, uploadFormInfo },
+    state: { formRef, uploadFormInfo },
     action: { onSubmit, uploadForm },
   };
 };

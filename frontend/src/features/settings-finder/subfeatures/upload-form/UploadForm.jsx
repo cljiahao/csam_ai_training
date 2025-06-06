@@ -12,7 +12,7 @@ const UploadForm = ({ mode }) => {
   } = useUploadForm({ mode });
 
   const {
-    state: { ref, uploadFormInfo },
+    state: { formRef, uploadFormInfo },
     action: { onSubmit, uploadForm },
   } = useUploadFormValidate();
 
@@ -49,7 +49,7 @@ const UploadForm = ({ mode }) => {
         className="hidden"
         type="file"
         accept=".png, .jpg"
-        ref={ref}
+        ref={formRef}
         onChange={(e) =>
           onFileChange(e, mode, uploadForm.getValues("quantity"))
         }
