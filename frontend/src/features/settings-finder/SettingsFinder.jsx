@@ -28,6 +28,7 @@ const SettingsFinder = ({ mode }) => {
               ref={markRef}
               canvasType={canvasType}
               coordinates={coordinates}
+              showStatic
             />
           )}
         </ImageHolder>
