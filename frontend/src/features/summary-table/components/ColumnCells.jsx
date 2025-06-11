@@ -176,7 +176,7 @@ export const ReTrainButtonColumn = (dataTable, navigate) => {
         eval_data.mass_pro_count.total_sum >= dataTable.mass_pro_threshold;
 
       const isReTrainThresHoldMet =
-        train_data.ood > 0 && train_data.no_of_ng > 0;
+        train_data.no_of_good > 0 && train_data.no_of_ng > 0;
 
       const isConditionMet = isEvalThresHoldMet && isReTrainThresHoldMet;
 
