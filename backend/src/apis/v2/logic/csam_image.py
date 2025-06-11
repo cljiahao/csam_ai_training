@@ -65,7 +65,10 @@ def prepare_datasets_for_training(
     all_defect_image_datas = defect_image_datas + ng_image_datas
 
     base_multiplier = AugmentThresholdRatio.BASE_MULTIPLIER
-    to_augment_image_limit = base_multiplier * len(all_defect_image_datas)
+    to_augment_image_threshold = base_multiplier * len(all_defect_image_datas)
+    to_augment_image_limit = (
+        300 if 300 < to_augment_image_threshold else to_augment_image_limit
+    )
     images_to_augment = others_image_datas[:to_augment_image_limit]
 
     augment_image_datas = augment_eval_sets(images_to_augment, all_defect_image_datas)
