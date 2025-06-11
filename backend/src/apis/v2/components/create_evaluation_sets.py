@@ -115,28 +115,22 @@ def populate_colors_thousands_sets(
 
     remaining_eval_set = []
     for image_data in non_g_image_data_list:
-        random_value = random.random()
-        # Colors sets require both color and size
-        if image_data.defect_color is not None and image_data.defect_size is not None:
+        if image_data.defect_color is not None or image_data.defect_size is not None:
             color = image_data.defect_color.lower()
             size = image_data.defect_size.lower()
             color_size = f"{color}_{size}"
+            random_value = random.random()
+
             per_color = EvaluationDatasetsThresholds.PER_COLOR
             if colors_counts.get(color_size, 0) < per_color and random_value < 0.45:
                 save_image_and_update_counts(
                     colors_dir, color_size, colors_counts, image_data
                 )
                 continue
-        # Thousands sets require only size
-        if image_data.defect_size is not None:
-            size = image_data.defect_size.lower()
             thousands_small = EvaluationDatasetsThresholds.THOUSANDS_SMALL
             thousands_med_big = EvaluationDatasetsThresholds.THOUSANDS_MED_AND_BIG
-            size_threshold = (
-                thousands_small
-                if size == ThousandsFolderNames.SMALL.lower()
-                else thousands_med_big
-            )
+            small = ThousandsFolderNames.SMALL
+            size_threshold = thousands_small if size == small else thousands_med_big
             if thousands_counts.get(size, 0) < size_threshold and random_value < 0.9:
                 save_image_and_update_counts(
                     thousands_dir, size, thousands_counts, image_data
