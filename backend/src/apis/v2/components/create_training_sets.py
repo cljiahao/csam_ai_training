@@ -29,7 +29,9 @@ def populate_base_folders(
         max_file_count = DatasetSummaryThresholds.MAX_DATASET * 2
         if label == BaseSetsFolderName.NG:
             augment_multiplier = len(CSAMcolor) * AugmentThresholdRatio.BASE_MULTIPLIER
-            max_file_count = math.floor(max_file_count / augment_multiplier)
+            max_file_count = math.floor(
+                DatasetSummaryThresholds.MAX_DATASET / augment_multiplier
+            )
 
         required_count = max_file_count - label_folder_counts[label]
         if required_count == 0:
