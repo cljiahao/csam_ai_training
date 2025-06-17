@@ -129,16 +129,15 @@ def determine_non_black_defect_color(defect: np.ndarray) -> str | None:
 
     # Find the index of black color if it exists
     black_bgr = np.array(BGRColors.BLACK.value)
-    non_black_indices = [
-        i for i, color in enumerate(color_hexes) if not np.array_equal(color, black_bgr)
-    ]
-    if not non_black_indices:
+    non_black_mask = ~np.all(color_hexes == black_bgr, axis=1)
+
+    if not non_black_mask:
         return None
 
-    non_black_counts = hex_count[non_black_indices]
+    non_black_counts = hex_count[non_black_mask]
     most_common_index = np.argmax(non_black_counts)
 
-    non_black_colors = color_hexes[non_black_indices]
+    non_black_colors = color_hexes[non_black_mask]
     most_common_color = non_black_colors[most_common_index]
     return next(
         (
