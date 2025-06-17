@@ -69,6 +69,38 @@ class TensorflowModel:
 
     @error_handler()
     @staticmethod
+    def prepare_model_for_retraining(
+        ai_model_path: Path, freeze_layers_count: int = 9
+    ) -> models.Sequential:
+        """Prepares a model for retraining by freezing early layers and recompiling.
+
+        This method implements a transfer learning approach where early layers (which
+        typically capture generic features) are frozen to preserve their learned weights,
+        while later layers are fine-tuned with a lower learning rate.
+
+        Args:
+            ai_model_path: Path to the model file to load.
+            freeze_layers_count: Number of layers to freeze from the beginning of the model.
+
+        Returns:
+            A Keras Sequential model prepared for retraining.
+
+        Raises:
+            FileNotFoundError: If the model file doesn't exist.
+        """
+        model = TensorflowModel.load_model(ai_model_path)
+        for layer in model.layers[:freeze_layers_count]:
+            layer.trainable = False
+        model.compile(
+            optimizer=optimizers.Adam(learning_rate=0.0001),
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"],
+        )
+
+        return model
+
+    @error_handler()
+    @staticmethod
     def create_callbacks() -> list[cb.Callback]:
         """Creates a list of training callbacks.
 
