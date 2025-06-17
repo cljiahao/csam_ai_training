@@ -1,5 +1,4 @@
 from pathlib import Path
-from tensorflow import keras
 from keras import models
 
 from constants.folder_names import ModelDatasetFolderNames
@@ -9,28 +8,44 @@ from core.file_manager import FileManager
 from utils.ai_model.tensorflow_model import TensorflowModel
 
 
-def start_retraining(item: str, input_size: int, file_name: str) -> None:
+def start_retraining(
+    item: str, input_size: int, original_model_name: str, new_file_name: str
+) -> None:
     """Starts the re-training process for trained AI model."""
     item_model_dir, dataset_dir = setup_retraining_environment(item)
 
-    retrain_dataset, _ = TensorflowModel.prepare_dataset(
+    original_model_path = (
+        item_model_dir / f"{original_model_name}{ModelFiles.H5_MODEL_EXT}"
+    )
+
+    if not original_model_path.exists():
+        raise FileNotFoundError(f"Model file not found: {original_model_path}")
+
+    model = TensorflowModel.prepare_model_for_retraining(original_model_path)
+
+    output_shape = model.layers[-1].output_shape
+    expected_classes = len(DatasetModes)
+
+    if output_shape[-1] != expected_classes:
+        raise ValueError(
+            f"Model has incompatible output shape: expected {expected_classes} classes, got {output_shape[-1]}"
+        )
+    train_dataset, _ = TensorflowModel.prepare_dataset(
         dataset_dir / ModelDatasetFolderNames.TRAIN, input_size, shuffle=True
     )
     validation_dataset, _ = TensorflowModel.prepare_dataset(
         dataset_dir / ModelDatasetFolderNames.VALIDATION, input_size
     )
-
     callbacks = TensorflowModel.create_callbacks()
-    model = TensorflowModel.build_static_model(input_size, len(DatasetModes))
+
     model.fit(
-        retrain_dataset,
+        train_dataset,
         validation_data=validation_dataset,
         epochs=HyperParameters.EPOCHS,
         verbose=1,
         callbacks=callbacks,
     )
-
-    save_model_and_class_txt(model, item_model_dir, file_name)
+    save_model_and_class_txt(model, item_model_dir, new_file_name)
 
 
 def setup_retraining_environment(item: str) -> tuple[Path, Path]:
