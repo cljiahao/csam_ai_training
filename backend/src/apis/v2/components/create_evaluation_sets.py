@@ -115,7 +115,7 @@ def populate_colors_thousands_sets(
 
     remaining_eval_set = []
     for image_data in non_g_image_data_list:
-        if image_data.defect_color is not None or image_data.defect_size is not None:
+        if image_data.defect_color is not None and image_data.defect_size is not None:
             color = image_data.defect_color.lower()
             size = image_data.defect_size.lower()
             color_size = f"{color}_{size}"
