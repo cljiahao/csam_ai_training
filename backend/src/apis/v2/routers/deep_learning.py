@@ -1,4 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, Response, status
+from fastapi import APIRouter, BackgroundTasks, Response, status, HTTPException
 from fastapi import Body, Depends, Query
 from sqlalchemy.orm import Session
 from typing import Annotated
@@ -6,6 +6,7 @@ from typing import Annotated
 from apis.v2.logic.deep_learning import (
     ai_model_evaluation,
     ai_model_training,
+    ai_model_retraining,
     delete_model_selected,
     get_all_model_names,
     get_current_epoch,
@@ -54,21 +55,26 @@ async def train_model(
     return ai_model_training(item, db, background_tasks)
 
 
-# TODO: Retrain model
-# @router.post(
-#     "/re_train_model",
-#     response_model=TrainingInitiated,
-#     summary="Start Training a model with provided datasets",
-#     operation_id="TrainModel",
-# )
-# async def train_model(
-#     item: Annotated[
-#         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
-#     ],
-#     db: Annotated[Session, Depends(get_db)],
-#     background_tasks: BackgroundTasks,
-# ) -> TrainingInitiated:
-#     return ai_model_training(item, db, background_tasks)
+@router.post(
+    "/re_train_model",
+    response_model=TrainingInitiated,
+    summary="Continue training an existing model with provided datasets",
+    operation_id="ReTrainModel",
+)
+async def retrain_model(
+    item: Annotated[
+        str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
+    ],
+    ai_model_name: Annotated[
+        str, Body(description="Name of the model to retrain", embed=True)
+    ],
+    db: Annotated[Session, Depends(get_db)],
+    background_tasks: BackgroundTasks,
+) -> TrainingInitiated:
+    try:
+        return ai_model_retraining(item, ai_model_name, db, background_tasks)
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.get(

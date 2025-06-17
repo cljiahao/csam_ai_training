@@ -9,6 +9,7 @@ from apis.v2.components.model_evaluation import (
     start_evaluating,
 )
 from apis.v2.components.model_training import start_training
+from apis.v2.components.model_retraining import start_retraining
 from constants.folder_names import EvaluationSetsFolderName
 from apis.v2.schemas.deep_learning import (
     EvaluationOutcome,
@@ -43,6 +44,47 @@ def ai_model_training(
     background_tasks.add_task(start_training, item, image_settings.crop_size, file_name)
 
     return TrainingInitiated(status=ModelStatus.TRAINING, ai_model_name=file_name)
+
+
+@timer("AI Model Retraining")
+def ai_model_retraining(
+    item: str, ai_model_name: str, db: Session, background_tasks: BackgroundTasks
+) -> TrainingInitiated:
+    """Initiates AI model retraining in the background.
+
+    Args:
+        item: Item type for the model.
+        ai_model_name: Name of the existing model to be retrained. Can be with or without file extension.
+        db: Database session.
+        background_tasks: FastAPI background tasks handler.
+
+    Returns:
+        TrainingInitiated response with status and new model name.
+
+    Raises:
+        FileNotFoundError: If the model file doesn't exist.
+    """
+    item_model_dir = dm.model_dir / item
+    model_stem = Path(ai_model_name).stem
+    model_path = item_model_dir / f"{model_stem}{ModelFiles.H5_MODEL_EXT}"
+
+    if not model_path.exists():
+        error_msg = f"Model '{model_stem}' not found for item '{item}'"
+        raise FileNotFoundError(error_msg)
+    image_settings_service = ImageSettingsService(db)
+    image_settings = image_settings_service.read_image_settings_not_empty(item)
+
+    new_file_name = f"{model_stem}_retrained"
+
+    background_tasks.add_task(
+        start_retraining,
+        item,
+        image_settings.crop_size,
+        model_stem,
+        new_file_name,
+    )
+
+    return TrainingInitiated(status=ModelStatus.TRAINING, ai_model_name=new_file_name)
 
 
 def get_current_epoch() -> list[TrainingEpochProgress]:
