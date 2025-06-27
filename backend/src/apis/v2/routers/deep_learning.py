@@ -1,8 +1,9 @@
-from fastapi import APIRouter, BackgroundTasks, Response, status, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Path, Response, status, HTTPException
 from fastapi import Body, Depends, Query
 from sqlalchemy.orm import Session
 from typing import Annotated
 
+from apis.v2.constants.datasets_thresholds import AIModelMode
 from apis.v2.logic.deep_learning import (
     ai_model_evaluation,
     ai_model_training,
@@ -65,26 +66,26 @@ async def retrain_model(
     item: Annotated[
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
-    ai_model_name: Annotated[
-        str, Body(description="Name of the model to retrain", embed=True)
-    ],
+    ai_model_name: Annotated[str, Query(description="Name of the model to retrain")],
     db: Annotated[Session, Depends(get_db)],
     background_tasks: BackgroundTasks,
 ) -> TrainingInitiated:
-    try:
-        return ai_model_retraining(item, ai_model_name, db, background_tasks)
-    except FileNotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    return ai_model_retraining(item, ai_model_name, db, background_tasks)
 
 
 @router.get(
-    "/current_epoch",
+    "/current_epoch/{ai_model_mode}",
     response_model=list[TrainingEpochProgress],
     summary="Get the current training epoch status",
     operation_id="CurrentEpoch",
 )
-def current_epoch() -> list[TrainingEpochProgress]:
-    return get_current_epoch()
+def current_epoch(
+    ai_model_mode: Annotated[
+        AIModelMode, Path(description="AI Model Mode (Train or ReTrain)")
+    ],
+) -> list[TrainingEpochProgress]:
+    is_train = ai_model_mode == AIModelMode.TRAIN
+    return get_current_epoch(is_train)
 
 
 @router.post(
