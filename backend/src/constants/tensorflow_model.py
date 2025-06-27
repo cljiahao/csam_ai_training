@@ -21,6 +21,8 @@ class ModelStatus(StrEnum):
     EVALUATED = "evaluated"
     TRAINING = "training"
     TRAINED = "trained"
+    RETRAINING = "retraining"
+    RETRAINED = "retrained"
 
 
 class HyperParameters(IntEnum):
