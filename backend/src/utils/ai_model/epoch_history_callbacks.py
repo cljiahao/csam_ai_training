@@ -6,19 +6,20 @@ from constants.tensorflow_model import HyperParameters, ModelFiles, ModelStatus
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 
-
 # TODO: pytest
 class EpochHistory(cb.Callback):
     """A custom Keras Callback to record epoch-wise training metrics and time."""
 
-    def __init__(self) -> None:
+    def __init__(self, is_train: bool = True) -> None:
         super().__init__()
-        self.model_json_dir = dm.json_dir / ModelFiles.TRAINING_JSON
+        json_file = ModelFiles.TRAINING_JSON if is_train else ModelFiles.RETRAINING_JSON
+        self.model_json_dir = dm.json_dir / json_file
         self.epoch_results = []
         self.start_time = 0.0
+        self.status = ModelStatus.TRAINING if is_train else ModelStatus.RETRAINING
+        self.final_status = ModelStatus.TRAINED if is_train else ModelStatus.RETRAINED
 
     # TODO: create on_train_start and put total_epoch, status and epoch_data instead of a list of dict
-
     def on_epoch_begin(self, epoch: int, logs: dict[str, any] = None) -> None:
         """Record the start time for each epoch.
 
@@ -36,13 +37,13 @@ class EpochHistory(cb.Callback):
             logs: Dictionary of logs containing training metrics.
         """
         end_time = time.perf_counter()
-        time_taken = round(end_time - self.start_time)
+        time_taken = int(round(end_time - self.start_time))
 
         epoch_data = {
             "time": time_taken,
             "epoch": epoch + 1,
             "total_epoch": HyperParameters.EPOCHS,
-            "status": ModelStatus.TRAINING,
+            "status": self.status,
         }
 
         if logs:
@@ -52,7 +53,7 @@ class EpochHistory(cb.Callback):
         FileManager.write_json(self.model_json_dir, self.epoch_results)
 
     def on_train_end(self, logs: dict[str, any] = None) -> None:
-        """Mark the last epoch's status as 'trained' upon the completion of training.
+        """Mark the last epoch's status as appropriate upon the completion of training.
 
         Args:
             logs: Dictionary of logs.
@@ -62,5 +63,5 @@ class EpochHistory(cb.Callback):
         if not latest_epoch_data:
             raise ValueError(f"No training data found in {self.model_json_dir}")
 
-        latest_epoch_data[-1]["status"] = ModelStatus.TRAINED
+        latest_epoch_data[-1]["status"] = self.final_status
         FileManager.write_json(self.model_json_dir, latest_epoch_data)
