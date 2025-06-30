@@ -6,6 +6,7 @@ export const QUERY_KEYS = {
   API_MODELS: "getAllModels",
   API_SETTINGS: "settingsFound",
   API_TRAIN: "trainModel",
+  API_RETRAIN: "retrainModel",
 };
 
 export const MUTATION_KEYS = {
@@ -14,4 +15,5 @@ export const MUTATION_KEYS = {
   API_EVALUATE: "evaluateMutate",
   API_SETTINGS: "settingsMutate",
   API_TRAIN: "trainMutate",
+  API_RETRAIN: "retrainMutate",
 };
