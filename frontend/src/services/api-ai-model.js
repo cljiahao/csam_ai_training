@@ -14,8 +14,15 @@ export const startTrain = async (item) => {
   return await sendRequest(url, options);
 };
 
-export const getEpoch = async () => {
-  const url = `/api/deep_learning/current_epoch`;
+export const startRetrain = async (item, ai_model_name) => {
+  const params = new URLSearchParams({ item, ai_model_name });
+  const url = `/api/deep_learning/re_train_model?${params.toString()}`;
+  const options = createRequestOptions("POST");
+  return await sendRequest(url, options);
+};
+
+export const getEpoch = async (method) => {
+  const url = `/api/deep_learning/current_epoch/${method}`;
   const options = createRequestOptions("GET");
   return await sendRequest(url, options);
 };
