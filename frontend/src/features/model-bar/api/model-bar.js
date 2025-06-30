@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { STATUS } from "@/constants/common";
-import { QUERY_KEYS } from "@/constants/api-keys";
+import { MUTATION_KEYS, QUERY_KEYS } from "@/constants/api-keys";
 import {
   createAugment,
   getAllModels,
   installModel,
+  startRetrain,
 } from "@/services/api-ai-model";
 
 export const useAugmentMutation = ({ updateError }) => {
@@ -14,6 +15,22 @@ export const useAugmentMutation = ({ updateError }) => {
     mutationFn: async ({ item }) => await createAugment(item),
     onError: (error) => {
       updateError(error.message);
+    },
+  });
+};
+
+export const useRetrainDataMutation = ({ updateError }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: [MUTATION_KEYS.API_RETRAIN],
+    mutationFn: async ({ item, ai_model_name }) =>
+      await startRetrain(item, ai_model_name),
+    onSuccess: (data) => {
+      queryClient.setQueryData([QUERY_KEYS.API_RETRAIN], data);
+    },
+    onError: (error) => {
+      updateError(error.message);
+      queryClient.removeQueries([QUERY_KEYS.API_RETRAIN]); // Clear cache on error
     },
   });
 };
