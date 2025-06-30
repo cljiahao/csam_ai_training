@@ -25,3 +25,10 @@ export const useQueryTrainModel = () => {
   });
   return trainModel;
 };
+
+export const useQueryRetrainModel = () => {
+  const { data: retrainModel } = useQuery({
+    queryKey: [QUERY_KEYS.API_RETRAIN],
+  });
+  return retrainModel;
+};
