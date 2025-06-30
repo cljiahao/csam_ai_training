@@ -3,10 +3,10 @@ import ModelChart from "./components/ModelChart";
 import VerboseAccordion from "./components/VerboseAccordion";
 import useGetEpoch from "./hooks/useGetEpoch";
 
-const ModelTrainer = ({ className, item }) => {
+const ModelTrainer = ({ className, item, method }) => {
   const {
     state: { epochs, status },
-  } = useGetEpoch({ item });
+  } = useGetEpoch({ item, method });
 
   return (
     <div className={cn("flex h-full w-full flex-col px-4", className)}>

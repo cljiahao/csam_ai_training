@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { STATUS } from "@/constants/common";
+import { METHOD_PARAMS } from "@/constants/url-params";
 import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
 import { useQueryEpochs, useTrainDataMutation } from "../api/model-trainer";
 
-const useGetEpoch = ({ item }) => {
+const useGetEpoch = ({ item, method }) => {
   const updateError = useBaseStore((state) => state.updateError);
   const { status, updateStatus } = useTrainStore(
     useShallow((state) => ({
@@ -17,15 +18,17 @@ const useGetEpoch = ({ item }) => {
 
   const { mutateAsync: trainData } = useTrainDataMutation({ updateError });
 
-  const epochs = useQueryEpochs(item, status === STATUS.TRAINING);
+  // Monitor both TRAINING and RETRAINING states
+  const isTraining = status === STATUS.TRAINING || status === STATUS.RETRAINING;
+  const epochs = useQueryEpochs(method, isTraining);
 
   useEffect(() => {
-    if (status === STATUS.AUGMENTED) {
+    if (status === STATUS.AUGMENTED && method === METHOD_PARAMS.TRAIN) {
       trainData({ item }).then((data) => {
         updateStatus(data?.status);
       });
     }
-  }, [item, trainData, status, updateStatus]);
+  }, [item, trainData, status, updateStatus, method]);
 
   useEffect(() => {
     if (epochs?.length > 0) {

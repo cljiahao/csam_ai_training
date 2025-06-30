@@ -18,10 +18,10 @@ export const useTrainDataMutation = ({ updateError }) => {
   });
 };
 
-export const useQueryEpochs = (item, enabler) => {
+export const useQueryEpochs = (method, enabler) => {
   const { data: epochs } = useQuery({
     queryKey: [QUERY_KEYS.API_EPOCH],
-    queryFn: async () => await getEpoch(item),
+    queryFn: async () => await getEpoch(method),
     enabled: enabler,
     staleTime: 0,
     refetchInterval: enabler ? 5000 : false,
