@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
+import Swal from "sweetalert2";
 
 import { STATUS } from "@/constants/common";
 import { METHOD_PARAMS } from "@/constants/url-params";
@@ -39,8 +40,14 @@ const useEvaluate = ({ item, method }) => {
           (data) => updateStatus(data?.status),
         );
       } else {
-        console.warn("No model name available for evaluation");
-        updateStatus(STATUS.IDLE);
+        Swal.fire({
+          icon: "warning",
+          title: "Process Interrupted",
+          text: `The ${method === METHOD_PARAMS.TRAIN ? "training" : "retraining"} Model data is not available. Please try again.`,
+          confirmButtonText: "OK",
+        }).then(() => {
+          updateStatus(STATUS.IDLE);
+        });
       }
     }
   }, [item, evaluateModel, modelData, status, updateStatus, method]);
