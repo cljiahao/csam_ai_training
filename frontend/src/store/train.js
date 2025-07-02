@@ -4,7 +4,6 @@ import { STATUS } from "@/constants/common";
 
 const initTrain = {
   status: STATUS.IDLE,
-  selectedModel: null,
 };
 
 const useTrainStore = create((set) => ({
@@ -13,7 +12,6 @@ const useTrainStore = create((set) => ({
   //Define Actions
   resetTrain: () => set(initTrain),
   updateStatus: (status) => set({ status }),
-  updateSelectedModel: (selectedModel) => set({ selectedModel }),
 }));
 
 export default useTrainStore;
