@@ -1,4 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, Path, Response, status, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Path, Response, status
 from fastapi import Body, Depends, Query
 from sqlalchemy.orm import Session
 from typing import Annotated
