@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import Swal from "sweetalert2";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 
 import BaseLayout from "@/components/layouts/BaseLayout";
@@ -16,11 +17,25 @@ import { STATUS } from "@/constants/common";
 
 const CsamMT = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const item = searchParams.get("item");
   const method = searchParams.get("method") || METHOD_PARAMS.TRAIN;
 
-  // TODO: If item or method don't exists, re-direct to CDS
-  // TODO: check if item exists in backend database.
+  useEffect(() => {
+    if (!item) {
+      navigate("/CDS");
+      return;
+    }
+    const isValidMethod =
+      method === METHOD_PARAMS.TRAIN || method === METHOD_PARAMS.RETRAIN;
+    if (!isValidMethod) {
+      const params = new URLSearchParams({
+        method: METHOD_PARAMS.TRAIN,
+      });
+      navigate(`/CDS?${params}`);
+      return;
+    }
+  }, [item, method, navigate]);
 
   const error = useBaseStore((state) => state.error);
   const resetError = useBaseStore((state) => state.resetError);
@@ -44,15 +59,14 @@ const CsamMT = () => {
     });
   }
 
-  // Check for completed status
   const isCompleted = status === STATUS.EVALUATED;
-
-  if (isCompleted)
+  if (isCompleted) {
     Swal.fire({
       icon: "success",
       title: `Model ${method === METHOD_PARAMS.TRAIN ? "Training" : "Retraining"} Completed`,
       text: "Please check if there are any Outflows before installing.",
     });
+  }
 
   return (
     <BaseLayout
