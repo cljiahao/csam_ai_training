@@ -6,6 +6,7 @@ from constants.tensorflow_model import HyperParameters, ModelFiles, ModelStatus
 from core.directory_manager import directory_manager as dm
 from core.file_manager import FileManager
 
+
 # TODO: pytest
 class EpochHistory(cb.Callback):
     """A custom Keras Callback to record epoch-wise training metrics and time."""
@@ -37,7 +38,7 @@ class EpochHistory(cb.Callback):
             logs: Dictionary of logs containing training metrics.
         """
         end_time = time.perf_counter()
-        time_taken = int(round(end_time - self.start_time))
+        time_taken = round(end_time - self.start_time)
 
         epoch_data = {
             "time": time_taken,
