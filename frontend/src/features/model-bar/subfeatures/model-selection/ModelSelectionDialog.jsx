@@ -11,26 +11,24 @@ import {
 } from "@/components/ui/command";
 import CustomDialog from "@/components/widgets/custom-dialog/CustomDialog";
 import { cn } from "@/lib/utils";
-import useModelSelectionDialog from "./hooks/useModelSelectionDialog";
 import { Label } from "@/components/ui/label";
 
-const ModelSelectionDialog = ({ item, triggerChildren, onModelSelect }) => {
-  const {
-    isDialogOpen,
-    selectedModel,
-    models,
-    handleDialogOpen,
-    handleModelSelect,
-    handleRetrain,
-  } = useModelSelectionDialog(item, onModelSelect);
-
+const ModelSelectionDialog = ({
+  triggerChildren,
+  isOpen,
+  onOpenChange,
+  selectedModel,
+  models,
+  onModelSelect,
+  onRetrain,
+}) => {
   const ModelButtons = () => {
     return (
       <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={() => handleDialogOpen(false)}>
+        <Button variant="outline" onClick={() => onOpenChange(false)}>
           Cancel
         </Button>
-        <Button onClick={handleRetrain} disabled={!selectedModel}>
+        <Button onClick={onRetrain} disabled={!selectedModel}>
           Retrain Model
         </Button>
       </div>
@@ -50,7 +48,7 @@ const ModelSelectionDialog = ({ item, triggerChildren, onModelSelect }) => {
                 <CommandItem
                   key={model.file_name}
                   value={model.file_name}
-                  onSelect={() => handleModelSelect(model.file_name)}
+                  onSelect={() => onModelSelect(model.file_name)}
                 >
                   <FaCheck
                     className={cn(
@@ -76,8 +74,8 @@ const ModelSelectionDialog = ({ item, triggerChildren, onModelSelect }) => {
       trigger={triggerChildren}
       title="Select Model to Retrain"
       description="Choose a model from the list below"
-      open={isDialogOpen}
-      onOpenChange={handleDialogOpen}
+      open={isOpen}
+      onOpenChange={onOpenChange}
     >
       <div className="space-y-6">
         <ModelSelector />

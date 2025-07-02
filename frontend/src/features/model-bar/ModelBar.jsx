@@ -18,8 +18,8 @@ const ModelBar = ({ className, item, method }) => {
   } = useAugment({ item });
 
   const {
-    state: { status: retrainStatus },
-    action: { handleStartRetrain },
+    state: { status: retrainStatus, selectedModel, models, isDialogOpen },
+    action: { handleModelSelect, handleStartRetrain, handleOpenDialog },
   } = useRetrain({ item });
 
   const status =
@@ -40,7 +40,6 @@ const ModelBar = ({ className, item, method }) => {
           />
         ) : (
           <ModelSelectionDialog
-            item={item}
             triggerChildren={
               <HoverButton
                 className="w-24 text-lg"
@@ -49,7 +48,12 @@ const ModelBar = ({ className, item, method }) => {
                 disabled={disableButton}
               />
             }
-            onModelSelect={handleStartRetrain}
+            isOpen={isDialogOpen}
+            onOpenChange={handleOpenDialog}
+            selectedModel={selectedModel}
+            models={models}
+            onModelSelect={handleModelSelect}
+            onRetrain={handleStartRetrain}
           />
         )}
         <EvalOutflow

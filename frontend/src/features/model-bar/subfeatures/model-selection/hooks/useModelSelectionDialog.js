@@ -13,24 +13,16 @@ const useModelSelectionDialog = (item, onModelSelect) => {
   const handleDialogOpen = (open) => {
     // If the dialog is being opened (or was just opened)
     if (open) {
-      getModels()
-        .then((data) => {
-          // Filter models for the current item only
-          const itemModels = data.filter((model) => model.item === item);
-          setModels(itemModels);
-        })
-        .catch((err) => {
-          updateError(err.message);
-        });
+      getModels().then((data) => {
+        // Filter models for the current item only
+        const itemModels = data.filter((model) => model.item === item);
+        setModels(itemModels);
+      });
     } else {
       // If the dialog is being closed, reset selected model
       setSelectedModel("");
     }
     setDialogOpen(open);
-  };
-
-  const handleModelSelect = (model) => {
-    setSelectedModel(model);
   };
 
   const handleRetrain = () => {
@@ -41,12 +33,16 @@ const useModelSelectionDialog = (item, onModelSelect) => {
   };
 
   return {
-    isDialogOpen,
-    selectedModel,
-    models,
-    handleDialogOpen,
-    handleModelSelect,
-    handleRetrain,
+    state: {
+      isDialogOpen,
+      selectedModel,
+      models,
+    },
+    actions: {
+      handleDialogOpen,
+      setSelectedModel,
+      handleRetrain,
+    },
   };
 };
 

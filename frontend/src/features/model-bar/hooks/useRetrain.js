@@ -1,13 +1,16 @@
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
-import { STATUS } from "@/constants/common";
 import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
-import { useRetrainDataMutation } from "../api/model-bar";
+import { useRetrainDataMutation, useGetModelsMutation } from "../api/model-bar";
 
 const useRetrain = ({ item }) => {
   const queryClient = useQueryClient();
+  const [models, setModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState("");
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const updateError = useBaseStore((state) => state.updateError);
   const { status, updateStatus } = useTrainStore(
@@ -18,15 +21,55 @@ const useRetrain = ({ item }) => {
   );
 
   const { mutateAsync: retrainModel } = useRetrainDataMutation({ updateError });
+  const { mutateAsync: getModels } = useGetModelsMutation({ updateError });
 
-  const handleStartRetrain = (modelName) => {
-    queryClient.removeQueries();
-    retrainModel({ item, ai_model_name: modelName }).then((data) =>
-      updateStatus(data?.status),
-    );
+  const handleOpenDialog = (open) => {
+    if (open) {
+      loadModels();
+    } else {
+      setSelectedModel("");
+    }
+    setDialogOpen(open);
   };
 
-  return { state: { status }, action: { handleStartRetrain } };
+  const loadModels = () => {
+    getModels()
+      .then((data) => {
+        const itemModels = data.filter((model) => model.item === item);
+        setModels(itemModels);
+      })
+      .catch((err) => {
+        updateError(err.message);
+      });
+  };
+  const handleModelSelect = (modelName) => {
+    setSelectedModel(modelName);
+  };
+
+  const handleStartRetrain = () => {
+    if (selectedModel) {
+      queryClient.removeQueries();
+      setDialogOpen(false);
+
+      retrainModel({ item, ai_model_name: selectedModel }).then((data) =>
+        updateStatus(data?.status),
+      );
+    }
+  };
+
+  return {
+    state: {
+      status,
+      selectedModel,
+      models,
+      isDialogOpen,
+    },
+    action: {
+      handleModelSelect,
+      handleStartRetrain,
+      handleOpenDialog,
+    },
+  };
 };
 
 export default useRetrain;
