@@ -10,7 +10,6 @@ from apis.v2.components.model_evaluation import (
 )
 from apis.v2.components.model_training import start_training
 from apis.v2.components.model_retraining import start_retraining
-from apis.v2.constants.datasets_thresholds import AIModelMode
 from constants.folder_names import EvaluationSetsFolderName
 from apis.v2.schemas.deep_learning import (
     EvaluationOutcome,
