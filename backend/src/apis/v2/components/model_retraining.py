@@ -33,7 +33,6 @@ def start_retraining(
         raise ValueError(
             f"Model has incompatible output shape: expected {expected_classes} classes, got {output_shape[-1]}"
         )
-    
     train_dataset, _ = TensorflowModel.prepare_dataset(
         retrain_dataset_dir / ModelDatasetFolderNames.TRAIN, input_size, shuffle=True
     )
@@ -60,9 +59,8 @@ def setup_retraining_environment(item: str) -> tuple[Path, Path]:
 
     item_model_dir = dm.model_dir / item
     dm.create_directory(item_model_dir)
-    retrain_dataset_dir = dm.images_dir / "retrain_dataset" / item
+    retrain_dataset_dir = dm.images_dir / ModelDatasetFolderNames.RETRAIN_DATASET / item
     dm.create_directory(retrain_dataset_dir)
-    
     return item_model_dir, retrain_dataset_dir
 
 
