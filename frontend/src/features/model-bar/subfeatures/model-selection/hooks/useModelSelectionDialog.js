@@ -1,48 +1,59 @@
 import { useState } from "react";
 import useBaseStore from "@/store/base";
-import { useGetModelsMutation } from "@/features/model-bar/api/model-bar";
+import {
+  useGetModelsMutation,
+  useRetrainDataMutation,
+} from "@/features/model-bar/api/model-bar";
+import { useQueryClient } from "@tanstack/react-query";
+import useTrainStore from "@/store/train";
 
-const useModelSelectionDialog = (item, onModelSelect) => {
-  const [isDialogOpen, setDialogOpen] = useState(false);
+const useModelSelectionDialog = ({ item }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState("");
   const [models, setModels] = useState([]);
 
   const updateError = useBaseStore((state) => state.updateError);
-  const { mutateAsync: getModels } = useGetModelsMutation({ updateError });
+  const updateStatus = useTrainStore((state) => state.updateStatus);
 
-  const handleDialogOpen = (open) => {
-    // If the dialog is being opened (or was just opened)
-    if (open) {
-      getModels().then((data) => {
-        // Filter models for the current item only
-        const itemModels = data.filter((model) => model.item === item);
-        setModels(itemModels);
+  const { mutateAsync: getModels } = useGetModelsMutation({ updateError });
+  const { mutateAsync: retrainModel } = useRetrainDataMutation({ updateError });
+  const queryClient = useQueryClient();
+
+  const startRetrain = () => {
+    if (!selectedModel) return;
+
+    queryClient.removeQueries();
+
+    retrainModel({ item, ai_model_name: selectedModel })
+      .then((data) => {
+        updateStatus(data?.status);
       });
+
+    setIsOpen(false);
+  };
+
+  const handleOpenChange = (open) => {
+    if (open) {
+      loadModels();
     } else {
-      // If the dialog is being closed, reset selected model
       setSelectedModel("");
     }
-    setDialogOpen(open);
+    setIsOpen(open);
   };
 
-  const handleRetrain = () => {
-    if (selectedModel) {
-      onModelSelect(selectedModel);
-      setDialogOpen(false);
-    }
+  const loadModels = () => {
+    getModels().then((data) => {
+      const itemModels = data.filter((model) => model.item === item);
+      setModels(itemModels);
+    });
   };
-
   return {
-    state: {
-      isDialogOpen,
-      selectedModel,
-      models,
-    },
-    actions: {
-      handleDialogOpen,
-      setSelectedModel,
-      handleRetrain,
-    },
+    isOpen,
+    selectedModel,
+    models,
+    handleOpenChange,
+    setSelectedModel,
+    startRetrain,
   };
 };
 

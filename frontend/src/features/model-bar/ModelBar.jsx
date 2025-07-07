@@ -6,24 +6,16 @@ import { STATUS } from "@/constants/common";
 import { METHOD_PARAMS } from "@/constants/url-params";
 import { cn } from "@/lib/utils";
 import useAugment from "./hooks/useAugment";
-import useRetrain from "./hooks/useRetrain";
 import EvalOutflow from "./subfeatures/eval-outflow/EvalOutflow";
 import UtilityPanel from "./subfeatures/utility-panel/UtilityPanel";
 import ModelSelectionDialog from "./subfeatures/model-selection/ModelSelectionDialog";
 
 const ModelBar = ({ className, item, method }) => {
   const {
-    state: { status: augmentStatus },
+    state: { status },
     action: { handleStartTrain },
   } = useAugment({ item });
 
-  const {
-    state: { status: retrainStatus, selectedModel, models, isDialogOpen },
-    action: { handleModelSelect, handleStartRetrain, handleOpenDialog },
-  } = useRetrain({ item });
-
-  const status =
-    method === METHOD_PARAMS.RETRAIN ? retrainStatus : augmentStatus;
   const disableButton = status !== STATUS.IDLE && status !== STATUS.EVALUATED;
 
   return (
@@ -48,12 +40,7 @@ const ModelBar = ({ className, item, method }) => {
                 disabled={disableButton}
               />
             }
-            isOpen={isDialogOpen}
-            onOpenChange={handleOpenDialog}
-            selectedModel={selectedModel}
-            models={models}
-            onModelSelect={handleModelSelect}
-            onRetrain={handleStartRetrain}
+            item={item}
           />
         )}
         <EvalOutflow
