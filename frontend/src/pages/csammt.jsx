@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import Swal from "sweetalert2";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 
 import BaseLayout from "@/components/layouts/BaseLayout";
@@ -11,14 +12,30 @@ import EvaluationResults from "@/features/evaluation-results/EvaluationResults";
 import { cn } from "@/lib/utils";
 import useBaseStore from "@/store/base";
 import useTrainStore from "@/store/train";
+import { METHOD_PARAMS } from "@/constants/url-params";
+import { STATUS } from "@/constants/common";
 
 const CsamMT = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const item = searchParams.get("item");
-  const method = searchParams.get("method");
+  const method = searchParams.get("method") || METHOD_PARAMS.TRAIN;
 
-  // TODO: If item or method don't exists, re-direct to CDS
-  // TODO: check if item exists in backend database.
+  useEffect(() => {
+    if (!item) {
+      navigate("/CDS");
+      return;
+    }
+    const isValidMethod =
+      method === METHOD_PARAMS.TRAIN || method === METHOD_PARAMS.RETRAIN;
+    if (!isValidMethod) {
+      const params = new URLSearchParams({
+        method: METHOD_PARAMS.TRAIN,
+      });
+      navigate(`/CDS?${params}`);
+      return;
+    }
+  }, [item, method, navigate]);
 
   const error = useBaseStore((state) => state.error);
   const resetError = useBaseStore((state) => state.resetError);
@@ -30,7 +47,7 @@ const CsamMT = () => {
   );
 
   if (error) {
-    updateStatus("idle");
+    updateStatus(STATUS.IDLE);
     Swal.fire({
       icon: "error",
       title: "Oops...",
@@ -42,37 +59,39 @@ const CsamMT = () => {
     });
   }
 
-  if (status == "Evaluated")
+  const isCompleted = status === STATUS.EVALUATED;
+  if (isCompleted) {
     Swal.fire({
       icon: "success",
-      title: "Model Trained Completed",
-      text: "Please check if there is any Outflows before installing.",
+      title: `Model ${method === METHOD_PARAMS.TRAIN ? "Training" : "Retraining"} Completed`,
+      text: "Please check if there are any Outflows before installing.",
     });
+  }
 
   return (
     <BaseLayout
       className={cn(
         "flex flex-col",
-        method === "train" ? "bg-yellow-100" : "bg-sky-100",
+        method === METHOD_PARAMS.TRAIN ? "bg-yellow-100" : "bg-sky-100",
       )}
     >
       <div className="flex py-2">
         <DescriptiveHeader
           className="w-2/3"
           title={
-            method === "train"
+            method === METHOD_PARAMS.TRAIN
               ? "CSAM Model Training"
               : "Re-training CSAM Model"
           }
-          description={`Currently ${method.toLowerCase()}ing model for ${item}.`}
+          description={`Currently ${method === METHOD_PARAMS.TRAIN ? "training" : "retraining"} model for ${item}.`}
         />
         <Separator orientation="vertical" />
-        <ModelBar className="w-1/3" item={item} />
+        <ModelBar className="w-1/3" item={item} method={method} />
       </div>
       <Separator className="px-4" />
       <div className="flex min-h-0 flex-1">
-        <ModelTrainer className="w-2/3" item={item} />
-        <EvaluationResults className="w-1/3" item={item} />
+        <ModelTrainer className="w-2/3" item={item} method={method} />
+        <EvaluationResults className="w-1/3" item={item} method={method} />
       </div>
     </BaseLayout>
   );

@@ -6,4 +6,6 @@ export const STATUS = {
   IDLE: "idle",
   TRAINING: "training",
   TRAINED: "trained",
+  RETRAINING: "retraining",
+  RETRAINED: "retrained",
 };

@@ -93,7 +93,7 @@ class TensorflowModel:
             layer.trainable = False
         model.compile(
             optimizer=optimizers.Adam(learning_rate=0.0001),
-            loss="sparse_categorical_crossentropy",
+            loss=losses.SparseCategoricalCrossentropy(),
             metrics=["accuracy"],
         )
 
@@ -101,9 +101,12 @@ class TensorflowModel:
 
     @error_handler()
     @staticmethod
-    def create_callbacks() -> list[cb.Callback]:
+    def create_callbacks(is_train: bool = True) -> list[cb.Callback]:
         """Creates a list of training callbacks.
-
+        
+        Args:
+            is_train: Whether this is for training (True) or retraining (False)
+            
         Returns:
             A list of Keras Callback objects.
         """
@@ -113,7 +116,7 @@ class TensorflowModel:
         reduce_lr = cb.ReduceLROnPlateau(
             monitor="val_loss", factor=0.2, patience=3, min_lr=1e-5, verbose=1
         )
-        epoch_history = EpochHistory()
+        epoch_history = EpochHistory(is_train=is_train)
 
         return [early_stopping, reduce_lr, epoch_history]
 

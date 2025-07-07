@@ -63,5 +63,6 @@ class ReTrainFolderName(StrEnum):
 
 class ModelDatasetFolderNames(StrEnum):
     DATASET = "dataset"
+    RETRAIN_DATASET = "retrain_dataset"
     TRAIN = "train"
     VALIDATION = "validation"
